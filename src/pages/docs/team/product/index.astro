@@ -3,30 +3,36 @@ import Layout from '../../../../layouts/Layout.astro';
 
 const resources = [
   {
-    title: 'Design Team Levels / Titles',
-    description: 'Clarify roles within the team',
-    href: '/docs/leadership/month-1/designer-levels-titles',
-    image: '📊'
+    title: 'Product Spec',
+    description: 'Clearly outline product requirements and expectations',
+    href: '/docs/team/product/product-spec',
+    image: '📋'
   },
   {
-    title: 'Level Competencies',
-    description: 'Establish skill expectations and growth paths',
-    href: '/docs/leadership/month-1/level-competencies',
-    image: '🎯'
+    title: 'Project Kickoff Meeting',
+    description: 'Ensure all stakeholders are aligned from the start',
+    href: '/docs/team/product/project-kickoff-meeting',
+    image: '🎉'
+  },
+  {
+    title: 'One-Pagers',
+    description: 'Summarize project goals and progress for quick reference',
+    href: '/docs/team/product/one-pagers',
+    image: '📄'
   }
 ];
 
-const title = "Month 1";
+const title = "Product Team";
 ---
 
 <Layout title={title}>
-  <div class="min-h-screen bg-gray-50">
-    <div class="py-8 pl-10">
+  <div class="min-h-screen">
+    <div class="py-8 px-10">
       <div class="mb-8">
         <h1 class="text-base font-medium text-gray-900">{title}</h1>
       </div>
       
-      <div class="grid grid-cols-1 gap-4 max-w-[600px]">
+      <div class="grid grid-cols-1 gap-4 max-w-[680px]">
         {resources.map(resource => (
           <a href={resource.href} class="block group">
             <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-duration-200">

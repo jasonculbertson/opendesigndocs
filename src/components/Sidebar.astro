@@ -1,109 +1,214 @@
 ---
-import SearchResults from './SearchResults.astro';
+import { 
+  BookOpen,
+  Clock, 
+  Users,
+  Calendar,
+  Target,
+  Rocket,
+  LogOut,
+  Palette,
+  Box,
+  UserPlus,
+  Play,
+  Video,
+  ChevronRight,
+  FileText,
+  User,
+  Film
+} from 'lucide-react';
 
 const navigation = [
   {
-    title: 'Leadership Docs',
-    items: [
-      {
-        name: 'Day 1',
+    name: 'Leadership Docs',
+    icon: FileText,
+    sections: [
+      { 
+        name: 'Day 1', 
         href: '/docs/leadership/day-1',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+        matchPaths: ['/docs/leadership/day-1', '/docs/leadership/day-1/leadership-blueprint', '/docs/leadership/day-1/30-60-90-plan'],
+        Icon: Clock
       },
       {
         name: 'Week 1-2',
         href: '/docs/leadership/week-1-2',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>`
+        matchPaths: ['/docs/leadership/week-1-2', '/docs/leadership/week-1-2/getting-to-know-you'],
+        Icon: Users
       },
       {
         name: 'Month 1',
         href: '/docs/leadership/month-1',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>`
+        matchPaths: ['/docs/leadership/month-1', '/docs/leadership/month-1/designer-levels-titles', '/docs/leadership/month-1/level-competencies'],
+        Icon: Calendar
       },
       {
         name: 'Quarter 1',
         href: '/docs/leadership/quarter-1',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>`
+        matchPaths: ['/docs/leadership/quarter-1', '/docs/leadership/quarter-1/self-evaluation', '/docs/leadership/quarter-1/short-term-growth-exercise'],
+        Icon: Target
+      },
+      {
+        name: 'Quarter 2',
+        href: '/docs/leadership/quarter-2',
+        matchPaths: ['/docs/leadership/quarter-2'],
+        Icon: Rocket
+      },
+      {
+        name: 'Departure',
+        href: '/docs/leadership/departure',
+        matchPaths: ['/docs/leadership/departure'],
+        Icon: LogOut
       }
     ]
   },
   {
-    title: 'Team Docs',
-    items: [
+    name: 'Team Docs',
+    icon: User,
+    sections: [
       {
         name: 'Design Team',
         href: '/docs/team/design',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>`
+        matchPaths: ['/docs/team/design'],
+        Icon: Palette
       },
       {
         name: 'Product Team',
         href: '/docs/team/product',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>`
+        matchPaths: ['/docs/team/product'],
+        Icon: Box
       },
       {
         name: 'Recruiting',
         href: '/docs/team/recruiting',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>`
+        matchPaths: ['/docs/team/recruiting'],
+        Icon: UserPlus
       }
     ]
   },
   {
-    title: 'Videos',
-    items: [
+    name: 'Videos',
+    icon: Film,
+    sections: [
       {
         name: 'Portfolio Reviews',
         href: '/docs/videos/portfolio-reviews',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" /></svg>`
+        matchPaths: ['/docs/videos/portfolio-reviews'],
+        Icon: Play
       },
       {
         name: '1 on 1s',
         href: '/docs/videos/one-on-ones',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="nav-icon"><path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" /></svg>`
+        matchPaths: ['/docs/videos/one-on-ones'],
+        Icon: Video
       }
     ]
   }
 ];
 
-const currentPath = Astro.props.currentPath;
+const { currentPath } = Astro.props;
+
+// Determine which sections should be expanded based on the current path
+const expandedSections = navigation.map(category => 
+  category.sections.some(section => section.matchPaths.includes(currentPath))
+);
 ---
 
 <aside class="sidebar">
-  <div class="p-4 border-b border-gray-200">
+  <div class="sidebar-header">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center">
-        <span class="font-medium text-gray-900">Open Design Docs</span>
+        <span class="sidebar-title">Open Design Docs</span>
       </div>
     </div>
     <div class="relative">
       <input 
         type="text" 
-        id="search-input"
         placeholder="Search docs..." 
-        class="search-input"
+        class="sidebar-search"
       />
-      <SearchResults visible={false} />
     </div>
   </div>
   
-  <nav class="p-4">
-    {navigation.map((section) => (
-      <div class="nav-section">
-        <h3 class="nav-title">{section.title}</h3>
-        <div class="space-y-1">
-          {section.items.map((item) => (
+  <nav class="sidebar-nav">
+    {navigation.map((category, index) => (
+      <div class="sidebar-category">
+        <div 
+          class="sidebar-category-header"
+          data-category={index}
+        >
+          <div class="sidebar-category-title">
+            <category.icon className="sidebar-category-icon" />
+            <span>{category.name}</span>
+          </div>
+          <ChevronRight className={`sidebar-category-arrow ${expandedSections[index] ? 'expanded' : ''}`} />
+        </div>
+        <div class={`sidebar-links ${!expandedSections[index] ? 'collapsed' : ''}`}>
+          {category.sections.map((section) => (
             <a
-              href={item.href}
-              class:list={[
-                'nav-link',
-                { active: currentPath.startsWith(item.href) }
-              ]}
+              href={section.href}
+              class={`sidebar-link ${section.matchPaths.includes(currentPath) ? 'active' : ''}`}
             >
-              <Fragment set:html={item.icon} />
-              <span>{item.name}</span>
+              <section.Icon className={`sidebar-icon ${section.matchPaths.includes(currentPath) ? 'active' : ''}`} />
+              <span>{section.name}</span>
             </a>
           ))}
         </div>
       </div>
     ))}
   </nav>
+
+  <div class="sidebar-footer">
+    <p class="sidebar-footer-text">
+      I have attempted to remove all confidential or personal information. If you have any concerns, please contact me.
+    </p>
+  </div>
 </aside>
+
+<script>
+  // Load expanded state from localStorage
+  const loadExpandedState = () => {
+    try {
+      const stored = localStorage.getItem('sidebarExpandedSections');
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+      return {};
+    }
+  };
+
+  // Save expanded state to localStorage
+  const saveExpandedState = (state) => {
+    try {
+      localStorage.setItem('sidebarExpandedSections', JSON.stringify(state));
+    } catch (e) {
+      console.error('Failed to save sidebar state:', e);
+    }
+  };
+
+  // Initialize expanded state
+  let expandedState = loadExpandedState();
+
+  // Handle category expansion
+  document.querySelectorAll('.sidebar-category-header').forEach((header, index) => {
+    const arrow = header.querySelector('.sidebar-category-arrow');
+    const links = header.nextElementSibling;
+    
+    // Set initial state
+    if (expandedState[index]) {
+      arrow?.classList.add('expanded');
+      links?.classList.remove('collapsed');
+    }
+
+    // Only toggle when clicking the header itself
+    header.addEventListener('click', (e) => {
+      // Ensure we're clicking the header and not a child link
+      if (e.target.closest('.sidebar-link')) return;
+      
+      const isExpanded = arrow?.classList.toggle('expanded');
+      links?.classList.toggle('collapsed');
+      
+      // Update stored state
+      expandedState[index] = isExpanded;
+      saveExpandedState(expandedState);
+    });
+  });
+</script>

@@ -3,30 +3,30 @@ import Layout from '../../../../layouts/Layout.astro';
 
 const resources = [
   {
-    title: 'Design Team Levels / Titles',
-    description: 'Clarify roles within the team',
-    href: '/docs/leadership/month-1/designer-levels-titles',
-    image: '📊'
+    title: 'Sprint Docs',
+    description: 'Streamline your design sprints with structured templates',
+    href: '/docs/team/design/design-sprint',
+    image: '🏃‍♂️'
   },
   {
-    title: 'Level Competencies',
-    description: 'Establish skill expectations and growth paths',
-    href: '/docs/leadership/month-1/level-competencies',
-    image: '🎯'
+    title: 'Design T-shirt sizing',
+    description: 'Simplify project estimation and resource allocation',
+    href: '/docs/team/design/t-shirt-sizing',
+    image: '👕'
   }
 ];
 
-const title = "Month 1";
+const title = "Design Team";
 ---
 
 <Layout title={title}>
-  <div class="min-h-screen bg-gray-50">
-    <div class="py-8 pl-10">
+  <div class="min-h-screen">
+    <div class="py-8 px-10">
       <div class="mb-8">
         <h1 class="text-base font-medium text-gray-900">{title}</h1>
       </div>
       
-      <div class="grid grid-cols-1 gap-4 max-w-[600px]">
+      <div class="grid grid-cols-1 gap-4 max-w-[680px]">
         {resources.map(resource => (
           <a href={resource.href} class="block group">
             <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-duration-200">

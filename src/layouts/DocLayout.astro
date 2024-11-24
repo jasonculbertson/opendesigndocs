@@ -6,24 +6,13 @@ const { frontmatter } = Astro.props;
 ---
 
 <Layout title={frontmatter.title} showBackButton={true}>
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16">
-    <article class="mx-auto">
-      <header class="mb-8">
-        <div class="breadcrumb">
-          <a href="/docs/leadership/day-1" class="breadcrumb-link">Day 1</a>
-          <span>/</span>
-          <span class="text-gray-900">{frontmatter.title}</span>
-        </div>
-        <h1 class="text-[32px] font-medium text-gray-900 mb-4 font-sans">
-          {frontmatter.title}
-        </h1>
-        {frontmatter.description && (
-          <p class="text-base text-gray-600">
-            {frontmatter.description}
-          </p>
-        )}
-      </header>
-      <div class="doc-content">
+  <main class="py-8 px-10">
+    <article class="max-w-[680px]">
+      <div class="mb-8">
+        <h1 class="text-base font-medium text-gray-900">{frontmatter.title}</h1>
+      </div>
+
+      <div class="prose prose-slate max-w-none">
         <slot />
       </div>
     </article>

@@ -5,107 +5,127 @@
 @import '@fontsource/inter/700.css';
 
 /* Layout */
+body {
+  @apply bg-gray-50;
+}
+
+/* Sidebar */
 .sidebar {
-  @apply w-[280px] fixed left-0 top-0 h-screen bg-[#fafafa] text-gray-700 overflow-y-auto border-r border-gray-200;
+  @apply w-[250px] fixed left-0 top-0 h-screen bg-[#f9f9f9] border-r border-[#e5e5e5] font-sans overflow-y-auto flex flex-col;
+  scrollbar-width: thin;
+  scrollbar-color: #e5e5e5 transparent;
 }
 
-/* Navigation */
-.nav-section {
-  @apply mb-8;
+.sidebar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.nav-title {
-  @apply text-sm font-medium text-gray-900 mb-3;
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.nav-link {
-  @apply flex items-center space-x-3 px-3 py-2.5 text-[15px] rounded-md transition-colors duration-150 text-gray-600;
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #e5e5e5;
+  border-radius: 3px;
 }
 
-.nav-link.active {
-  @apply bg-gray-100 text-gray-900;
+.sidebar-header {
+  @apply p-3 border-b border-[#e5e5e5];
 }
 
-.nav-link:not(.active) {
-  @apply hover:bg-gray-100/50;
+.sidebar-title {
+  @apply font-semibold text-[#333333];
 }
 
-.nav-icon {
-  @apply w-5 h-5 text-gray-500;
+.sidebar-search {
+  @apply w-full bg-white text-sm px-3 py-2 rounded-lg border border-[#e5e5e5] focus:outline-none focus:border-[#0056d2] focus:ring-1 focus:ring-[#0056d2] text-[#333333] placeholder-[#888888];
 }
 
-/* Search */
-.search-input {
-  @apply w-full bg-white text-sm px-3 py-2 rounded-md border border-gray-200 
-         focus:outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 
-         text-gray-900 placeholder-gray-500;
+.sidebar-nav {
+  @apply p-2 flex-1;
 }
 
-/* Content */
-.doc-content {
-  @apply text-[14px] leading-relaxed text-gray-800 space-y-6;
+.sidebar-category {
+  @apply mb-1;
 }
 
-.doc-content h2 {
-  @apply text-xl font-medium text-gray-900 mb-4;
+.sidebar-category-header {
+  @apply flex items-center justify-between px-2 py-1 cursor-pointer rounded-lg hover:bg-[#f0f0f5] transition-colors duration-200;
 }
 
-.doc-content h3 {
-  @apply text-lg font-medium text-gray-900 mb-3 mt-6;
+.sidebar-category-title {
+  @apply flex items-center text-sm font-medium text-[#333333] select-none;
 }
 
-.doc-content ul {
-  @apply list-disc pl-6 space-y-2;
+.sidebar-category-icon {
+  @apply w-4 h-4 mr-2 text-[#888888];
 }
 
-.doc-content p {
-  @apply mb-4;
+.sidebar-category-arrow {
+  @apply w-3.5 h-3.5 text-[#888888] transition-transform duration-200;
 }
 
-/* Cards */
+.sidebar-category-arrow.expanded {
+  @apply rotate-90;
+}
+
+.sidebar-links {
+  @apply space-y-0.5 mt-0.5 ml-6 overflow-hidden transition-all duration-200;
+}
+
+.sidebar-links.collapsed {
+  @apply h-0 mt-0;
+}
+
+.sidebar-link {
+  @apply flex items-center space-x-2 px-2 py-1 text-[13px] rounded-lg transition-colors duration-200;
+}
+
+.sidebar-link:not(.active) {
+  @apply text-[#333333] hover:bg-[#f0f0f5] hover:text-[#111111];
+}
+
+.sidebar-link.active {
+  @apply bg-[#e7ebff] text-[#0056d2] font-semibold;
+}
+
+.sidebar-icon {
+  @apply w-4 h-4;
+}
+
+.sidebar-icon:not(.active) {
+  @apply text-[#888888];
+}
+
+.sidebar-icon.active {
+  @apply text-[#0056d2];
+}
+
+.sidebar-footer {
+  @apply p-3 border-t border-[#e5e5e5] mt-auto;
+}
+
+.sidebar-footer-text {
+  @apply text-xs text-[#666666] leading-relaxed;
+}
+
+/* Card styles */
 .doc-card {
-  @apply bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition duration-200;
-}
-
-.doc-card-title {
-  @apply text-[20px] font-medium text-gray-900 mb-1 leading-tight;
-}
-
-.doc-card-description {
-  @apply text-sm text-gray-600;
+  @apply bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200;
 }
 
 .doc-card-content {
-  @apply p-5;
+  @apply p-4;
 }
 
-.doc-card-meta {
-  @apply mt-3 flex items-center text-xs text-gray-500;
+.doc-card-icon {
+  @apply w-24 h-24 text-blue-600 mx-auto mb-3;
 }
 
-.doc-card-meta-item {
-  @apply flex items-center;
+.doc-card-title {
+  @apply text-sm font-medium text-gray-900 mb-1;
 }
 
-.doc-card-meta-item:not(:last-child)::after {
-  content: "•";
-  @apply mx-2;
-}
-
-/* Breadcrumbs */
-.breadcrumb {
-  @apply flex items-center space-x-2 text-sm text-gray-500 mb-6;
-}
-
-.breadcrumb-link {
-  @apply hover:text-gray-900;
-}
-
-/* Callouts */
-.callout {
-  @apply bg-gray-50 p-4 rounded-lg border border-gray-100 my-6;
-}
-
-.callout p {
-  @apply text-gray-700;
+.doc-card-description {
+  @apply text-xs text-gray-600;
 }

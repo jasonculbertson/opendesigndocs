@@ -1,6 +1,5 @@
 ---
 import Sidebar from '../components/Sidebar.astro';
-import AuthButtons from '../components/AuthButtons.astro';
 import '../styles/main.css';
 
 interface Props {
@@ -26,11 +25,11 @@ const parentPath = currentPath.split('/').slice(0, -1).join('/');
   </head>
   <body class="bg-[#fafafa] font-sans">
     <Sidebar currentPath={currentPath} />
-    <div class="ml-[280px]">
-      <div class="fixed top-0 left-[280px] right-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between h-16">
-            {showBackButton ? (
+    <div class="ml-[250px]">
+      {showBackButton && (
+        <div class="fixed top-0 left-[250px] right-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 z-10">
+          <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center h-16">
               <a 
                 href={parentPath}
                 class="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"
@@ -40,13 +39,10 @@ const parentPath = currentPath.split('/').slice(0, -1).join('/');
                 </svg>
                 <span>Back</span>
               </a>
-            ) : (
-              <div></div>
-            )}
-            <AuthButtons />
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div class={showBackButton ? "mt-16" : ""}>
         <slot />
       </div>
