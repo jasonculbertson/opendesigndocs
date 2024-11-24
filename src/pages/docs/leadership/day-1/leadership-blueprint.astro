@@ -8,12 +8,13 @@ const { Content } = await entry.render();
 
 <Layout title={entry.data.title} showBackButton={true}>
   <main class="py-8 px-10">
-    <article class="max-w-[680px]">
-      <div class="mb-8">
-        <h1 class="text-base font-medium text-gray-900">Leadership Blueprint</h1>
+    <article class="max-w-[680px] mx-auto">
+      <div class="mb-12">
+        <div class="text-4xl mb-2">🗺️</div>
+        <h1 class="text-4xl font-bold text-gray-900">Leadership Blueprint</h1>
       </div>
 
-      <div class="prose prose-slate max-w-none">
+      <div class="prose prose-slate prose-lg max-w-none">
         <Content />
       </div>
     </article>
