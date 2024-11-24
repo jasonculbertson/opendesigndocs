@@ -1,0 +1,60 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { format } from 'date-fns';
+
+const documents = [
+  {
+    title: 'Design Team Levels / Titles',
+    description: 'Clarify roles within the team',
+    href: '/docs/leadership/month-1/designer-levels-titles',
+    date: new Date(),
+    category: 'Team Structure'
+  },
+  {
+    title: 'Level Competencies',
+    description: 'Establish skill expectations and growth paths',
+    href: '/docs/leadership/month-1/level-competencies',
+    date: new Date(),
+    category: 'Career Development'
+  }
+];
+
+const title = "Month 1";
+---
+
+<Layout title={title}>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-medium text-gray-900">Month 1</h1>
+        <div class="flex items-center space-x-2">
+          <button class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New
+          </button>
+        </div>
+      </div>
+      
+      <div class="grid gap-4">
+        {documents.map(doc => (
+          <a href={doc.href} class="block group">
+            <div class="doc-card">
+              <div class="doc-card-content">
+                <h3 class="doc-card-title">
+                  {doc.title}
+                </h3>
+                <p class="doc-card-description">{doc.description}</p>
+                <div class="doc-card-meta">
+                  <span class="doc-card-meta-item">{doc.category}</span>
+                  <span class="doc-card-meta-item">Updated {format(doc.date, 'MMM d, yyyy')}</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>

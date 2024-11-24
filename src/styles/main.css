@@ -1,0 +1,111 @@
+/* Base styles */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+/* Layout */
+.sidebar {
+  @apply w-[280px] fixed left-0 top-0 h-screen bg-[#fafafa] text-gray-700 overflow-y-auto border-r border-gray-200;
+}
+
+/* Navigation */
+.nav-section {
+  @apply mb-8;
+}
+
+.nav-title {
+  @apply text-sm font-medium text-gray-900 mb-3;
+}
+
+.nav-link {
+  @apply flex items-center space-x-3 px-3 py-2.5 text-[15px] rounded-md transition-colors duration-150 text-gray-600;
+}
+
+.nav-link.active {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.nav-link:not(.active) {
+  @apply hover:bg-gray-100/50;
+}
+
+.nav-icon {
+  @apply w-5 h-5 text-gray-500;
+}
+
+/* Search */
+.search-input {
+  @apply w-full bg-white text-sm px-3 py-2 rounded-md border border-gray-200 
+         focus:outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 
+         text-gray-900 placeholder-gray-500;
+}
+
+/* Content */
+.doc-content {
+  @apply text-[14px] leading-relaxed text-gray-800 space-y-6;
+}
+
+.doc-content h2 {
+  @apply text-xl font-medium text-gray-900 mb-4;
+}
+
+.doc-content h3 {
+  @apply text-lg font-medium text-gray-900 mb-3 mt-6;
+}
+
+.doc-content ul {
+  @apply list-disc pl-6 space-y-2;
+}
+
+.doc-content p {
+  @apply mb-4;
+}
+
+/* Cards */
+.doc-card {
+  @apply bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition duration-200;
+}
+
+.doc-card-title {
+  @apply text-[20px] font-medium text-gray-900 mb-1 leading-tight;
+}
+
+.doc-card-description {
+  @apply text-sm text-gray-600;
+}
+
+.doc-card-content {
+  @apply p-5;
+}
+
+.doc-card-meta {
+  @apply mt-3 flex items-center text-xs text-gray-500;
+}
+
+.doc-card-meta-item {
+  @apply flex items-center;
+}
+
+.doc-card-meta-item:not(:last-child)::after {
+  content: "•";
+  @apply mx-2;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  @apply flex items-center space-x-2 text-sm text-gray-500 mb-6;
+}
+
+.breadcrumb-link {
+  @apply hover:text-gray-900;
+}
+
+/* Callouts */
+.callout {
+  @apply bg-gray-50 p-4 rounded-lg border border-gray-100 my-6;
+}
+
+.callout p {
+  @apply text-gray-700;
+}
