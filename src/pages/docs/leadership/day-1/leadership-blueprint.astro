@@ -6,18 +6,18 @@ const entry = await getEntry('docs', 'leadership/day-1/leadership-blueprint');
 const { Content } = await entry.render();
 ---
 
-<Layout title={entry.data.title} showBackButton={true}>
+<Layout title="Leadership Blueprint" showBackButton={true}>
   <main class="px-6 md:px-10 py-6">
     <article class="max-w-[800px]">
       <h1 class="text-[32px] font-bold text-gray-900 mb-3">
-        {entry.data.title}
+        Leadership Blueprint
       </h1>
-
+      
       <p class="text-gray-600 text-lg mb-8">
-        {entry.data.description}
+        As a design leader, the first week at a company I share my leadership blueprint - a document that shows how I lead, my expectations for others and for myself. This is shared with each person whom I manage after our first 1:1. Below is an example:
       </p>
 
-      <div class="prose prose-slate max-w-none">
+      <div class="prose prose-slate max-w-none prose-headings:font-semibold prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600">
         <Content />
       </div>
     </article>
