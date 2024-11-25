@@ -104,23 +104,36 @@ tags: ["career-development", "team-structure", "roles"]
   }
 
   .levels-table tr.management-divider td {
-    padding: 0;
+    padding: 1.5rem 0;
+    background: #f9fafb;
     border-bottom: none;
   }
 
   .levels-table tr.management-divider:hover td {
-    background: white;
+    background: #f9fafb;
   }
 
   .divider-content {
-    margin: 1.5rem 2rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #e5e7eb;
+    margin: 0 2rem;
     color: #6b7280;
     font-size: 0.875rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  /* Add subtle background to management rows */
+  .levels-table tr.management-row td {
+    background: #f9fafb;
+  }
+
+  .levels-table tr.management-row:hover td {
+    background: #f3f4f6;
+  }
+
+  /* Optional: Add a top border to first management row */
+  .levels-table tr.management-row:first-of-type td {
+    border-top: 1px solid #e5e7eb;
   }
 
   /* Optional: Style the level cells differently */
@@ -195,11 +208,11 @@ tags: ["career-development", "team-structure", "roles"]
             <div className="divider-content">Management Track</div>
           </td>
         </tr>
-        <tr><td>M1</td><td>Design Manager</td></tr>
-        <tr><td>M2</td><td>Sr. Design Manager</td></tr>
-        <tr><td>M3</td><td>Group Design Manager</td></tr>
-        <tr><td>M4</td><td>Design Director</td></tr>
-        <tr><td>M5</td><td>Sr. Design Director</td></tr>
+        <tr className="management-row"><td>M1</td><td>Design Manager</td></tr>
+        <tr className="management-row"><td>M2</td><td>Sr. Design Manager</td></tr>
+        <tr className="management-row"><td>M3</td><td>Group Design Manager</td></tr>
+        <tr className="management-row"><td>M4</td><td>Design Director</td></tr>
+        <tr className="management-row"><td>M5</td><td>Sr. Design Director</td></tr>
       </tbody>
     </table>
   </div>
