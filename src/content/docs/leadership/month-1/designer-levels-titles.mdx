@@ -9,16 +9,37 @@ tags: ["career-development", "team-structure", "roles"]
 
 <style>
 {`
+  .page-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
   .role-accordion {
     margin-bottom: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+  }
+
+  .role-accordion:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
 
   .role-trigger {
     width: 100%;
-    padding: 1rem;
-    background: #ffffff;
+    padding: 1.25rem;
+    background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -27,61 +48,103 @@ tags: ["career-development", "team-structure", "roles"]
   }
 
   .role-trigger:hover {
-    background: #f8f9fa;
+    background: #f8fafc;
   }
 
   .role-trigger h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: #1a1f36;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .role-trigger h3::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6366f1;
   }
 
   .role-content {
     display: none;
-    padding: 1rem;
+    padding: 1.5rem;
     border: 1px solid #e5e7eb;
     border-top: none;
-    border-radius: 0 0 8px 8px;
-    background: #ffffff;
+    border-radius: 0 0 12px 12px;
+    background: white;
   }
 
   .role-content.open {
     display: block;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .levels-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin: 0.5rem 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .levels-table th {
-    background: #f8f9fa;
-    padding: 12px;
+    background: #f8fafc;
+    padding: 14px 20px;
     text-align: left;
     font-weight: 600;
-    color: #1a1f36;
-    border-bottom: 2px solid #e5e7eb;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
   }
 
   .levels-table td {
-    padding: 12px;
+    padding: 14px 20px;
     border-bottom: 1px solid #e5e7eb;
-    color: #425466;
+    color: #334155;
   }
 
-  .levels-table tr:hover {
-    background: #f8f9fa;
+  .levels-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .levels-table tr:hover td {
+    background: #f8fafc;
   }
 
   .chevron {
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
   }
 
   .open .chevron {
     transform: rotate(180deg);
+  }
+
+  .level-cell {
+    font-family: monospace;
+    font-weight: 600;
+    color: #6366f1;
+    background: #f5f5ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
   }
 `}
 </style>
@@ -90,6 +153,12 @@ tags: ["career-development", "team-structure", "roles"]
 {`
   document.addEventListener('DOMContentLoaded', () => {
     const triggers = document.querySelectorAll('.role-trigger');
+    
+    // Open first accordion by default
+    const firstContent = document.querySelector('.role-content');
+    const firstTrigger = document.querySelector('.role-trigger');
+    firstContent.classList.add('open');
+    firstTrigger.classList.add('open');
     
     triggers.forEach(trigger => {
       trigger.addEventListener('click', () => {
@@ -115,7 +184,9 @@ tags: ["career-development", "team-structure", "roles"]
 `}
 </script>
 
-# Design Team Levels / Titles
+<div className="page-header">
+  <h1>Design Team Levels / Titles</h1>
+</div>
 
 <div className="role-accordion">
   <button className="role-trigger">
@@ -133,7 +204,10 @@ tags: ["career-development", "team-structure", "roles"]
         </tr>
       </thead>
       <tbody>
-        <tr><td>P1</td><td>Designer I</td></tr>
+        <tr>
+          <td><span className="level-cell">P1</span></td>
+          <td>Designer I</td>
+        </tr>
         <tr><td>P2</td><td>Designer II</td></tr>
         <tr><td>P3</td><td>Sr. Designer</td></tr>
         <tr><td>P4</td><td>Lead Designer</td></tr>
