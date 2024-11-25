@@ -5,12 +5,9 @@ import '../styles/main.css';
 interface Props {
   title: string;
   description?: string;
-  showBackButton?: boolean;
 }
 
-const { title, description = "Open Design Documentation", showBackButton = false } = Astro.props;
-const currentPath = Astro.url.pathname;
-const parentPath = currentPath.split('/').slice(0, -1).join('/');
+const { title, description = "Open Design Documentation" } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,34 +15,15 @@ const parentPath = currentPath.split('/').slice(0, -1).join('/');
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="bg-[#fafafa] font-sans">
-    <Sidebar currentPath={currentPath} />
-    <div class="ml-[250px]">
-      {showBackButton && (
-        <div class="fixed top-0 left-[250px] right-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 z-10">
-          <div class="px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center h-16">
-              <a 
-                href={parentPath}
-                class="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-                <span>Back</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-      <div class={showBackButton ? "mt-16" : ""}>
-        <slot />
-      </div>
+  <body class="bg-white text-[#425466] antialiased">
+    <Sidebar currentPath={Astro.url.pathname} />
+    <div class="lg:ml-[250px]">
+      <slot />
     </div>
   </body>
 </html>

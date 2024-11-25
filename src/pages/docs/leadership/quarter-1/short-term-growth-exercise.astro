@@ -4,26 +4,33 @@ import Layout from '../../../../layouts/Layout.astro';
 
 const entry = await getEntry('docs', 'leadership/quarter-1/short-term-growth-exercise');
 const { Content } = await entry.render();
+
+const breadcrumbs = [
+  { text: 'Quarter 1', href: '/docs/leadership/quarter-1' },
+  { text: 'Short-Term Growth Exercise' }
+];
 ---
 
-<Layout title={entry.data.title} showBackButton={true}>
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16">
-    <article class="mx-auto">
-      <div class="mb-8">
-        <div class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-          <a href="/docs/leadership/quarter-1" class="hover:text-gray-900">Quarter 1</a>
-          <span>/</span>
-          <span class="text-gray-900">{entry.data.title}</span>
-        </div>
-        <h1 class="text-[32px] font-medium text-gray-900 mb-4">
-          {entry.data.title}
-        </h1>
-        <p class="text-base text-gray-600">
-          {entry.data.description}
-        </p>
-      </div>
-
-      <div class="doc-content">
+<Layout title={entry.data.title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              {crumb.href ? (
+                <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                  {crumb.text}
+                </a>
+              ) : (
+                <span class="text-sm text-gray-900">{crumb.text}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="prose">
         <Content />
       </div>
     </article>

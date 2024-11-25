@@ -4,16 +4,17 @@ import Layout from '../../../../layouts/Layout.astro';
 
 const entry = await getEntry('docs', 'team/design/design-sprint');
 const { Content } = await entry.render();
+
+const breadcrumbs = [
+  { text: 'Design Team', href: '/docs/team/design' },
+  { text: 'Sprint Docs' }
+];
 ---
 
-<Layout title={entry.data.title} showBackButton={true}>
-  <main class="py-8 px-10">
-    <article class="max-w-[680px]">
-      <div class="mb-8">
-        <h1 class="text-base font-medium text-gray-900">{entry.data.title}</h1>
-      </div>
-
-      <div class="prose prose-slate max-w-none">
+<Layout title={entry.data.title} breadcrumbs={breadcrumbs}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <div class="prose">
         <Content />
       </div>
     </article>

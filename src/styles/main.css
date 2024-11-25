@@ -6,14 +6,25 @@
 
 /* Layout */
 body {
-  @apply bg-gray-50;
+  @apply bg-white text-[#425466] antialiased;
 }
 
 /* Sidebar */
 .sidebar {
-  @apply w-[250px] fixed left-0 top-0 h-screen bg-[#f9f9f9] border-r border-[#e5e5e5] font-sans overflow-y-auto flex flex-col;
+  @apply w-[250px] fixed left-0 top-0 h-screen bg-[#f9f9f9] border-r border-[#e5e5e5] font-sans overflow-y-auto flex flex-col transition-transform duration-300 ease-in-out z-20 lg:translate-x-0;
   scrollbar-width: thin;
   scrollbar-color: #e5e5e5 transparent;
+}
+
+/* Mobile sidebar is hidden by default */
+@media (max-width: 1024px) {
+  .sidebar {
+    @apply -translate-x-full;
+  }
+  
+  .sidebar.open {
+    @apply translate-x-0;
+  }
 }
 
 .sidebar::-webkit-scrollbar {
@@ -30,15 +41,11 @@ body {
 }
 
 .sidebar-header {
-  @apply p-3 border-b border-[#e5e5e5];
+  @apply p-3 border-b border-[#e5e5e5] flex items-center justify-between;
 }
 
 .sidebar-title {
-  @apply font-semibold text-[#333333];
-}
-
-.sidebar-search {
-  @apply w-full bg-white text-sm px-3 py-2 rounded-lg border border-[#e5e5e5] focus:outline-none focus:border-[#0056d2] focus:ring-1 focus:ring-[#0056d2] text-[#333333] placeholder-[#888888];
+  @apply font-semibold text-[#1a1f36];
 }
 
 .sidebar-nav {
@@ -54,15 +61,15 @@ body {
 }
 
 .sidebar-category-title {
-  @apply flex items-center text-sm font-medium text-[#333333] select-none;
+  @apply flex items-center text-sm font-medium text-[#1a1f36] select-none;
 }
 
 .sidebar-category-icon {
-  @apply w-4 h-4 mr-2 text-[#888888];
+  @apply w-4 h-4 mr-2 text-[#425466];
 }
 
 .sidebar-category-arrow {
-  @apply w-3.5 h-3.5 text-[#888888] transition-transform duration-200;
+  @apply w-3.5 h-3.5 text-[#425466] transition-transform duration-200;
 }
 
 .sidebar-category-arrow.expanded {
@@ -82,11 +89,11 @@ body {
 }
 
 .sidebar-link:not(.active) {
-  @apply text-[#333333] hover:bg-[#f0f0f5] hover:text-[#111111];
+  @apply text-[#425466] hover:bg-[#f0f0f5] hover:text-[#1a1f36];
 }
 
 .sidebar-link.active {
-  @apply bg-[#e7ebff] text-[#0056d2] font-semibold;
+  @apply bg-[#635bff]/10 text-[#635bff] font-medium;
 }
 
 .sidebar-icon {
@@ -94,11 +101,11 @@ body {
 }
 
 .sidebar-icon:not(.active) {
-  @apply text-[#888888];
+  @apply text-[#425466];
 }
 
 .sidebar-icon.active {
-  @apply text-[#0056d2];
+  @apply text-[#635bff];
 }
 
 .sidebar-footer {
@@ -106,26 +113,76 @@ body {
 }
 
 .sidebar-footer-text {
-  @apply text-xs text-[#666666] leading-relaxed;
+  @apply text-xs text-[#425466] leading-relaxed;
 }
 
-/* Card styles */
-.doc-card {
-  @apply bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200;
+/* Typography */
+.prose {
+  @apply max-w-[680px] mx-auto text-[15px] leading-7;
 }
 
-.doc-card-content {
-  @apply p-4;
+.prose h1 {
+  @apply text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mt-8 mb-6;
 }
 
-.doc-card-icon {
-  @apply w-24 h-24 text-blue-600 mx-auto mb-3;
+.prose h2 {
+  @apply text-[20px] font-semibold text-[#1a1f36] tracking-[-0.2px] mt-12 mb-4;
 }
 
-.doc-card-title {
-  @apply text-sm font-medium text-gray-900 mb-1;
+.prose h3 {
+  @apply text-[16px] font-semibold text-[#1a1f36] mt-8 mb-3;
 }
 
-.doc-card-description {
-  @apply text-xs text-gray-600;
+.prose p {
+  @apply text-[15px] leading-7 text-[#425466] mb-4;
+}
+
+.prose ul {
+  @apply list-disc pl-6 mb-6 space-y-2;
+}
+
+/* Add nested list styling */
+.prose ul ul {
+  @apply mt-2 mb-0 ml-4;
+}
+
+.prose li {
+  @apply text-[15px] leading-7 text-[#425466];
+}
+
+/* Style nested list items */
+.prose li li {
+  @apply mt-2;
+}
+
+.prose strong {
+  @apply font-semibold text-[#1a1f36];
+}
+
+.prose a {
+  @apply text-[#635bff] hover:text-[#0000ee] no-underline hover:underline;
+}
+
+/* Custom styles for the leadership blueprint */
+.prose .intro-quote {
+  @apply bg-[#f6f8fa] border border-[#e5e7eb] rounded-lg p-6 my-8;
+}
+
+.prose .intro-quote p {
+  @apply text-[17px] leading-7 text-[#1a1f36];
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .prose {
+    @apply px-4;
+  }
+  
+  .prose h1 {
+    @apply text-[28px];
+  }
+  
+  .prose h2 {
+    @apply text-[18px];
+  }
 }

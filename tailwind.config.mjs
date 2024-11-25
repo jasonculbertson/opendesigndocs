@@ -4,107 +4,111 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'SF Pro Text',
-          'SF Pro Icons',
-          'Helvetica Neue',
-          'Helvetica',
-          'Arial',
-          'sans-serif'
-        ],
-        serif: ['New York', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       typography: {
         DEFAULT: {
           css: {
-            '--tw-prose-body': '#1d1d1f',
-            '--tw-prose-headings': '#1d1d1f',
-            '--tw-prose-links': '#0066cc',
-            '--tw-prose-bold': '#1d1d1f',
-            '--tw-prose-bullets': '#86868b',
-            maxWidth: '680px',
-            fontSize: '19px',
-            lineHeight: '1.47059',
-            color: '#1d1d1f',
-            fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif',
-            h1: {
-              fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Display, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif',
-              fontWeight: '600',
-              fontSize: '48px',
-              letterSpacing: '-0.003em',
-              marginTop: '0',
-              marginBottom: '1.5rem',
-              lineHeight: '1.08349'
-            },
-            h2: {
-              fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Display, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif',
-              fontWeight: '600',
-              fontSize: '28px',
-              letterSpacing: '.007em',
-              marginTop: '2.5rem',
-              marginBottom: '1.25rem',
-              lineHeight: '1.20849'
-            },
-            h3: {
-              fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Display, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif',
-              fontWeight: '600',
-              fontSize: '24px',
-              letterSpacing: '.009em',
-              marginTop: '2rem',
-              marginBottom: '1rem',
-              lineHeight: '1.20849'
-            },
+            '--tw-prose-body': '#425466',
+            '--tw-prose-headings': '#1a1f36',
+            color: '#425466',
+            fontSize: '15px',
+            lineHeight: '24px',
+            maxWidth: 'none',
             p: {
-              marginTop: '0',
-              marginBottom: '1.4em',
-              lineHeight: '1.47059'
-            },
-            'code::before': {
-              content: '""'
-            },
-            'code::after': {
-              content: '""'
-            },
-            code: {
-              color: '#1d1d1f',
-              backgroundColor: '#f5f5f7',
-              padding: '0.2em 0.4em',
-              borderRadius: '4px',
-              fontSize: '0.9em',
-              fontFamily: 'SF Mono, Monaco, Consolas, monospace'
-            },
-            ul: {
-              marginTop: '0.8em',
-              marginBottom: '0.8em',
-            },
-            li: {
-              marginTop: '0.5em',
-              marginBottom: '0.5em',
-              lineHeight: '1.47059',
-            },
-            'ul > li': {
-              paddingLeft: '1.5em',
-            },
-            'ul > li::before': {
-              width: '0.375em',
-              height: '0.375em',
-              top: '0.6875em',
-              left: '0.25em',
-              backgroundColor: '#86868b',
-              borderRadius: '50%'
+              marginTop: '16px',
+              marginBottom: '16px',
+              fontSize: '15px',
+              lineHeight: '24px',
+              color: '#425466',
             },
             strong: {
+              color: '#1a1f36',
+              fontWeight: '500',
+            },
+            h1: {
+              color: '#1a1f36',
               fontWeight: '600',
-              color: '#1d1d1f'
+              fontSize: '40px',
+              lineHeight: '48px',
+              letterSpacing: '-0.4px',
+              marginBottom: '16px',
+              marginTop: '0',
+            },
+            h2: {
+              color: '#1a1f36',
+              fontWeight: '600',
+              fontSize: '24px',
+              lineHeight: '32px',
+              letterSpacing: '-0.2px',
+              marginTop: '48px',
+              marginBottom: '16px',
+            },
+            h3: {
+              color: '#1a1f36',
+              fontWeight: '600',
+              fontSize: '16px',
+              lineHeight: '24px',
+              letterSpacing: '-0.1px',
+              marginTop: '32px',
+              marginBottom: '8px',
+            },
+            ul: {
+              marginTop: '16px',
+              marginBottom: '16px',
+              li: {
+                marginTop: '8px',
+                marginBottom: '8px',
+                paddingLeft: '20px',
+                fontSize: '15px',
+                lineHeight: '24px',
+                '&::before': {
+                  backgroundColor: '#425466',
+                  width: '5px',
+                  height: '5px',
+                  borderRadius: '50%',
+                  marginTop: '10px',
+                }
+              }
             },
             a: {
-              color: '#0066cc',
+              color: '#635bff',
               textDecoration: 'none',
+              fontWeight: '400',
               '&:hover': {
-                textDecoration: 'underline'
+                textDecoration: 'underline',
               }
+            },
+            code: {
+              color: '#1a1f36',
+              backgroundColor: '#f7fafc',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              fontSize: '14px',
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace',
+            },
+            pre: {
+              backgroundColor: '#f7fafc',
+              color: '#1a1f36',
+              padding: '16px',
+              borderRadius: '8px',
+              marginTop: '24px',
+              marginBottom: '24px',
+              code: {
+                backgroundColor: 'transparent',
+                padding: '0',
+                color: 'inherit',
+                fontSize: '14px',
+                lineHeight: '20px',
+              }
+            },
+            blockquote: {
+              borderLeftColor: '#e5e5e5',
+              borderLeftWidth: '4px',
+              paddingLeft: '16px',
+              marginTop: '24px',
+              marginBottom: '24px',
+              color: '#425466',
             }
           }
         }
