@@ -102,6 +102,32 @@ tags: ["career-development", "team-structure", "roles"]
   .open .chevron {
     transform: rotate(180deg);
   }
+
+  .levels-table tr.management-divider td {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .levels-table tr.management-divider:hover td {
+    background: white;
+  }
+
+  .divider-content {
+    margin: 1.5rem 2rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Optional: Style the level cells differently */
+  .levels-table td:first-child {
+    color: #4b5563;
+    font-weight: 500;
+  }
 `}
 </style>
 
@@ -164,6 +190,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Lead Designer</td></tr>
         <tr><td>P5</td><td>Staff Designer</td></tr>
         <tr><td>P6</td><td>Principal Designer</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M1</td><td>Design Manager</td></tr>
         <tr><td>M2</td><td>Sr. Design Manager</td></tr>
         <tr><td>M3</td><td>Group Design Manager</td></tr>
@@ -196,6 +227,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Lead Writer</td></tr>
         <tr><td>P5</td><td>Staff Writer</td></tr>
         <tr><td>P6</td><td>Principal Writer</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M1</td><td>Design Manager</td></tr>
         <tr><td>M2</td><td>Sr. Design Manager</td></tr>
         <tr><td>M3</td><td>Group Design Manager</td></tr>
@@ -228,6 +264,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Lead Researcher</td></tr>
         <tr><td>P5</td><td>Staff Researcher</td></tr>
         <tr><td>P6</td><td>Principal Researcher</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M1</td><td>UX Research Manager</td></tr>
         <tr><td>M2</td><td>Sr. Research Manager</td></tr>
         <tr><td>M3</td><td>Group UX Research Manager</td></tr>
@@ -260,6 +301,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Lead Design Ops</td></tr>
         <tr><td>P5</td><td>Staff Design Ops</td></tr>
         <tr><td>P6</td><td>Principal Design Ops</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M1</td><td>Design Ops Manager</td></tr>
         <tr><td>M2</td><td>Sr. Design Ops Manager</td></tr>
         <tr><td>M3</td><td>Group Design Ops Manager</td></tr>
@@ -292,6 +338,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Creative Lead, Art</td></tr>
         <tr><td>P5</td><td>Sr. Creative Lead, Art</td></tr>
         <tr><td>P6</td><td>Associate Creative Director</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M2</td><td>Creative Director</td></tr>
         <tr><td>M3</td><td>Sr. Creative Director</td></tr>
         <tr><td>M4</td><td>Group Creative Director</td></tr>
@@ -324,6 +375,11 @@ tags: ["career-development", "team-structure", "roles"]
         <tr><td>P4</td><td>Creative Lead, Copy</td></tr>
         <tr><td>P5</td><td>Sr. Creative Lead, Copy</td></tr>
         <tr><td>P6</td><td>Associate Creative Director</td></tr>
+        <tr className="management-divider">
+          <td colSpan="2">
+            <div className="divider-content">Management Track</div>
+          </td>
+        </tr>
         <tr><td>M1</td><td>Creative Director</td></tr>
         <tr><td>M2</td><td>Sr. Creative Director</td></tr>
         <tr><td>M3</td><td>Group Creative Director</td></tr>
