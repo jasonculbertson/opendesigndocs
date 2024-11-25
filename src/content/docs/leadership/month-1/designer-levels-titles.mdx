@@ -9,10 +9,51 @@ tags: ["career-development", "team-structure", "roles"]
 
 <style>
 {`
+  .role-accordion {
+    margin-bottom: 1rem;
+  }
+
+  .role-trigger {
+    width: 100%;
+    padding: 1rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .role-trigger:hover {
+    background: #f8f9fa;
+  }
+
+  .role-trigger h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1f36;
+  }
+
+  .role-content {
+    display: none;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    background: #ffffff;
+  }
+
+  .role-content.open {
+    display: block;
+  }
+
   .levels-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.5rem 0;
+    margin: 0.5rem 0;
     font-size: 0.9rem;
   }
 
@@ -35,58 +76,73 @@ tags: ["career-development", "team-structure", "roles"]
     background: #f8f9fa;
   }
 
-  .role-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1a1f36;
-    margin: 2rem 0 1rem;
+  .chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .open .chevron {
+    transform: rotate(180deg);
   }
 `}
 </style>
 
+<script>
+{`
+  document.addEventListener('DOMContentLoaded', () => {
+    const triggers = document.querySelectorAll('.role-trigger');
+    
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const content = trigger.nextElementSibling;
+        const isOpen = content.classList.contains('open');
+        
+        // Close all dropdowns
+        document.querySelectorAll('.role-content').forEach(content => {
+          content.classList.remove('open');
+        });
+        document.querySelectorAll('.role-trigger').forEach(trigger => {
+          trigger.classList.remove('open');
+        });
+        
+        // Toggle clicked dropdown
+        if (!isOpen) {
+          content.classList.add('open');
+          trigger.classList.add('open');
+        }
+      });
+    });
+  });
+`}
+</script>
+
 # Design Team Levels / Titles
 
-<h3 className="role-title">UX Designer</h3>
-
-<table className="levels-table">
-  <thead>
-    <tr>
-      <th>Level</th>
-      <th>Title</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>P1</td>
-      <td>Designer I</td>
-    </tr>
-    <tr>
-      <td>P2</td>
-      <td>Designer II</td>
-    </tr>
-    <tr>
-      <td>P3</td>
-      <td>Sr. Designer</td>
-    </tr>
-    <tr>
-      <td>P4</td>
-      <td>Lead Designer</td>
-    </tr>
-    <tr>
-      <td>P5</td>
-      <td>Staff Designer</td>
-    </tr>
-    <tr>
-      <td>P6</td>
-      <td>Principal Designer</td>
-    </tr>
-    <tr>
-      <td>M1</td>
-      <td>Design Manager</td>
-    </tr>
-    <tr>
-      <td>M2</td>
-      <td>Sr. Design Manager</td>
-    </tr>
-  </tbody>
-</table>
+<div className="role-accordion">
+  <button className="role-trigger">
+    <h3>UX Designer</h3>
+    <svg className="chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </button>
+  <div className="role-content">
+    <table className="levels-table">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Title</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>P1</td><td>Designer I</td></tr>
+        <tr><td>P2</td><td>Designer II</td></tr>
+        <tr><td>P3</td><td>Sr. Designer</td></tr>
+        <tr><td>P4</td><td>Lead Designer</td></tr>
+        <tr><td>P5</td><td>Staff Designer</td></tr>
+        <tr><td>P6</td><td>Principal Designer</td></tr>
+        <tr><td>M1</td><td>Design Manager</td></tr>
+        <tr><td>M2</td><td>Sr. Design Manager</td></tr>
+        <tr><td>M3</td><td>Group Design Manager</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
