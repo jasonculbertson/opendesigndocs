@@ -29,6 +29,8 @@ interface Props {
 
 const { currentPath = '/' } = Astro.props;
 
+const showVideos = false; // Toggle this to show/hide the Videos section
+
 const links = [
   {
     header: 'Manager Docs',
@@ -85,7 +87,7 @@ const links = [
       }
     ]
   },
-  {
+  ...(showVideos ? [{
     header: 'Videos',
     items: [
       {
@@ -99,7 +101,7 @@ const links = [
         icon: FileVideo
       }
     ]
-  }
+  }] : [])
 ];
 ---
 
