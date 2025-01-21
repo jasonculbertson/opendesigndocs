@@ -1,0 +1,80 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../../layouts/Layout.astro';
+import Card from '../../../../../../components/Card.astro';
+
+const entry = await getEntry('docs', 'team/recruiting/job-descriptions-jds/design-ops');
+
+const title = "Design Operations";
+const breadcrumbs = [
+  { text: 'Recruiting Team', href: '/docs/team/recruiting' },
+  { text: 'Job Descriptions', href: '/docs/team/recruiting/job-descriptions-jds' },
+  { text: 'Design Ops', href: '/docs/team/recruiting/job-descriptions-jds/design-ops' }
+];
+
+const designOpsLevels = [
+  { 
+    title: "Design Ops Manager I",
+    description: "Skills and expectations for L1 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/manager-1",
+    image: "🌱"
+  },
+  { 
+    title: "Design Ops Manager II",
+    description: "Skills and expectations for L2 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/manager-2",
+    image: "⚡"
+  },
+  { 
+    title: "Sr. Design Ops Manager",
+    description: "Skills and expectations for L3 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/senior-manager",
+    image: "🚀"
+  },
+  { 
+    title: "Lead Design Ops Manager",
+    description: "Skills and expectations for L4 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/lead-manager",
+    image: "👥"
+  },
+  { 
+    title: "Staff Design Ops Manager",
+    description: "Skills and expectations for L5 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/staff-manager",
+    image: "⭐"
+  },
+  { 
+    title: "Principal Design Ops Manager",
+    description: "Skills and expectations for L6 design ops managers",
+    href: "/docs/team/recruiting/job-descriptions-jds/design-ops/principal-manager",
+    image: "🎯"
+  }
+];
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+      </div>
+      <div class="grid grid-cols-1 gap-4">
+        {designOpsLevels.map(level => (
+          <Card {...level} />
+        ))}
+      </div>
+    </article>
+  </main>
+</Layout>

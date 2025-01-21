@@ -18,6 +18,15 @@ export default defineConfig({
     react()
   ],
   vite: {
-    envPrefix: 'SUPABASE_'
+    envPrefix: 'SUPABASE_',
+    build: {
+      sourcemap: false
+    }
+  },
+  server: {
+    showFilePath: false
+  },
+  devToolbar: {
+    enabled: false
   }
 });

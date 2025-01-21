@@ -23,24 +23,24 @@ export async function POST({ request }) {
     console.log('Submitting to Supabase:', { email, marketingOptIn });
 
     try {
-      const { data, error } = await supabaseAdmin
-        .from('subscribers')
+      // Always insert into content_subscribers
+      const { data: contentData, error: contentError } = await supabaseAdmin
+        .from('content_subscribers')
         .insert([{ 
           email, 
-          subscribed_at: new Date().toISOString(),
-          marketing_opt_in: marketingOptIn || false
+          subscribed_at: new Date().toISOString()
         }])
         .select()
         .single();
 
-      if (error) {
-        console.error('Supabase error:', error);
+      if (contentError) {
+        console.error('Supabase content_subscribers error:', contentError);
         
-        if (error.message?.includes('does not exist')) {
+        if (contentError.message?.includes('does not exist')) {
           return new Response(
             JSON.stringify({ 
               success: false,
-              error: 'Database table not set up. Please create the subscribers table.' 
+              error: 'Database table not set up. Please create the content_subscribers table.' 
             }), {
               status: 500,
               headers: { 'Content-Type': 'application/json' }
@@ -48,49 +48,35 @@ export async function POST({ request }) {
           );
         }
 
-        if (error.code === '23505') {
-          return new Response(
-            JSON.stringify({ 
-              success: false,
-              error: 'This email is already subscribed.' 
-            }), {
-              status: 400,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
+        if (contentError.code === '23505') {
+          // Email already exists, which is fine
+          console.log('Email already exists in content_subscribers');
+        } else {
+          throw contentError;
         }
-
-        if (error.code === '42501') {
-          return new Response(
-            JSON.stringify({ 
-              success: false,
-              error: 'Permission denied. Please check Supabase configuration.' 
-            }), {
-              status: 500,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-        }
-
-        return new Response(
-          JSON.stringify({ 
-            success: false,
-            error: error.message || 'Failed to subscribe',
-            code: error.code 
-          }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-          }
-        );
       }
 
-      console.log('Successfully added to Supabase:', data);
+      // If marketing opt-in is true, also insert into marketing_subscribers
+      if (marketingOptIn) {
+        const { error: marketingError } = await supabaseAdmin
+          .from('marketing_subscribers')
+          .insert([{ 
+            email, 
+            subscribed_at: new Date().toISOString()
+          }])
+          .select()
+          .single();
+
+        if (marketingError && marketingError.code !== '23505') {
+          console.error('Supabase marketing_subscribers error:', marketingError);
+          throw marketingError;
+        }
+      }
 
       return new Response(
         JSON.stringify({ 
           success: true,
-          message: 'Successfully subscribed',
-          data 
+          data: contentData
         }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }

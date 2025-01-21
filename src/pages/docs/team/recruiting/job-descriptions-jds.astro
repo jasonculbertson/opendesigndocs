@@ -10,17 +10,17 @@ const breadcrumbs = [
   { text: 'Recruiting Team', href: '/docs/team/recruiting' }
 ];
 
-const uxRoles = [
+const productRoles = [
   {
-    title: 'UX Designer',
-    description: 'UX Designer job description template',
-    href: '/docs/team/recruiting/job-descriptions-jds/ux-designer',
+    title: 'Product Designer',
+    description: 'Product Designer job description template',
+    href: '/docs/team/recruiting/job-descriptions-jds/product-designer',
     image: '🎨'
   },
   {
-    title: 'UX Writer',
-    description: 'UX Writer job description template',
-    href: '/docs/team/recruiting/job-descriptions-jds/ux-writer',
+    title: 'Content Designer',
+    description: 'Content Designer job description template',
+    href: '/docs/team/recruiting/job-descriptions-jds/content-designer',
     image: '✍️'
   },
   {
@@ -52,14 +52,14 @@ const creativeRoles = [
   }
 ];
 
-const title = "Job Descriptions (JDs)";
+const title = "Job Descriptions";
 ---
 
 <Layout title={title}>
   <main class="py-8 sm:px-6 lg:px-8">
     <article class="max-w-[680px] mx-auto px-4 sm:px-0">
-      <nav class="flex mb-2" aria-label="Breadcrumb">
-        <ol class="flex items-center">
+      <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
           {breadcrumbs.map((crumb, index) => (
             <li class="flex items-center">
               {index > 0 && <span class="mx-2 text-gray-400">/</span>}
@@ -70,15 +70,16 @@ const title = "Job Descriptions (JDs)";
           ))}
         </ol>
       </nav>
+
       <div class="mb-8">
         <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       </div>
 
       <div class="space-y-8">
         <section>
-          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">UX Roles</h2>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Product Roles</h2>
           <div class="grid grid-cols-1 gap-4">
-            {uxRoles.map(role => (
+            {productRoles.map(role => (
               <Card {...role} />
             ))}
           </div>

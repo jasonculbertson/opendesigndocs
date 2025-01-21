@@ -1,0 +1,23 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import ContentGate from '../../../../components/ContentGate';
+
+const entry = await getEntry('docs', 'leadership/quarter-2/individual-assessment');
+const { Content } = await entry.render();
+
+---
+
+<Layout title={entry.data.title}>
+  <ContentGate client:load>
+    <main class="relative min-h-screen">
+      <div class="py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[680px] mx-auto">
+          <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
+            <Content />
+          </div>
+        </div>
+      </div>
+  </main>
+  </ContentGate>
+</Layout>

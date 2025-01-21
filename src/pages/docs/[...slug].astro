@@ -2,24 +2,77 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
-  return docs.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  return docs.map(entry => {
+    // Remove '/index' from the end of the slug if present
+    const slug = entry.slug.replace(/\/index$/, '');
+    return {
+      params: { slug },
+      props: { entry },
+    };
+  });
 }
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+// Get current path segments from Astro.url
+const currentPath = Astro.url.pathname;
+const urlSegments = currentPath.split('/').filter(Boolean);
+
+// Show breadcrumbs for job description and level competency pages
+const showBreadcrumbs = 
+  urlSegments[0] === 'docs' &&
+  urlSegments[1] === 'frameworks' &&
+  (urlSegments[2] === 'job-descriptions' || urlSegments[2] === 'level-competencies') &&
+  urlSegments.length === 5;
+
+const breadcrumbs = showBreadcrumbs ? [
+  {
+    text: urlSegments[2] === 'job-descriptions' ? 'Job Descriptions' : 'Level Competencies'.replace('level', 'Level'),
+    href: `/docs/frameworks/${urlSegments[2]}`
+  },
+  {
+    text: urlSegments[3]
+      .split('-')
+      .map(word => {
+        if (word.toLowerCase() === 'ux') return 'UX';
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' '),
+    href: `/docs/frameworks/${urlSegments[2]}/${urlSegments[3]}`
+  }
+] : [];
+
+// If no content entry is found, this might be a regular page
+if (!Content) {
+  return Astro.redirect('/404');
+}
 ---
 
 <Layout title={entry.data.title} showBackButton={true}>
   <main class="py-8 px-10">
     <article class="max-w-[680px]">
-      <div class="mb-8">
-        <h1 class="text-base font-medium text-gray-900">{entry.data.title}</h1>
-      </div>
+      {breadcrumbs.length > 0 && (
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+          <ol class="flex items-center space-x-2">
+            {breadcrumbs.map((crumb, index) => (
+              <li class="flex items-center">
+                {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+                <a 
+                  href={crumb.href}
+                  class="text-sm text-gray-600 hover:text-gray-900"
+                >
+                  {crumb.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
       <div class="prose prose-slate max-w-none">
         <Content />
