@@ -7,7 +7,14 @@ import vercel from '@astrojs/vercel/serverless';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+    speedInsights: {
+      enabled: true,
+    },
+  }),
   integrations: [
     mdx({
       components: {
@@ -18,15 +25,6 @@ export default defineConfig({
     react()
   ],
   vite: {
-    envPrefix: 'SUPABASE_',
-    build: {
-      sourcemap: false
-    }
-  },
-  server: {
-    showFilePath: false
-  },
-  devToolbar: {
-    enabled: false
+    envPrefix: 'SUPABASE_'
   }
 });

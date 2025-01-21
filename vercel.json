@@ -4,5 +4,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "astro",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "outputDirectory": ".vercel/output"
 }
