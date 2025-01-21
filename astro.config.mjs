@@ -15,7 +15,16 @@ export default defineConfig({
     tailwind(),
     react()
   ],
+  renderers: ['@astrojs/renderer-preact'],
   vite: {
-    envPrefix: 'SUPABASE_'
+    envPrefix: 'SUPABASE_',
+    build: {
+      sourcemap: true
+    },
+    server: {
+      hmr: {
+        overlay: false
+      }
+    }
   }
 });
