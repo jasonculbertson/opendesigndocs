@@ -26,12 +26,6 @@
       ]
     }
   ],
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/main"
-    }
-  ],
   "cleanUrls": true,
   "trailingSlash": false
 }
