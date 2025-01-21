@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "DEPLOY_TIME=$(date +%s) npm run build",
   "devCommand": "npm run dev",
   "framework": "astro",
   "outputDirectory": ".vercel/output",
@@ -25,7 +25,9 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/home"
+      "destination": "/index.html"
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
