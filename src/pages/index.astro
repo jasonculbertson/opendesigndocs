@@ -1,8 +1,70 @@
 ---
-export const prerender = false;
+// Force rebuild timestamp: {new Date().toISOString()}
+import HomeLayout from '../layouts/HomeLayout.astro';
 
-if (Astro.request.url.endsWith('/')) {
-  return Astro.redirect('/home');
-}
+const pageData = {
+  title: "Open Design Docs",
+  featuredResources: [
+    {
+      title: 'Leadership Blueprint',
+      description: 'Guide for design leaders to build and scale teams',
+      href: '/docs/leadership/month-1/leadership-blueprint',
+    },
+    {
+      title: 'Design Principles',
+      description: 'Core principles for building great products',
+      href: '/docs/leadership/month-1/design-principles',
+    },
+    {
+      title: 'Levels Framework',
+      description: 'Guide covering competencies, job descriptions, and performance reviews',
+      href: '/docs/leadership/month-1/level-competencies',
+    }
+  ]
+};
 ---
-<meta http-equiv="refresh" content="0;url=/home" />
+
+<HomeLayout title={pageData.title}>
+  <div class="relative isolate">
+    <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">{pageData.title}</h1>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          A collection of resources for design leaders and teams.
+        </p>
+      </div>
+    </div>
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl lg:max-w-4xl">
+        <div class="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
+          {pageData.featuredResources.map((post) => (
+            <article class="relative isolate flex flex-col gap-8 lg:flex-row">
+              <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+                <div class="absolute inset-0 rounded-2xl bg-gray-50 object-cover" />
+              </div>
+              <div>
+                <div class="flex items-center gap-x-4 text-xs">
+                  <a
+                    href={post.href}
+                    class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
+                  >
+                    View Guide
+                  </a>
+                </div>
+                <div class="group relative max-w-xl">
+                  <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                    <a href={post.href}>
+                      <span class="absolute inset-0" />
+                      {post.title}
+                    </a>
+                  </h3>
+                  <p class="mt-5 text-sm leading-6 text-gray-600">{post.description}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</HomeLayout>
