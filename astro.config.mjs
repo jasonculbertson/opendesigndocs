@@ -6,7 +6,7 @@ import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  output: 'hybrid',
   adapter: vercel({
     webAnalytics: {
       enabled: true,
@@ -14,6 +14,9 @@ export default defineConfig({
     speedInsights: {
       enabled: true,
     },
+    includeFiles: ['.vercel/output/config.json'],
+    functionPerRoute: false,
+    maxDuration: 60
   }),
   integrations: [
     mdx({
