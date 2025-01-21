@@ -2,8 +2,9 @@
 import HomeLayout from '../layouts/HomeLayout.astro';
 
 const title = "Open Design Docs";
+const buildTime = new Date().toISOString();
 
-// Force rebuild: 2025-01-20 20:46
+// Force rebuild: ${buildTime}
 const featuredResources = [
   {
     title: 'Leadership Blueprint',
