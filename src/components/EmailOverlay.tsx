@@ -98,7 +98,7 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
               className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black accent-black"
             />
             <label htmlFor="marketingOptIn" className="text-sm text-gray-600">
-              I agree to receive update messages
+              I agree to receive updates on new resources
             </label>
           </div>
           
