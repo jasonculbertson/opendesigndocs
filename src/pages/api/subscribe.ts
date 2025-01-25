@@ -3,7 +3,7 @@ import { supabaseAdmin } from '../../lib/supabase';
 
 export const prerender = false;
 
-export async function POST({ request }) {
+export const post: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
     const { email, marketingOptIn } = body;
