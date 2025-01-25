@@ -11,12 +11,8 @@ export default defineConfig({
     analytics: true,
     imageService: true,
     devImageService: 'sharp',
-    imagesConfig: {
-      sizes: [640, 750, 828, 1080, 1200, 1920],
-      domains: [],
-      formats: ['image/avif', 'image/webp'],
-      minimumCacheTTL: 60,
-    },
+    functionPerRoute: false, // Bundle all routes into a single function
+    maxDuration: 60, // Set max duration to 60 seconds
   }),
   integrations: [
     mdx({
