@@ -46,7 +46,8 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
         setError(data.error || 'Failed to subscribe');
       }
     } catch (err) {
-      setError('Failed to subscribe');
+      console.error('Subscription error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to subscribe. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
