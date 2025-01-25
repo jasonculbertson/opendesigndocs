@@ -6,12 +6,12 @@ interface ContentGateProps {
 }
 
 export default function ContentGate({ children }: ContentGateProps) {
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    setMounted(true);
     // Check for existing subscription
     const subscribed = localStorage.getItem('emailSubscribed') === 'true';
     setIsSubscribed(subscribed);
@@ -33,9 +33,9 @@ export default function ContentGate({ children }: ContentGateProps) {
     setIsHiding(false);
   }, []);
 
-  // Return early if we're not on the client yet
-  if (!isClient) {
-    return null;
+  // Return early if we're not mounted yet
+  if (!mounted) {
+    return <div style={{ visibility: 'hidden' }}>{children}</div>;
   }
 
   if (isSubscribed) {

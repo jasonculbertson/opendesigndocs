@@ -15,7 +15,13 @@ export default defineConfig({
     includeFiles: [
       'node_modules/react/**/*',
       'node_modules/react-dom/**/*'
-    ]
+    ],
+    devMode: false, // Ensure Vercel adapter generates config
+    buildOutput: {
+      serverBuild: true,
+      clientBuild: true,
+      config: true
+    }
   }),
   integrations: [react(), mdx(), tailwind()],
   vite: {

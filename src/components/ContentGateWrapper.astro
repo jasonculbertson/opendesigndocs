@@ -1,0 +1,13 @@
+---
+import ContentGate from './ContentGate';
+
+interface Props {
+  children: any;
+}
+
+const { children } = Astro.props;
+---
+
+<ContentGate client:only="react">
+  {children}
+</ContentGate>
