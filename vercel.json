@@ -18,6 +18,10 @@
     {
       "source": "/",
       "destination": "/home"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ]
 }
