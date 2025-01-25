@@ -32,7 +32,6 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
     // Submit email
     setIsSubmitting(true);
     try {
-      console.log('Sending request to:', '/api/email-subscribe');
       const response = await fetch('/api/email-subscribe', {
         method: 'POST',
         headers: { 
@@ -42,19 +41,14 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
         body: JSON.stringify({ email, marketingOptIn })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const data = await response.json();
       
       if (data.success) {
         setShowSuccess(true);
-        setTimeout(onSuccess, 1000); // Allow success message to show
-      } else if (data.error?.includes('already subscribed')) {
-        // Handle duplicate emails gracefully
-        setShowSuccess(true);
-        setTimeout(onSuccess, 1000);
+        // Wait a bit before triggering the parent's success handler
+        setTimeout(() => {
+          onSuccess();
+        }, 1500);
       } else {
         setError(data.error || 'Failed to subscribe');
       }
