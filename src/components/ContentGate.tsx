@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import EmailOverlay from './EmailOverlay';
 
 interface ContentGateProps {
@@ -8,16 +8,14 @@ interface ContentGateProps {
 export default function ContentGate({ children }: ContentGateProps) {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     // Check for existing subscription
     const subscribed = localStorage.getItem('emailSubscribed') === 'true';
-    setIsMounted(true);
     setIsSubscribed(subscribed);
   }, []);
 
-  const handleSuccess = () => {
+  const handleSuccess = useCallback(() => {
     setIsHiding(true);
     // Wait for success animation before hiding
     setTimeout(() => {
@@ -25,18 +23,13 @@ export default function ContentGate({ children }: ContentGateProps) {
       setIsSubscribed(true);
       setIsHiding(false); // Reset hiding state
     }, 1500);
-  };
+  }, []);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     localStorage.removeItem('emailSubscribed');
     setIsSubscribed(false);
     setIsHiding(false);
-  };
-
-  // Show a loading state while hydrating
-  if (!isMounted) {
-    return <div className="min-h-screen bg-white">{children}</div>;
-  }
+  }, []);
 
   if (isSubscribed) {
     return (
