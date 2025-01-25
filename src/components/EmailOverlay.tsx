@@ -27,7 +27,7 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
     // Submit email
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/subscribe', {
+      const response = await fetch('/api/email-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, marketingOptIn })
