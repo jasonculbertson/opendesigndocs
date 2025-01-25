@@ -1,0 +1,19 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const entry = await getEntry('docs', 'team/recruiting/interview-panels');
+const { Content } = await entry.render();
+
+const title = entry.data.title;
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <div class="prose max-w-none">
+        <Content />
+      </div>
+    </article>
+  </main>
+</Layout>

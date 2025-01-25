@@ -7,7 +7,17 @@ import vercel from '@astrojs/vercel/serverless';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({
+    analytics: true,
+    imageService: true,
+    devImageService: 'sharp',
+    imagesConfig: {
+      sizes: [640, 750, 828, 1080, 1200, 1920],
+      domains: [],
+      formats: ['image/avif', 'image/webp'],
+      minimumCacheTTL: 60,
+    },
+  }),
   integrations: [
     mdx({
       components: {
@@ -17,16 +27,9 @@ export default defineConfig({
     tailwind(),
     react()
   ],
-  renderers: ['@astrojs/renderer-preact'],
   vite: {
-    envPrefix: 'SUPABASE_',
-    build: {
-      sourcemap: true
-    },
-    server: {
-      hmr: {
-        overlay: false
-      }
+    ssr: {
+      noExternal: ['@heroicons/*', 'lucide-react']
     }
   }
 });

@@ -1,0 +1,22 @@
+---
+import { getEntry } from 'astro:content';
+import CompetencyLayout from '../../../../../layouts/CompetencyLayout.astro';
+
+const entry = await getEntry('docs', 'leadership/month-1/level-competencies/ic1');
+const { Content } = await entry.render();
+
+const breadcrumbs = [
+  { text: 'Month 1', href: '/docs/leadership/month-1' },
+  { text: 'Level Competencies', href: '/docs/leadership/month-1/level-competencies' }
+];
+
+const frontmatter = {
+  title: entry.data.title,
+  ...entry.data
+};
+
+---
+
+<CompetencyLayout frontmatter={frontmatter} breadcrumbs={breadcrumbs}>
+  <Content />
+</CompetencyLayout>

@@ -1,0 +1,78 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import Card from '../../../../components/Card.astro';
+
+const entry = await getEntry('docs', 'frameworks/job-descriptions/ux-researcher');
+
+const title = "UX Researcher";
+const breadcrumbs = [
+  { text: 'Job Descriptions', href: '/docs/frameworks/job-descriptions' }
+];
+
+const researcherLevels = [
+  { 
+    title: "Researcher I",
+    description: "Skills and expectations for entry-level researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/researcher-1",
+    image: "🌱"
+  },
+  { 
+    title: "Researcher II",
+    description: "Skills and expectations for mid-level researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/researcher-2",
+    image: "⚡"
+  },
+  { 
+    title: "Sr. Researcher",
+    description: "Skills and expectations for senior researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/senior-researcher",
+    image: "🚀"
+  },
+  { 
+    title: "Lead Researcher",
+    description: "Skills and expectations for lead researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/lead-researcher",
+    image: "👥"
+  },
+  { 
+    title: "Staff Researcher",
+    description: "Skills and expectations for staff researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/staff-researcher",
+    image: "⭐"
+  },
+  { 
+    title: "Principal Researcher",
+    description: "Skills and expectations for principal researchers",
+    href: "/docs/frameworks/job-descriptions/ux-researcher/principal-researcher",
+    image: "🎯"
+  }
+];
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+      </div>
+      <div class="grid grid-cols-1 gap-4">
+        {researcherLevels.map(level => (
+          <Card {...level} />
+        ))}
+      </div>
+    </article>
+  </main>
+</Layout>

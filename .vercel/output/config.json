@@ -1,0 +1,724 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^\\/_image$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/email-subscribe\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/newsletter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/search\\.json\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/api\\/test\\.json\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/annual-reviews\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/lead-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/senior-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/staff-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/writer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/writer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/content-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/copywriter-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/copywriter-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/lead-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/principal-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/senior-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/staff-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/manager-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/manager-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/senior-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/senior-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/staff-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/graphic-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/product-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/lead-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/principal-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/researcher-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/researcher-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/senior-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/staff-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/ux-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/job-descriptions\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/content-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/graphic-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/photographer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/product-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/frameworks\\/level-competencies\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/day-1\\/30-60-90-plan\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/day-1\\/leadership-blueprint\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/day-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/departure\\/transition-plan\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/departure\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/designer-levels-titles\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/content-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/graphic-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/ic1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/photographer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/product-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/level-competencies\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/month-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-1\\/self-evaluation\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-1\\/short-term-growth-exercise\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-2\\/individual-assessment\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-2\\/long-term-goals\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/quarter-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/week-1-2\\/getting-to-know-you\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/leadership\\/week-1-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/design\\/design-sprint\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/design\\/t-shirt-sizing\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/design\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/product\\/one-pagers\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/product\\/product-spec\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/product\\/project-kickoff-meeting\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/product\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/interview-panels\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/interview-panels\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/interview-questions\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/writer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/writer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/content-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/associate-creative-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/creative-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/junior-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/lead-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/senior-copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/copywriter\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/design-ops-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/design-ops-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/lead-design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/lead-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/manager-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/manager-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/principal-design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/principal-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/senior-design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/senior-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/staff-design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/staff-manager\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/design-ops\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/art-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/associate-creative-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/creative-director\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/graphic-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/junior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/graphic-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/product-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/designer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/designer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/lead-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/principal-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/senior-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/staff-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-designer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/lead-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/principal-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/researcher-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/researcher-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/senior-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/staff-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-researcher\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/lead-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/principal-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/senior-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/staff-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/writer-1\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/writer-2\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/ux-writer\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/job-descriptions-jds\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/team\\/recruiting\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/videos\\/case-studies\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/docs\\/videos\\/interviews\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/home\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/sitemap\\.xml\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/$",
+			"dest": "_render"
+		}
+	],
+	"images": {
+		"sizes": [
+			640,
+			750,
+			828,
+			1080,
+			1200,
+			1920
+		],
+		"domains": [],
+		"formats": [
+			"image/avif",
+			"image/webp"
+		],
+		"minimumCacheTTL": 60,
+		"remotePatterns": []
+	}
+}
