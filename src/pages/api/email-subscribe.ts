@@ -14,17 +14,62 @@ export const POST: APIRoute = async ({ params, request }) => {
     const body = await request.json();
     const { email, marketingOptIn } = body;
 
-    // Log the request for debugging
-    console.log('API received request:', { email, marketingOptIn });
+    if (!email) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Email is required' }), {
+          status: 400,
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
+      );
+    }
 
-    // Return a success response for testing
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+    // Check if email already exists
+    const { data: existingUser } = await supabaseAdmin
+      .from('content_subscribers')
+      .select('email')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          message: 'Email already subscribed'
+        }), {
+          status: 200,
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
+      );
+    }
+
+    // Insert new subscriber
+    const { error: insertError } = await supabaseAdmin
+      .from('content_subscribers')
+      .insert([{ 
+        email, 
+        marketing_opt_in: marketingOptIn 
+      }]);
+
+    if (insertError) {
+      console.error('Supabase insert error:', insertError);
+      throw new Error('Failed to save subscriber');
+    }
+
+    return new Response(
+      JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
-    });
+    );
   } catch (error) {
     console.error('API Error:', error);
     return new Response(
