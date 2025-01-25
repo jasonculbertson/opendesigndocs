@@ -6,11 +6,16 @@ interface ContentGateProps {
 }
 
 export default function ContentGate({ children }: ContentGateProps) {
-  const [isSubscribed, setIsSubscribed] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('emailSubscribed') === 'true';
-  });
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    // Check for existing subscription
+    const subscribed = localStorage.getItem('emailSubscribed') === 'true';
+    setIsMounted(true);
+    setIsSubscribed(subscribed);
+  }, []);
 
   const handleSuccess = () => {
     setIsHiding(true);
@@ -18,11 +23,39 @@ export default function ContentGate({ children }: ContentGateProps) {
     setTimeout(() => {
       localStorage.setItem('emailSubscribed', 'true');
       setIsSubscribed(true);
+      setIsHiding(false); // Reset hiding state
     }, 1500);
   };
 
+  const handleReset = () => {
+    localStorage.removeItem('emailSubscribed');
+    setIsSubscribed(false);
+    setIsHiding(false);
+  };
+
+  // Show a loading state while hydrating
+  if (!isMounted) {
+    return <div className="min-h-screen bg-white">{children}</div>;
+  }
+
   if (isSubscribed) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        {/* Dev reset button - only shows in development */}
+        {import.meta.env.DEV && (
+          <button
+            onClick={handleReset}
+            className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-full text-sm shadow-lg hover:bg-gray-800 transition-colors duration-200 z-50 flex items-center space-x-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Reset Overlay</span>
+          </button>
+        )}
+      </>
+    );
   }
 
   return (
@@ -39,28 +72,36 @@ export default function ContentGate({ children }: ContentGateProps) {
         {children}
       </div>
 
-      <div 
-        className={`relative px-4 sm:px-6 lg:px-8 transition-all duration-500 ${
-          isHiding ? 'opacity-0 transform translate-y-4' : 'opacity-100'
-        }`} 
-        style={{ mask: 'none', WebkitMask: 'none' }}
-      >
-        <div className="max-w-[680px] mx-auto bg-white pt-4">
-          <EmailOverlay onSuccess={handleSuccess} />
+      {!isSubscribed && (
+        <div 
+          className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ${
+            isHiding ? 'opacity-0 transform translate-y-full' : 'opacity-100'
+          }`}
+          style={{
+            width: '100%',
+            zIndex: 50,
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100px, rgba(255,255,255,1) 100%)',
+            paddingTop: '100px'
+          }}
+        >
+          <div className="bg-white">
+            <div className="max-w-[680px] mx-auto pt-4 px-4 pb-8">
+              <EmailOverlay onSuccess={handleSuccess} />
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Dev reset button */}
+      {/* Dev reset button - only shows in development */}
       {import.meta.env.DEV && (
         <button
-          onClick={() => {
-            localStorage.removeItem('emailSubscribed');
-            setIsSubscribed(false);
-            setIsHiding(false);
-          }}
-          className="fixed bottom-4 right-4 bg-gray-900 text-white px-3 py-1 rounded-md text-sm opacity-50 hover:opacity-100 z-50"
+          onClick={handleReset}
+          className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-full text-sm shadow-lg hover:bg-gray-800 transition-colors duration-200 z-50 flex items-center space-x-2"
         >
-          Reset Overlay
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Reset Overlay</span>
         </button>
       )}
     </div>
