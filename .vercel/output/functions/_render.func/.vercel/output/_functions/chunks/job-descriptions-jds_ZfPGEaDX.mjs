@@ -1,9 +1,0 @@
-async function getMod() {
-						return import('./job-descriptions-jds_vpiOANo_.mjs');
-					}
-					const collectedLinks = [];
-					const collectedStyles = [];
-					const collectedScripts = [];
-					const defaultMod = { __astroPropagation: true, getMod, collectedLinks, collectedStyles, collectedScripts };
-
-export { defaultMod as default };

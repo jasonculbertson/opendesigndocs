@@ -6,10 +6,12 @@ interface ContentGateProps {
 }
 
 export default function ContentGate({ children }: ContentGateProps) {
+  const [isClient, setIsClient] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Check for existing subscription
     const subscribed = localStorage.getItem('emailSubscribed') === 'true';
     setIsSubscribed(subscribed);
@@ -30,6 +32,11 @@ export default function ContentGate({ children }: ContentGateProps) {
     setIsSubscribed(false);
     setIsHiding(false);
   }, []);
+
+  // Return early if we're not on the client yet
+  if (!isClient) {
+    return null;
+  }
 
   if (isSubscribed) {
     return (
@@ -79,7 +86,7 @@ export default function ContentGate({ children }: ContentGateProps) {
         >
           <div className="bg-white">
             <div className="max-w-[680px] mx-auto pt-4 px-4 pb-8">
-              <EmailOverlay onSuccess={handleSuccess} />
+              <EmailOverlay onSuccess={handleSuccess} isHiding={isHiding} />
             </div>
           </div>
         </div>

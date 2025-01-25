@@ -8,24 +8,22 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   output: 'server',
   adapter: vercel({
-    analytics: true,
-    imageService: true,
-    devImageService: 'sharp',
-    functionPerRoute: false, // Bundle all routes into a single function
-    maxDuration: 60, // Set max duration to 60 seconds
+    webAnalytics: true,
+    speedInsights: true,
+    functionPerRoute: false,
+    maxDuration: 10,
+    includeFiles: [
+      'node_modules/react/**/*',
+      'node_modules/react-dom/**/*'
+    ]
   }),
-  integrations: [
-    mdx({
-      components: {
-        'img': 'astro/components/Image.astro'
-      }
-    }),
-    tailwind(),
-    react()
-  ],
+  integrations: [react(), mdx(), tailwind()],
   vite: {
     ssr: {
-      noExternal: ['@heroicons/*', 'lucide-react']
+      noExternal: ['react', 'react-dom', '@heroicons/*', 'lucide-react']
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom']
     }
   }
 });

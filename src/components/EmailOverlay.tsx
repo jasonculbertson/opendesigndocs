@@ -4,14 +4,20 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 interface EmailOverlayProps {
   onSuccess: () => void;
+  isHiding?: boolean;
 }
 
-export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
+export default function EmailOverlay({ onSuccess, isHiding }: EmailOverlayProps) {
+  const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(true);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,102 +58,77 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
     }
   }, [email, marketingOptIn, onSuccess]);
 
-  if (showSuccess) {
-    return (
-      <div className="text-center py-8 animate-fade-in">
-        <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4 animate-bounce" />
-        <h2 className="text-[32px] font-bold mb-2 font-['Fraunces'] text-gray-900">
-          Thank you!
-        </h2>
-        <p className="text-lg text-gray-600">
-          You're all set! The content will be visible in a moment.
-        </p>
-      </div>
-    );
+  // Return early if we're not on the client yet
+  if (!isClient) {
+    return null;
   }
 
+  const overlayClasses = `fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center transition-opacity duration-500 ${
+    isHiding ? 'opacity-0' : 'opacity-100'
+  }`;
+
   return (
-    <div className="text-center">
-      <h2 className="text-[32px] font-bold mb-2 font-['Fraunces'] text-gray-900">
-        Get unlimited free access
-      </h2>
-      <p className="text-lg text-gray-600 mb-6">
-        Essential resources for design leaders
-      </p>
-
-      <div className="max-w-md mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setError(null);
-            }}
-            disabled={isSubmitting}
-            placeholder="Your email"
-            className="w-full max-w-sm mx-auto px-6 py-3 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800 block disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-          
-          <div className="flex items-center justify-center space-x-2 mt-3">
-            <input
-              type="checkbox"
-              id="marketingOptIn"
-              checked={marketingOptIn}
-              onChange={(e) => setMarketingOptIn(e.target.checked)}
-              className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black accent-black"
-            />
-            <label htmlFor="marketingOptIn" className="text-sm text-gray-600">
-              I agree to receive updates on new resources
-            </label>
-          </div>
-          
-          {error && (
-            <div className="text-red-500 text-sm mt-2">{error}</div>
+    <div className={overlayClasses}>
+      <div className="bg-white max-w-[680px] w-full mx-4 rounded-lg shadow-xl overflow-hidden">
+        <div className="p-8">
+          {showSuccess ? (
+            <div className="flex flex-col items-center justify-center text-center py-8">
+              <CheckCircleIcon className="h-16 w-16 text-green-500 mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Thank you for subscribing!</h2>
+              <p className="text-gray-600">You now have access to all content.</p>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold mb-4">Subscribe to Access Content</h2>
+              <p className="text-gray-600 mb-6">
+                Join our community to access exclusive content and stay updated with the latest in design leadership.
+              </p>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent"
+                    required
+                  />
+                  {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+                </div>
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="marketing"
+                      name="marketing"
+                      type="checkbox"
+                      checked={marketingOptIn}
+                      onChange={(e) => setMarketingOptIn(e.target.checked)}
+                      className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <label htmlFor="marketing" className="text-sm text-gray-600">
+                      I agree to receive marketing emails. You can unsubscribe at any time.
+                    </label>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors duration-200 ${
+                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
+                </button>
+              </form>
+            </>
           )}
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="relative w-full max-w-sm mx-auto bg-black text-white py-3 px-6 rounded-full hover:bg-gray-800 transition-colors text-lg font-medium block disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
-          >
-            <span className={`transition-opacity duration-200 ${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
-              Continue reading
-            </span>
-            {isSubmitting && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-6 space-y-2 text-[15px] text-gray-500">
-          <div className="flex items-center justify-center space-x-2">
-            <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Leadership guides and templates</span>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Exclusive design case studies</span>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Regular updates with new content</span>
-          </div>
-        </div>
-
-        <div className="mt-8 pb-16 text-sm text-gray-400">
-          We respect your privacy. No spam, ever. Unsubscribe anytime.
         </div>
       </div>
     </div>
