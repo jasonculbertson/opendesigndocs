@@ -10,105 +10,80 @@ export const GET: APIRoute = ({ params, request }) => {
 
 // Handle POST requests
 export const POST: APIRoute = async ({ params, request }) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  };
+
+  // Handle preflight requests
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers, status: 204 });
+  }
+
   try {
     const body = await request.json();
     const { email, marketingOptIn } = body;
 
-    console.log('API received request:', { email, marketingOptIn });
-
     if (!email) {
-      console.log('No email provided');
       return new Response(
-        JSON.stringify({ success: false, error: 'Email is required' }), {
-          status: 400,
-          headers: { 
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
+        JSON.stringify({ success: false, error: 'Email is required' }), 
+        { status: 400, headers }
       );
     }
 
-    console.log('Submitting to Supabase:', { email, marketingOptIn });
+    // Check if email already exists
+    const { data: existingData, error: existingError } = await supabaseAdmin
+      .from('content_subscribers')
+      .select('id')
+      .eq('email', email)
+      .single();
 
-    try {
-      // Always insert into content_subscribers
-      const { data: contentData, error: contentError } = await supabaseAdmin
-        .from('content_subscribers')
-        .insert([{ 
-          email, 
-          marketing_opt_in: marketingOptIn,
-          subscribed_at: new Date().toISOString()
-        }])
-        .select()
-        .single();
-
-      if (contentError) {
-        console.error('Supabase content_subscribers error:', contentError);
-        
-        if (contentError.message?.includes('does not exist')) {
-          return new Response(
-            JSON.stringify({ 
-              success: false,
-              error: 'Database table not set up. Please create the content_subscribers table.' 
-            }), {
-              status: 500,
-              headers: { 
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-              }
-            }
-          );
-        }
-
-        if (contentError.code === '23505') {
-          // Email already exists, return success
-          return new Response(
-            JSON.stringify({ 
-              success: true,
-              message: 'Email already subscribed'
-            }), {
-              status: 200,
-              headers: { 
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-              }
-            }
-          );
-        }
-
-        throw contentError;
-      }
-
+    if (existingError && !existingError.message.includes('No rows found')) {
+      console.error('Error checking for existing email:', existingError);
       return new Response(
-        JSON.stringify({ 
-          success: true,
-          data: contentData
-        }), {
-          status: 200,
-          headers: { 
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
+        JSON.stringify({ success: false, error: 'Failed to check subscription status' }), 
+        { status: 500, headers }
       );
-    } catch (err) {
-      console.error('Supabase error:', err);
-      throw err;
     }
-  } catch (error) {
-    console.error('API Error:', error);
+
+    if (existingData?.id) {
+      // Email already exists - treat as success
+      return new Response(
+        JSON.stringify({ success: true }), 
+        { status: 200, headers }
+      );
+    }
+
+    // Insert new subscriber
+    const { data: contentData, error: contentError } = await supabaseAdmin
+      .from('content_subscribers')
+      .insert([{ 
+        email, 
+        marketing_opt_in: marketingOptIn,
+        subscribed_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
+
+    if (contentError) {
+      console.error('Error inserting subscriber:', contentError);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Failed to save subscription' }), 
+        { status: 500, headers }
+      );
+    }
+
     return new Response(
-      JSON.stringify({ 
-        success: false,
-        error: error instanceof Error ? error.message : 'Internal server error' 
-      }), {
-        status: 500,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+      JSON.stringify({ success: true }), 
+      { status: 200, headers }
+    );
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return new Response(
+      JSON.stringify({ success: false, error: 'An unexpected error occurred' }), 
+      { status: 500, headers }
     );
   }
 };
