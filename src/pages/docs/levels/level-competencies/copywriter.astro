@@ -1,6 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
-import CompetencyLayout from '../../../../../layouts/CompetencyLayout.astro';
+import CompetencyLayout from '../../../../layouts/CompetencyLayout.astro';
 
 const entry = await getEntry('docs', 'levels/level-competencies/copywriter');
 const { Content } = await entry.render();

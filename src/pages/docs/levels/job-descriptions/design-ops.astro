@@ -1,6 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../../../../../layouts/Layout.astro';
+import Layout from '../../../../layouts/Layout.astro';
 
 const entry = await getEntry('docs', 'levels/job-descriptions/design-ops');
 const { Content } = await entry.render();

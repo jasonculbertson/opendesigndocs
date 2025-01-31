@@ -6,7 +6,7 @@ for page in "${COMPETENCY_PAGES[@]}"; do
   cat > "src/pages/docs/levels/level-competencies/$page.astro" << EOL
 ---
 import { getEntry } from 'astro:content';
-import CompetencyLayout from '../../../../../layouts/CompetencyLayout.astro';
+import CompetencyLayout from '../../../../layouts/CompetencyLayout.astro';
 
 const entry = await getEntry('docs', 'levels/level-competencies/$page');
 const { Content } = await entry.render();
@@ -34,7 +34,7 @@ for page in "${JD_PAGES[@]}"; do
   cat > "src/pages/docs/levels/job-descriptions/$page.astro" << EOL
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../../../../../layouts/Layout.astro';
+import Layout from '../../../../layouts/Layout.astro';
 
 const entry = await getEntry('docs', 'levels/job-descriptions/$page');
 const { Content } = await entry.render();
@@ -78,7 +78,7 @@ for page in "${PANEL_PAGES[@]}"; do
   cat > "src/pages/docs/levels/interview-panels/$page.astro" << EOL
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../../../../../layouts/Layout.astro';
+import Layout from '../../../../layouts/Layout.astro';
 
 const entry = await getEntry('docs', 'levels/interview-panels/$page');
 const { Content } = await entry.render();
