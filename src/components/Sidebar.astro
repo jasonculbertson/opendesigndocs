@@ -36,17 +36,95 @@ const links = [
       {
         name: 'Level Competencies',
         href: '/docs/levels/level-competencies',
-        icon: Target
+        icon: Target,
+        items: [
+          {
+            name: 'Content Designer',
+            href: '/docs/levels/level-competencies/content-designer'
+          },
+          {
+            name: 'Copywriter',
+            href: '/docs/levels/level-competencies/copywriter'
+          },
+          {
+            name: 'Design Ops',
+            href: '/docs/levels/level-competencies/design-ops'
+          },
+          {
+            name: 'Graphic Designer',
+            href: '/docs/levels/level-competencies/graphic-designer'
+          },
+          {
+            name: 'IC1',
+            href: '/docs/levels/level-competencies/ic1'
+          },
+          {
+            name: 'Manager',
+            href: '/docs/levels/level-competencies/manager'
+          },
+          {
+            name: 'Photographer',
+            href: '/docs/levels/level-competencies/photographer'
+          },
+          {
+            name: 'Product Designer',
+            href: '/docs/levels/level-competencies/product-designer'
+          },
+          {
+            name: 'Researcher',
+            href: '/docs/levels/level-competencies/researcher'
+          }
+        ]
       },
       {
         name: 'Job Descriptions',
         href: '/docs/levels/job-descriptions',
-        icon: FileText
+        icon: FileText,
+        items: [
+          {
+            name: 'Product Designer',
+            href: '/docs/levels/job-descriptions/product-designer'
+          },
+          {
+            name: 'Content Designer',
+            href: '/docs/levels/job-descriptions/content-designer'
+          },
+          {
+            name: 'UX Researcher',
+            href: '/docs/levels/job-descriptions/ux-researcher'
+          },
+          {
+            name: 'Design Ops',
+            href: '/docs/levels/job-descriptions/design-ops'
+          },
+          {
+            name: 'Graphic Designer',
+            href: '/docs/levels/job-descriptions/graphic-designer'
+          },
+          {
+            name: 'Copywriter',
+            href: '/docs/levels/job-descriptions/copywriter'
+          },
+          {
+            name: 'UX Designer',
+            href: '/docs/levels/job-descriptions/ux-designer'
+          }
+        ]
       },
       {
         name: 'Interview Panels',
         href: '/docs/levels/interview-panels',
-        icon: Users
+        icon: Users,
+        items: [
+          {
+            name: 'Product Design',
+            href: '/docs/levels/interview-panels/product-design'
+          },
+          {
+            name: 'Content Design',
+            href: '/docs/levels/interview-panels/content-design'
+          }
+        ]
       },
       {
         name: 'Reviews',
@@ -169,6 +247,24 @@ const links = [
                       <ChevronRight className="w-4 h-4 ml-auto text-indigo-600" />
                     )}
                   </a>
+                  {item.items && (
+                    <ul class="space-y-[2px] pl-4">
+                      {item.items.map(childItem => (
+                        <li>
+                          <a
+                            href={childItem.href}
+                            class={`flex items-center gap-2 px-2 py-2 text-[14px] rounded-lg transition-colors duration-150
+                              ${currentPath === childItem.href 
+                                ? 'bg-indigo-50 text-indigo-600 font-medium' 
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                              }`}
+                          >
+                            <span>{childItem.name}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               );
             })}
