@@ -1,0 +1,20 @@
+---
+import { getEntry } from 'astro:content';
+import CompetencyLayout from '../../../../../layouts/CompetencyLayout.astro';
+
+const entry = await getEntry('docs', 'levels/level-competencies/design-ops');
+const { Content } = await entry.render();
+
+const breadcrumbs = [
+  { text: 'Level Competencies', href: '/docs/levels/level-competencies' }
+];
+
+const frontmatter = {
+  title: entry.data.title,
+  ...entry.data
+};
+---
+
+<CompetencyLayout frontmatter={frontmatter} breadcrumbs={breadcrumbs}>
+  <Content />
+</CompetencyLayout>

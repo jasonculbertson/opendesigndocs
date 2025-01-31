@@ -1,0 +1,88 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Card from '../../../components/Card.astro';
+
+const entry = await getEntry('docs', 'levels/job-descriptions');
+const { Content } = await entry.render();
+
+const productRoles = [
+  {
+    title: "Product Designer",
+    description: "Lead product design efforts and create intuitive user experiences",
+    href: "/docs/levels/job-descriptions/product-designer",
+    image: "🎨"
+  },
+  {
+    title: "UX Designer",
+    description: "Design user-centered interfaces and experiences",
+    href: "/docs/levels/job-descriptions/ux-designer",
+    image: "💻"
+  },
+  {
+    title: "Content Designer",
+    description: "Craft clear, engaging copy for product interfaces",
+    href: "/docs/levels/job-descriptions/content-designer",
+    image: "✍️"
+  },
+  {
+    title: "UX Researcher",
+    description: "Gather insights to inform product decisions",
+    href: "/docs/levels/job-descriptions/ux-researcher",
+    image: "🔬"
+  },
+  {
+    title: "Design Ops",
+    description: "Enhance design workflows and manage operations",
+    href: "/docs/levels/job-descriptions/design-ops",
+    image: "⚙️"
+  }
+];
+
+const creativeRoles = [
+  {
+    title: "Graphic Designer",
+    description: "Design stunning visuals and branding materials",
+    href: "/docs/levels/job-descriptions/graphic-designer",
+    image: "🎨"
+  },
+  {
+    title: "Copywriter",
+    description: "Write compelling content to captivate audiences",
+    href: "/docs/levels/job-descriptions/copywriter",
+    image: "✍️"
+  }
+];
+---
+
+<Layout title={entry.data.title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <div class="mb-12">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{entry.data.title}</h1>
+      </div>
+
+      <Content />
+
+      <div class="space-y-12">
+        <section>
+          <h2 class="text-xl font-semibold text-[#1a1f36] mb-6">Product Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {productRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-[#1a1f36] mb-6">Creative Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {creativeRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>
