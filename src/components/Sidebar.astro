@@ -34,6 +34,11 @@ const links = [
     header: 'Levels Framework',
     items: [
       {
+        name: 'Levels and Titles',
+        href: '/docs/levels/levels-titles',
+        icon: Layers
+      },
+      {
         name: 'Level Competencies',
         href: '/docs/levels/level-competencies',
         icon: Target
@@ -69,11 +74,6 @@ const links = [
         icon: Users
       },
       {
-        name: 'Month 1',
-        href: '/docs/leadership/month-1',
-        icon: Calendar
-      },
-      {
         name: 'Quarter 1',
         href: '/docs/leadership/quarter-1',
         icon: Target
@@ -82,11 +82,6 @@ const links = [
         name: 'Quarter 2',
         href: '/docs/leadership/quarter-2',
         icon: Rocket
-      },
-      {
-        name: 'Departure',
-        href: '/docs/leadership/departure',
-        icon: LogOut
       }
     ]
   },
@@ -102,11 +97,6 @@ const links = [
         name: 'Product',
         href: '/docs/team/product',
         icon: Box
-      },
-      {
-        name: 'Recruiting',
-        href: '/docs/team/recruiting',
-        icon: UserPlus
       }
     ]
   },
@@ -132,7 +122,7 @@ const links = [
   id="sidebar"
   class="fixed top-0 left-0 bottom-0 z-50 w-[280px] lg:w-[250px] bg-[#f9f9f9] backdrop-blur-md shadow-xl lg:shadow-none lg:border-r border-[#e5e5e5] overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
 >
-  <nav class="p-4 h-full flex flex-col">
+  <nav class="p-4 h-full flex flex-col min-h-screen">
     <div class="hidden lg:flex items-center gap-2 mb-8">
       <a href="/docs/leadership/day-1" class="flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -195,8 +185,8 @@ const links = [
       ))}
     </div>
 
-    <div class="mb-0 lg:mb-0 lg:fixed lg:bottom-0 lg:left-0 lg:w-[250px] px-2 lg:px-4 pb-4">
-      <a href="https://linkedin.com/in/jasonculbertson" target="_blank" class="block mx-auto lg:w-fit px-4 py-2 text-[11px] text-gray-500 rounded-lg bg-gradient-to-r from-white to-gray-50 hover:to-gray-100 border border-gray-200/50 shadow-[0_1px_3px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_2px_4px_rgba(0,0,0,0.08)]">
+    <div class="sticky bottom-0 left-0 right-0 w-full bg-[#f9f9f9] border-t border-gray-200 pt-3 pb-0 mt-auto">
+      <a href="https://linkedin.com/in/jasonculbertson" target="_blank" class="block w-full text-center text-[11px] text-gray-500 hover:text-gray-700 transition-colors">
         Made with ❤️ by Jason Culbertson
       </a>
     </div>

@@ -4,6 +4,16 @@ export function shouldShowSubstack(pathname: string): boolean {
 
   // Explicit list of pages that should show the Substack embed
   const pagesWithSubstack = [
+    // Levels section
+    '/docs/levels/levels-titles',
+    
+    // Job Descriptions - Main pages
+    '/docs/levels/job-descriptions/ux-designer',
+    '/docs/levels/job-descriptions/ux-researcher',
+    '/docs/levels/job-descriptions/design-ops',
+    '/docs/levels/job-descriptions/graphic-designer',
+    '/docs/levels/job-descriptions/copywriter',
+    
     // Videos section
     '/docs/videos/interviews',
     '/docs/videos/case-studies',
@@ -86,6 +96,49 @@ export function shouldShowContentGate(pathname: string): boolean {
 
   // Explicit list of pages that should show the ContentGate
   const pagesWithContentGate = [
+     // Levels section
+     '/docs/levels/levels-titles',
+     
+     // Job Descriptions - UX Designer
+     '/docs/levels/job-descriptions/ux-designer/designer-1',
+     '/docs/levels/job-descriptions/ux-designer/designer-2',
+     '/docs/levels/job-descriptions/ux-designer/senior-designer',
+     '/docs/levels/job-descriptions/ux-designer/lead-designer',
+     '/docs/levels/job-descriptions/ux-designer/staff-designer',
+     '/docs/levels/job-descriptions/ux-designer/principal-designer',
+
+     // Job Descriptions - UX Researcher
+     '/docs/levels/job-descriptions/ux-researcher/researcher-1',
+     '/docs/levels/job-descriptions/ux-researcher/researcher-2',
+     '/docs/levels/job-descriptions/ux-researcher/senior-researcher',
+     '/docs/levels/job-descriptions/ux-researcher/lead-researcher',
+     '/docs/levels/job-descriptions/ux-researcher/staff-researcher',
+     '/docs/levels/job-descriptions/ux-researcher/principal-researcher',
+
+     // Job Descriptions - Design Ops
+     '/docs/levels/job-descriptions/design-ops/design-ops-1',
+     '/docs/levels/job-descriptions/design-ops/design-ops-2',
+     '/docs/levels/job-descriptions/design-ops/senior-design-ops',
+     '/docs/levels/job-descriptions/design-ops/lead-design-ops',
+     '/docs/levels/job-descriptions/design-ops/staff-design-ops',
+     '/docs/levels/job-descriptions/design-ops/principal-design-ops',
+
+     // Job Descriptions - Graphic Designer
+     '/docs/levels/job-descriptions/graphic-designer/junior-designer',
+     '/docs/levels/job-descriptions/graphic-designer/graphic-designer',
+     '/docs/levels/job-descriptions/graphic-designer/senior-designer',
+     '/docs/levels/job-descriptions/graphic-designer/art-director',
+     '/docs/levels/job-descriptions/graphic-designer/associate-creative-director',
+     '/docs/levels/job-descriptions/graphic-designer/creative-director',
+
+     // Job Descriptions - Copywriter
+     '/docs/levels/job-descriptions/copywriter/junior-copywriter',
+     '/docs/levels/job-descriptions/copywriter/copywriter',
+     '/docs/levels/job-descriptions/copywriter/senior-copywriter',
+     '/docs/levels/job-descriptions/copywriter/lead-copywriter',
+     '/docs/levels/job-descriptions/copywriter/associate-creative-director',
+     '/docs/levels/job-descriptions/copywriter/creative-director',
+     
      // Videos section
      '/docs/videos/interviews',
      '/docs/videos/case-studies',

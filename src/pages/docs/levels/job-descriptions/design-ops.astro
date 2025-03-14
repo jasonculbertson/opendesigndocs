@@ -1,20 +1,59 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../layouts/Layout.astro';
+import Card from '../../../../components/Card.astro';
 
 const entry = await getEntry('docs', 'levels/job-descriptions/design-ops');
-const { Content } = await entry.render();
 
+const title = "Design Ops";
 const breadcrumbs = [
   { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' }
 ];
+const designOpsLevels = [
+  { 
+    title: "Design Ops I",
+    description: "Skills and expectations for entry-level design operations",
+    href: "/docs/levels/job-descriptions/design-ops/design-ops-1",
+    image: "🌱"
+  },
+  { 
+    title: "Design Ops II",
+    description: "Skills and expectations for mid-level design operations",
+    href: "/docs/levels/job-descriptions/design-ops/design-ops-2",
+    image: "⚡"
+  },
+  { 
+    title: "Sr. Design Ops",
+    description: "Skills and expectations for senior design operations",
+    href: "/docs/levels/job-descriptions/design-ops/senior-design-ops",
+    image: "🚀"
+  },
+  { 
+    title: "Lead Design Ops",
+    description: "Skills and expectations for lead design operations",
+    href: "/docs/levels/job-descriptions/design-ops/lead-design-ops",
+    image: "👥"
+  },
+  { 
+    title: "Staff Design Ops",
+    description: "Skills and expectations for staff design operations",
+    href: "/docs/levels/job-descriptions/design-ops/staff-design-ops",
+    image: "⭐"
+  },
+  { 
+    title: "Principal Design Ops",
+    description: "Skills and expectations for principal design operations",
+    href: "/docs/levels/job-descriptions/design-ops/principal-design-ops",
+    image: "🎯"
+  }
+];
 ---
 
-<Layout title={entry.data.title}>
+<Layout title={title}>
   <main class="py-8 px-4 sm:px-6 lg:px-8">
     <article class="max-w-[680px] mx-auto">
-      <nav class="flex mb-8" aria-label="Breadcrumb">
-        <ol class="flex items-center space-x-2">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
           {breadcrumbs.map((crumb, index) => (
             <li class="flex items-center">
               {index > 0 && <span class="mx-2 text-gray-400">/</span>}
@@ -25,12 +64,14 @@ const breadcrumbs = [
           ))}
         </ol>
       </nav>
-
-      <div class="mb-12">
-        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{entry.data.title}</h1>
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       </div>
-
-      <Content />
+      <div class="grid grid-cols-1 gap-4">
+        {designOpsLevels.map(level => (
+          <Card {...level} />
+        ))}
+      </div>
     </article>
   </main>
 </Layout>

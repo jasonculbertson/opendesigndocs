@@ -11,10 +11,16 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+
+// Check if entry exists before trying to render it
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
 const { Content } = await entry.render();
 ---
 
-<Layout title={entry.data.title} showBackButton={true}>
+<Layout title={entry.data.title}>
   <main class="py-8 px-10">
     <article class="max-w-[680px]">
       <div class="mb-8">
