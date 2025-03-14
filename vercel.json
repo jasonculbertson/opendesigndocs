@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/astro build",
+  "buildCommand": "node zwitch-patch.js && astro build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "astro",
