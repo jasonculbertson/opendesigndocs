@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "node zwitch-patch.js && astro build",
+  "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "astro",
-  "cleanUrls": true,
-  "outputDirectory": "dist"
+  "cleanUrls": true
 }
