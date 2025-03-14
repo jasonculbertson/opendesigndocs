@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "prebuild": "node vercel-build.js",
+    "prebuild": "node build-fix.js",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
