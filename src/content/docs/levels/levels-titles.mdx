@@ -12,7 +12,8 @@ tags: ["career-development", "levels", "titles"]
   .levels-container {
     display: grid;
     gap: 2.5rem;
-    padding: 0; /* Changed from 1rem 0 */
+    padding: 0;
+    width: 100%;
   }
 
   .role-section h2 {
@@ -26,18 +27,28 @@ tags: ["career-development", "levels", "titles"]
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
-    margin: 0; /* Changed from margin-top: 0 */
+    width: 100%;
+    margin: 0;
+    display: block;
   }
 
   table {
-    width: 100%;
+    min-width: 100%;
     border-collapse: collapse;
     margin: 0;
+  }
+
+  thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
   }
 
   thead tr {
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
+    width: 100%;
+    display: table-row;
   }
 
   th {
@@ -46,6 +57,21 @@ tags: ["career-development", "levels", "titles"]
     font-weight: 500;
     color: #4b5563;
     margin: 0;
+  }
+
+  th:first-child {
+    width: 100px;
+  }
+
+  tbody {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  tr {
+    display: table-row;
+    width: 100%;
   }
 
   td {
@@ -57,10 +83,17 @@ tags: ["career-development", "levels", "titles"]
     color: #6b7280;
     font-family: ui-monospace, monospace;
     font-size: 0.875rem;
+    width: 100px;
   }
 
   tr:hover td {
     background: #f9fafb;
+  }
+
+  @media (max-width: 640px) {
+    .role-table {
+      overflow-x: auto;
+    }
   }
 `}
 </style>
