@@ -1,0 +1,96 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Card from '../../../components/Card.astro';
+
+const entry = await getEntry('docs', 'levels/job-descriptions');
+const { Content } = await entry.render();
+
+const breadcrumbs = [];
+
+const productRoles = [
+  {
+    title: 'Product Designer',
+    description: 'Product Designer job description template',
+    href: '/docs/levels/job-descriptions/product-designer',
+    image: '🎨'
+  },
+  {
+    title: 'Content Designer',
+    description: 'Content Designer job description template',
+    href: '/docs/levels/job-descriptions/content-designer',
+    image: '✍️'
+  },
+  {
+    title: 'UX Researcher',
+    description: 'UX Researcher job description template',
+    href: '/docs/levels/job-descriptions/ux-researcher',
+    image: '🔍'
+  },
+  {
+    title: 'Design Ops',
+    description: 'Design Operations job description template',
+    href: '/docs/levels/job-descriptions/design-ops',
+    image: '⚙️'
+  }
+];
+
+const creativeRoles = [
+  {
+    title: "Graphic Designer",
+    description: "Graphic Designer job description template",
+    href: "/docs/levels/job-descriptions/graphic-designer",
+    image: "🎨"
+  },
+  {
+    title: "Copywriter",
+    description: "Copywriter job description template",
+    href: "/docs/levels/job-descriptions/copywriter",
+    image: "✍️"
+  }
+];
+
+const title = "Job Descriptions";
+---
+
+<Layout title={title}>
+  <main class="py-8 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto px-4 sm:px-0">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+      </div>
+
+      <div class="space-y-8">
+        <section>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Product Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {productRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Creative Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {creativeRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

@@ -1,0 +1,77 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import Card from '../../../../components/Card.astro';
+
+const entry = await getEntry('docs', 'levels/job-descriptions/product-designer');
+
+const title = "Product Designer";
+const breadcrumbs = [
+  { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' }
+];
+const designerLevels = [
+  { 
+    title: "Product Designer I",
+    description: "Skills and expectations for entry-level product designers",
+    href: "/docs/levels/job-descriptions/product-designer/designer-1",
+    image: "🌱"
+  },
+  { 
+    title: "Product Designer II",
+    description: "Skills and expectations for mid-level product designers",
+    href: "/docs/levels/job-descriptions/product-designer/designer-2",
+    image: "⚡"
+  },
+  { 
+    title: "Sr. Product Designer",
+    description: "Skills and expectations for senior product designers",
+    href: "/docs/levels/job-descriptions/product-designer/senior-designer",
+    image: "🚀"
+  },
+  { 
+    title: "Lead Product Designer",
+    description: "Skills and expectations for lead product designers",
+    href: "/docs/levels/job-descriptions/product-designer/lead-designer",
+    image: "👥"
+  },
+  { 
+    title: "Staff Product Designer",
+    description: "Skills and expectations for staff product designers",
+    href: "/docs/levels/job-descriptions/product-designer/staff-designer",
+    image: "⭐"
+  },
+  { 
+    title: "Principal Product Designer",
+    description: "Skills and expectations for principal product designers",
+    href: "/docs/levels/job-descriptions/product-designer/principal-designer",
+    image: "🎯"
+  }
+];
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+      </div>
+      <div class="grid grid-cols-1 gap-4">
+        {designerLevels.map(level => (
+          <Card {...level} />
+        ))}
+      </div>
+    </article>
+  </main>
+</Layout>
