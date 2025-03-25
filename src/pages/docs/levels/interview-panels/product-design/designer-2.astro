@@ -1,0 +1,88 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Designer II Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Product Design', href: '/docs/levels/interview-panels/product-design' }
+];
+
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1>Designer II Interview Panel</h1>
+        
+        <h2>Panel Overview</h2>
+        <p>The Designer II interview panel assesses candidates for mid-level product design roles. The focus is on evaluating core design skills, collaboration abilities, and growing strategic thinking.</p>
+
+        <h2>Interview Structure</h2>
+        <ul>
+          <li><strong>Portfolio Review (60 min)</strong>
+            <ul>
+              <li>Deep dive into 2-3 projects</li>
+              <li>Focus on design process and decision-making</li>
+              <li>Assess visual and interaction design skills</li>
+            </ul>
+          </li>
+          <li><strong>Design Exercise (45 min)</strong>
+            <ul>
+              <li>Whiteboard or digital design challenge</li>
+              <li>Evaluate problem-solving approach</li>
+              <li>Assess collaboration and communication</li>
+            </ul>
+          </li>
+          <li><strong>Cross-functional Collaboration (45 min)</strong>
+            <ul>
+              <li>Discussion with PM or Engineering</li>
+              <li>Assess teamwork and communication</li>
+              <li>Evaluate technical understanding</li>
+            </ul>
+          </li>
+          <li><strong>Design Leadership (30 min)</strong>
+            <ul>
+              <li>Discussion with design manager</li>
+              <li>Career goals and growth potential</li>
+              <li>Team fit and culture alignment</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h2>Key Assessment Areas</h2>
+        <ul>
+          <li>Design craft and execution</li>
+          <li>Problem-solving methodology</li>
+          <li>Collaboration skills</li>
+          <li>Communication effectiveness</li>
+          <li>Growth potential</li>
+        </ul>
+
+        <h2>Expected Outcomes</h2>
+        <p>Successful candidates should demonstrate:</p>
+        <ul>
+          <li>Strong foundational design skills</li>
+          <li>Clear communication of design decisions</li>
+          <li>Ability to work effectively with teams</li>
+          <li>Understanding of product design process</li>
+          <li>Potential for growth and leadership</li>
+        </ul>
+      </div>
+    </article>
+  </main>
+</Layout>
