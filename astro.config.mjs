@@ -8,6 +8,8 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   output: 'server',
   adapter: vercel({
+    functionPerRoute: false,
+    runtime: 'nodejs18.x',
     webAnalytics: {
       enabled: true
     },
