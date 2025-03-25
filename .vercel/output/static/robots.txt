@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://opendesigndocs.com/sitemap.xml
