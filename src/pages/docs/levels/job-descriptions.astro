@@ -8,17 +8,17 @@ const { Content } = await entry.render();
 
 const breadcrumbs = [];
 
-const uxRoles = [
+const productRoles = [
   {
-    title: 'UX Designer',
-    description: 'UX Designer job description template',
-    href: '/docs/levels/job-descriptions/ux-designer',
+    title: 'Product Designer',
+    description: 'Product Designer job description template',
+    href: '/docs/levels/job-descriptions/product-designer',
     image: '🎨'
   },
   {
-    title: 'UX Writer',
-    description: 'UX Writer job description template',
-    href: '/docs/levels/job-descriptions/ux-writer',
+    title: 'Content Designer',
+    description: 'Content Designer job description template',
+    href: '/docs/levels/job-descriptions/content-designer',
     image: '✍️'
   },
   {
@@ -50,7 +50,7 @@ const creativeRoles = [
   }
 ];
 
-const title = "Job Descriptions (JDs)";
+const title = "Job Descriptions";
 ---
 
 <Layout title={title}>
@@ -74,9 +74,9 @@ const title = "Job Descriptions (JDs)";
 
       <div class="space-y-8">
         <section>
-          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">UX Roles</h2>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Product Roles</h2>
           <div class="grid grid-cols-1 gap-4">
-            {uxRoles.map(role => (
+            {productRoles.map(role => (
               <Card {...role} />
             ))}
           </div>

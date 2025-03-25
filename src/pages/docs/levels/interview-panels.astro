@@ -6,27 +6,125 @@ import Card from '../../../components/Card.astro';
 const entry = await getEntry('docs', 'levels/interview-panels');
 const { Content } = await entry.render();
 
-const breadcrumbs: { text: string; href: string }[] = [];
+interface Role {
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+}
 
-const panels: { title: string; description: string; href: string; image: string }[] = [];
+interface Breadcrumb {
+  text: string;
+  href?: string;
+}
+
+const breadcrumbs: Breadcrumb[] = [];
+
+const productRoles: Role[] = [
+  {
+    title: "Product Designer",
+    description: "Interview panel templates for product designers",
+    href: "/docs/levels/interview-panels/product-designer",
+    image: "🎨"
+  },
+  {
+    title: "Content Designer",
+    description: "Interview panel templates for content designers",
+    href: "/docs/levels/interview-panels/content-designer",
+    image: "✍️"
+  },
+  {
+    title: "UX Researcher",
+    description: "Interview panel templates for researchers",
+    href: "/docs/levels/interview-panels/researcher",
+    image: "🔍"
+  },
+  {
+    title: "Design Ops",
+    description: "Interview panel templates for design operations",
+    href: "/docs/levels/interview-panels/design-ops",
+    image: "⚙️"
+  }
+];
+
+const creativeRoles: Role[] = [
+  {
+    title: "Graphic Designer",
+    description: "Interview panel templates for graphic designers",
+    href: "/docs/levels/interview-panels/graphic-designer",
+    image: "🎨"
+  },
+  {
+    title: "Copywriter",
+    description: "Interview panel templates for copywriters",
+    href: "/docs/levels/interview-panels/copywriter",
+    image: "✍️"
+  }
+];
+
+const managerRoles: Role[] = [
+  {
+    title: "Design Manager",
+    description: "Interview panel templates for design managers",
+    href: "/docs/levels/interview-panels/manager",
+    image: "👥"
+  }
+];
+
+const title = "Interview Panels";
 ---
 
-<Layout title={entry.data.title}>
+<Layout title={title}>
   <main class="py-8 px-4 sm:px-6 lg:px-8">
     <article class="max-w-[680px] mx-auto">
-      <nav class="flex mb-2" aria-label="Breadcrumb">
-        <ol class="flex items-center">
-          {breadcrumbs.map((crumb) => (
-            <li>
-              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
-                {crumb.text}
-              </a>
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              {crumb.href ? (
+                <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                  {crumb.text}
+                </a>
+              ) : (
+                <span class="text-sm text-gray-600">{crumb.text}</span>
+              )}
             </li>
           ))}
         </ol>
       </nav>
-      <div class="prose max-w-none">
-        <Content />
+
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">Interview Panels</h1>
+      </div>
+
+      <div class="space-y-8">
+        <section>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Product Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {productRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Creative Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {creativeRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Manager Roles</h2>
+          <div class="grid grid-cols-1 gap-4">
+            {managerRoles.map(role => (
+              <Card {...role} />
+            ))}
+          </div>
+        </section>
       </div>
     </article>
   </main>

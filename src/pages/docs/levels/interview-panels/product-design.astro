@@ -3,47 +3,46 @@ import { getEntry } from 'astro:content';
 import Layout from '../../../../layouts/Layout.astro';
 import Card from '../../../../components/Card.astro';
 
-const entry = await getEntry('docs', 'levels/job-descriptions/ux-writer');
-
-const title = "UX Writer";
+const title = "Product Design Interview Panels";
 const breadcrumbs = [
-  { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' }
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' }
 ];
-const writerLevels = [
+
+const designerLevels = [
   { 
-    title: "Writer I",
-    description: "Skills and expectations for entry-level writers",
-    href: "/docs/levels/job-descriptions/ux-writer/writer-1",
+    title: "Designer I",
+    description: "Interview panel for entry-level designers",
+    href: "/docs/levels/interview-panels/product-design/designer-1",
     image: "🌱"
   },
   { 
-    title: "Writer II",
-    description: "Skills and expectations for mid-level writers",
-    href: "/docs/levels/job-descriptions/ux-writer/writer-2",
+    title: "Designer II",
+    description: "Interview panel for mid-level designers",
+    href: "/docs/levels/interview-panels/product-design/designer-2",
     image: "⚡"
   },
   { 
-    title: "Sr. Writer",
-    description: "Skills and expectations for senior writers",
-    href: "/docs/levels/job-descriptions/ux-writer/senior-writer",
+    title: "Sr. Designer",
+    description: "Interview panel for senior designers",
+    href: "/docs/levels/interview-panels/product-design/senior-designer",
     image: "🚀"
   },
   { 
-    title: "Lead Writer",
-    description: "Skills and expectations for lead writers",
-    href: "/docs/levels/job-descriptions/ux-writer/lead-writer",
+    title: "Lead Designer",
+    description: "Interview panel for lead designers",
+    href: "/docs/levels/interview-panels/product-design/lead-designer",
     image: "👥"
   },
   { 
-    title: "Staff Writer",
-    description: "Skills and expectations for staff writers",
-    href: "/docs/levels/job-descriptions/ux-writer/staff-writer",
+    title: "Staff Designer",
+    description: "Interview panel for staff designers",
+    href: "/docs/levels/interview-panels/product-design/staff-designer",
     image: "⭐"
   },
   { 
-    title: "Principal Writer",
-    description: "Skills and expectations for principal writers",
-    href: "/docs/levels/job-descriptions/ux-writer/principal-writer",
+    title: "Principal Designer",
+    description: "Interview panel for principal designers",
+    href: "/docs/levels/interview-panels/product-design/principal-designer",
     image: "🎯"
   }
 ];
@@ -68,7 +67,7 @@ const writerLevels = [
         <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       </div>
       <div class="grid grid-cols-1 gap-4">
-        {writerLevels.map(level => (
+        {designerLevels.map(level => (
           <Card {...level} />
         ))}
       </div>

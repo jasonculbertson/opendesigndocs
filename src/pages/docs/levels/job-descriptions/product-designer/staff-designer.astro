@@ -4,16 +4,15 @@ import ContentGate from '../../../../../components/ContentGate';
 
 const breadcrumbs = [
   { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' },
-  { text: 'UX Designer', href: '/docs/levels/job-descriptions/ux-designer' }
+  { text: 'Product Designer', href: '/docs/levels/job-descriptions/product-designer' }
 ];
 
 ---
 
-<Layout title="Staff UX Designer">
-  <ContentGate client:load>
-    <main class="py-8 px-4 sm:px-6 lg:px-8">
-      <article class="max-w-[680px] mx-auto">
-        <nav class="flex mb-2" aria-label="Breadcrumb">
+<Layout title="Staff Product Designer">
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
           <ol class="flex items-center">
             {breadcrumbs.map((crumb, index) => (
               <li class="flex items-center">
@@ -27,19 +26,19 @@ const breadcrumbs = [
             ))}
           </ol>
         </nav>
-        <div class="prose max-w-none">
-          <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Staff UX Designer</h1>
+      <div class="prose max-w-none">
+          <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Staff Product Designer</h1>
           
           <h2 class="text-xl font-semibold mt-8 mb-4">About [Company Name]</h2>
           <p>Add a bit about your company here.</p>
 
           <h2 class="text-xl font-semibold mt-8 mb-4">Role Overview</h2>
-          <p>As a Staff UX Designer at [Company Name], you will lead and contribute to the design of complex and high-impact product areas. This role requires an extensive understanding of user experience principles, strong leadership capabilities, and the ability to collaborate effectively with cross-functional teams. You will help shape and drive the design vision while ensuring the delivery of cohesive and user-centric solutions.</p>
+          <p>As a Staff Product Designer at [Company Name], you will lead and contribute to the design of complex and high-impact product areas. This role requires an extensive understanding of product design principles, strong leadership capabilities, and the ability to collaborate effectively with cross-functional teams. You will help shape and drive the product design vision while ensuring the delivery of cohesive and user-centric solutions.</p>
 
           <h2 class="text-xl font-semibold mt-8 mb-4">What You'll Do</h2>
           <ul>
             <li>Lead the design process for large-scale product areas, developing innovative and user-centric solutions.</li>
-            <li>Mentor and guide other designers, fostering professional growth and maintaining high standards.</li>
+            <li>Mentor and guide other product designers, fostering professional growth and maintaining high standards.</li>
             <li>Conduct user research, usability testing, and data analysis to inform design decisions.</li>
             <li>Create detailed wireframes, user flows, prototypes, and high-fidelity mockups.</li>
             <li>Collaborate closely with product managers, engineers, and stakeholders to ensure cohesive user experiences.</li>
@@ -65,8 +64,7 @@ const breadcrumbs = [
           </ul>
 
           <p class="text-sm text-gray-600">[Company Name] is committed to providing a competitive compensation package. Our cash compensation amount for this role is targeted at $X-$X in X area. Final offer amounts are determined by multiple factors, including candidate expertise, the scope of role and level, and may vary from the amounts listed above.</p>
-        </div>
-      </article>
-    </main>
-  </ContentGate>
+      </div>
+    </article>
+  </main>
 </Layout>

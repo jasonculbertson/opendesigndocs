@@ -4,17 +4,15 @@ import ContentGate from '../../../../../components/ContentGate';
 
 const breadcrumbs = [
   { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' },
-  { text: 'UX Designer', href: '/docs/levels/job-descriptions/ux-designer' }
+  { text: 'Product Designer', href: '/docs/levels/job-descriptions/product-designer' }
 ];
 
 ---
 
-<Layout title="Designer I">
-  <ContentGate client:load>
-    <main class="relative min-h-screen">
-      <div class="py-8">
-        <div class="mx-auto">
-          <nav class="flex mb-2" aria-label="Breadcrumb">
+<Layout title="Product Designer I">
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
             <ol class="flex items-center">
               {breadcrumbs.map((crumb, index) => (
                 <li class="flex items-center">
@@ -27,14 +25,14 @@ const breadcrumbs = [
             </ol>
           </nav>
           
-          <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
-            <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Designer I</h1>
+      <div class="prose max-w-none">
+            <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Product Designer I</h1>
             
             <h2 class="text-xl font-semibold mt-8 mb-4">About [Company Name]</h2>
             <p>Add a bit about your company here.</p>
 
             <h2 class="text-xl font-semibold mt-8 mb-4">Role Overview</h2>
-            <p>As a UX Designer at [Company Name], you will play a crucial role in crafting intuitive and engaging user experiences for our diverse range of users. This entry-level position is designed for individuals who are passionate about design, eager to learn, and ready to contribute to our dynamic team. You will work closely with senior designers and cross-functional teams to develop user-centric solutions that align with [Company Name]'s goals.</p>
+            <p>As a Product Designer I at [Company Name], you will play a crucial role in crafting intuitive and engaging user experiences for our diverse range of users. This entry-level position is designed for individuals who are passionate about product design, eager to learn, and ready to contribute to our dynamic team. You will work closely with senior product designers and cross-functional teams to develop user-centric solutions that align with [Company Name]'s goals.</p>
 
             <h2 class="text-xl font-semibold mt-8 mb-4">What You'll Do</h2>
             <ul>
@@ -64,8 +62,7 @@ const breadcrumbs = [
 
             <p class="text-sm text-gray-600">[Company Name] is committed to providing a competitive compensation package. Our cash compensation amount for this role is targeted at $X-$X in X area. Final offer amounts are determined by multiple factors, including candidate expertise, the scope of role and level, and may vary from the amounts listed above.</p>
           </div>
-        </div>
       </div>
-    </main>
-  </ContentGate>
+    </article>
+  </main>
 </Layout>
