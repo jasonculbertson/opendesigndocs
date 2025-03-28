@@ -14,7 +14,8 @@ export default defineConfig({
     speedInsights: {
       enabled: true
     },
-    imageService: true
+    imageService: true,
+    edgeMiddleware: true // Enable edge middleware for API functionality
   }),
   integrations: [
     mdx({

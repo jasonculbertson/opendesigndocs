@@ -1,0 +1,14 @@
+{
+  "framework": "astro",
+  "functions": {
+    "api/*.js": {
+      "runtime": "edge"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/subscribe",
+      "dest": "/api/subscribe.js"
+    }
+  ]
+}

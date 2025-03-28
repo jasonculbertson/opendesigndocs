@@ -27,6 +27,7 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
     // Submit email
     setIsSubmitting(true);
     try {
+      // Use the Edge Function API endpoint instead of the Astro API route
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -43,9 +44,11 @@ export default function EmailOverlay({ onSuccess }: EmailOverlayProps) {
         setShowSuccess(true);
         setTimeout(onSuccess, 1000);
       } else {
+        console.error('Subscription error:', data);
         setError(data.error || 'Failed to subscribe');
       }
     } catch (err) {
+      console.error('Subscription fetch error:', err);
       setError('Failed to subscribe');
     } finally {
       setIsSubmitting(false);
