@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Senior Graphic Designer Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Graphic Designer', href: '/docs/levels/interview-panels/graphic-designer' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Senior Graphic Designer</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: Creative Director</td><td>[Creative Director]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Design Team</td><td>[Designer Interviewers]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Marketing/Brand</td><td>[Marketing/Brand Partners]</td><td>45 min</td></tr>
+              <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Leadership, Communication, Professional Experience</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to graphic design, and what excites you about this senior role?</li>
+            <li>Tell me about your professional experience and how you've grown as a designer.</li>
+            <li>How do you approach mentoring junior designers or leading design projects?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Thinking, Design Leadership, Problem-solving</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach aligning design work with broader business or brand objectives?</li>
+            <li>Tell me about a complex design project you led and how you ensured its success.</li>
+            <li>How do you balance maintaining design quality with meeting project deadlines?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Design Excellence, Strategic Thinking, Project Leadership</p>
+          <p>The candidate should present 5-7 significant projects from their portfolio, explaining their strategic approach, creative direction, and measurable outcomes. The presentation should demonstrate their design excellence, ability to think strategically, and leadership in driving projects from concept to completion. Focus on projects that showcase their ability to solve complex design challenges, lead creative direction, and deliver impactful results.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Creative Director Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Creative Vision, Strategic Design, Leadership</p>
+            <ul class="list-disc pl-6">
+              <li>How do you approach developing and maintaining a cohesive creative vision across multiple projects?</li>
+              <li>Tell me about a time you had to push back on stakeholder requests to maintain design integrity.</li>
+              <li>How do you balance creative exploration with strategic business needs?</li>
+              <li>What's your approach to staying ahead of design trends while creating timeless work?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Team Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Team Leadership, Mentorship, Collaboration</p>
+            <ul class="list-disc pl-6">
+              <li>How do you approach leading design projects with multiple team members?</li>
+              <li>Tell me about your experience mentoring or developing junior designers.</li>
+              <li>How do you foster collaboration and creativity within a design team?</li>
+              <li>What's your approach to giving constructive feedback on others' design work?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Marketing/Brand Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Brand Strategy, Marketing Integration, Cross-functional Collaboration</p>
+            <ul class="list-disc pl-6">
+              <li>How do you ensure design work aligns with and enhances brand strategy?</li>
+              <li>Tell me about your experience working with marketing teams to achieve business objectives.</li>
+              <li>How do you approach designing for different audience segments or markets?</li>
+              <li>What's your process for translating marketing goals into effective visual solutions?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Cultural Leadership, Strategic Vision, Team Impact</p>
+          <ul class="list-disc pl-6">
+            <li>How do you contribute to building a positive creative culture?</li>
+            <li>What's your vision for how design can drive business success?</li>
+            <li>How do you approach balancing multiple priorities and leading by example?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

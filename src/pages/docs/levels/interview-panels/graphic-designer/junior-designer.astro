@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Junior Graphic Designer Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Graphic Designer', href: '/docs/levels/interview-panels/graphic-designer' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Junior Graphic Designer</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: Creative Lead</td><td>[Creative Lead]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Design Team</td><td>[Designer Interviewers]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Marketing/Brand</td><td>[Marketing/Brand Partner]</td><td>45 min</td></tr>
+              <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Communication, Creativity, Growth Mindset</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to graphic design, and what excites you about this opportunity?</li>
+            <li>Tell me about a design project you're particularly proud of and why.</li>
+            <li>How do you approach learning new design tools or techniques?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Design Process, Collaboration, Visual Thinking</p>
+          <ul class="list-disc pl-6">
+            <li>Walk me through your typical design process from brief to final deliverable.</li>
+            <li>Tell me about a time you had to collaborate with others on a design project.</li>
+            <li>How do you approach receiving and implementing feedback on your designs?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Visual Design Skills, Creative Thinking, Communication</p>
+          <p>The candidate should present 3-5 projects from their portfolio, explaining their design process, creative decisions, and outcomes. The presentation should demonstrate their visual design skills, creative thinking, and ability to communicate design concepts clearly. Focus on projects that showcase a range of skills relevant to the role.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Creative Lead Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Design Fundamentals, Creative Process, Visual Problem-solving</p>
+            <ul class="list-disc pl-6">
+              <li>How do you approach creating designs that align with brand guidelines?</li>
+              <li>Tell me about a time you had to solve a challenging visual design problem.</li>
+              <li>How do you stay inspired and keep your creative ideas fresh?</li>
+              <li>Walk me through how you think about typography, color, and composition in your work.</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Team Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Tool Proficiency, Design Process</p>
+            <ul class="list-disc pl-6">
+              <li>What design tools are you most comfortable with, and how do you use them in your workflow?</li>
+              <li>How do you organize your design files and assets?</li>
+              <li>Tell me about a time you had to work closely with another designer. How did you collaborate?</li>
+              <li>How do you approach working with design systems or established brand guidelines?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Marketing/Brand Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Brand Understanding, Marketing Awareness, Communication</p>
+            <ul class="list-disc pl-6">
+              <li>How do you ensure your designs effectively communicate the intended message?</li>
+              <li>Tell me about a time you designed something for a specific audience or campaign.</li>
+              <li>How do you approach designing across different channels or formats?</li>
+              <li>What's your process for understanding a brand before creating designs for it?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Growth Mindset, Team Fit</p>
+          <ul class="list-disc pl-6">
+            <li>What do you value most in a creative team or work environment?</li>
+            <li>How do you stay motivated when working on projects that might not be as exciting?</li>
+            <li>Where do you hope to grow in the next year as a designer and teammate?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

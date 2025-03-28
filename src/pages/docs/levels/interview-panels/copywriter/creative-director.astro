@@ -1,0 +1,172 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Creative Director (Copy) Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Copywriter', href: '/docs/levels/interview-panels/copywriter' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Creative Director (Copy)</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Executive Screen</td><td>[Executive Leader]</td><td>45 min</td></tr>
+              <tr><td>Strategic Vision Presentation</td><td>Executive Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: Executive Creative Director</td><td>[Executive Creative Director]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Content Leadership</td><td>[Content Leadership Team]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Marketing/Brand Leadership</td><td>[Marketing/Brand Executives]</td><td>45 min</td></tr>
+              <tr><td>Final/Executive Panel</td><td>C-Suite Executives</td><td>60 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Leadership Experience, Strategic Vision, Executive Presence</p>
+          <ul class="list-disc pl-6">
+            <li>What draws you to this Creative Director role, and what excites you about our organization?</li>
+            <li>Tell me about your experience leading content departments and driving messaging strategy.</li>
+            <li>How do you approach balancing creative excellence with business objectives at an organizational level?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Executive Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Leadership, Organizational Impact, Business Acumen</p>
+          <ul class="list-disc pl-6">
+            <li>How do you develop and implement content strategy that drives business results?</li>
+            <li>Tell me about a time you transformed a content department or organization. What was your approach?</li>
+            <li>How do you measure the success of content initiatives and communicate that value to executives?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Strategic Vision Presentation</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Content Vision, Strategic Leadership, Organizational Impact</p>
+          <p>The candidate should present their strategic vision for the content direction of the organization, including their assessment of current positioning, opportunities for growth, and how they would lead the content department to achieve business objectives. The presentation should demonstrate their ability to think strategically, lead content transformation, and align messaging with business goals. They should showcase their leadership philosophy, approach to building content teams, and examples of how they've driven significant business impact through content leadership.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Executive Creative Director Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Creative Leadership, Strategic Vision, Organizational Impact</p>
+            <ul class="list-disc pl-6">
+              <li>How do you develop and implement a content vision that transforms an organization?</li>
+              <li>Tell me about how you've built and led high-performing content teams.</li>
+              <li>How do you approach balancing messaging innovation with brand consistency across an organization?</li>
+              <li>What's your philosophy on creative leadership and developing the next generation of content talent?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Content Leadership Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Team Development, Creative Culture, Organizational Leadership</p>
+            <ul class="list-disc pl-6">
+              <li>How do you approach building and scaling content teams across an organization?</li>
+              <li>Tell me about how you foster a culture of content excellence and innovation.</li>
+              <li>How do you develop content leaders within your organization?</li>
+              <li>What's your approach to managing content operations at scale?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Marketing/Brand Leadership Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Brand Strategy, Business Alignment, Cross-functional Leadership</p>
+            <ul class="list-disc pl-6">
+              <li>How do you ensure content strategy aligns with and enhances business and brand strategy?</li>
+              <li>Tell me about your experience partnering with marketing and business leaders to drive results.</li>
+              <li>How do you approach measuring and communicating the impact of content work on business outcomes?</li>
+              <li>What's your process for leading content transformation that supports business growth?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Executive Panel</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Vision, Executive Leadership, Business Impact</p>
+          <ul class="list-disc pl-6">
+            <li>What's your vision for how content leadership can transform our organization and drive business success?</li>
+            <li>How do you approach building relationships and influence at the executive level?</li>
+            <li>Tell me about a time your content leadership had a transformative impact on an organization's success.</li>
+            <li>How would you approach your first 90 days in this role?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>
