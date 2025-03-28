@@ -139,6 +139,54 @@ export function shouldShowContentGate(pathname: string): boolean {
      '/docs/levels/job-descriptions/copywriter/associate-creative-director',
      '/docs/levels/job-descriptions/copywriter/creative-director',
      
+     // Interview Panels - Content Designer
+     '/docs/levels/interview-panels/content-designer/designer-1',
+     '/docs/levels/interview-panels/content-designer/designer-2',
+     '/docs/levels/interview-panels/content-designer/senior-designer',
+     '/docs/levels/interview-panels/content-designer/lead-designer',
+     '/docs/levels/interview-panels/content-designer/staff-designer',
+     '/docs/levels/interview-panels/content-designer/principal-designer',
+     
+     // Interview Panels - Copywriter
+     '/docs/levels/interview-panels/copywriter/junior-copywriter',
+     '/docs/levels/interview-panels/copywriter/copywriter',
+     '/docs/levels/interview-panels/copywriter/senior-copywriter',
+     '/docs/levels/interview-panels/copywriter/lead-copywriter',
+     '/docs/levels/interview-panels/copywriter/associate-creative-director',
+     '/docs/levels/interview-panels/copywriter/creative-director',
+     
+     // Interview Panels - Design Ops
+     '/docs/levels/interview-panels/design-ops/design-ops-1',
+     '/docs/levels/interview-panels/design-ops/design-ops-2',
+     '/docs/levels/interview-panels/design-ops/senior-design-ops',
+     '/docs/levels/interview-panels/design-ops/lead-design-ops',
+     '/docs/levels/interview-panels/design-ops/staff-design-ops',
+     '/docs/levels/interview-panels/design-ops/principal-design-ops',
+     
+     // Interview Panels - Graphic Designer
+     '/docs/levels/interview-panels/graphic-designer/junior-designer',
+     '/docs/levels/interview-panels/graphic-designer/graphic-designer',
+     '/docs/levels/interview-panels/graphic-designer/senior-designer',
+     '/docs/levels/interview-panels/graphic-designer/art-director',
+     '/docs/levels/interview-panels/graphic-designer/associate-creative-director',
+     '/docs/levels/interview-panels/graphic-designer/creative-director',
+     
+     // Interview Panels - Product Designer
+     '/docs/levels/interview-panels/product-designer/designer-1',
+     '/docs/levels/interview-panels/product-designer/designer-2',
+     '/docs/levels/interview-panels/product-designer/senior-designer',
+     '/docs/levels/interview-panels/product-designer/lead-designer',
+     '/docs/levels/interview-panels/product-designer/staff-designer',
+     '/docs/levels/interview-panels/product-designer/principal-designer',
+     
+     // Interview Panels - UX Researcher
+     '/docs/levels/interview-panels/ux-researcher/researcher-1',
+     '/docs/levels/interview-panels/ux-researcher/researcher-2',
+     '/docs/levels/interview-panels/ux-researcher/senior-researcher',
+     '/docs/levels/interview-panels/ux-researcher/lead-researcher',
+     '/docs/levels/interview-panels/ux-researcher/staff-researcher',
+     '/docs/levels/interview-panels/ux-researcher/principal-researcher',
+     
      // Videos section
      '/docs/videos/interviews',
      '/docs/videos/case-studies',
