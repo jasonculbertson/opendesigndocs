@@ -1,3 +1,8 @@
+// Import the Edge Runtime from Vercel
+export const config = {
+  runtime: 'edge'
+};
+
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client

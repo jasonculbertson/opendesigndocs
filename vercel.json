@@ -2,7 +2,7 @@
   "framework": "astro",
   "functions": {
     "api/*.js": {
-      "runtime": "edge"
+      "runtime": "edge@2"
     }
   },
   "routes": [
