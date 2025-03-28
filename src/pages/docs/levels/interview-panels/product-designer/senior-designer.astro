@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Sr. Product Designer Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Product Designer', href: '/docs/levels/interview-panels/product-designer' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Sr. Product Designer</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Engineering</td><td>[Engineering Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Communication, Curiosity, Growth Mindset</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to product design, and what excites you about this opportunity?</li>
+            <li>Tell me about a time you were new to something. How did you go about learning it?</li>
+            <li>Can you describe a situation where you received feedback and how you acted on it?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Collaboration, Craft Thinking, Autonomy</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach understanding user needs before designing?</li>
+            <li>Tell me about a time you had to collaborate with someone who thought differently than you.</li>
+            <li>When you're unsure how to start solving a design problem, what steps do you take?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Craft, Storytelling, Communication</p>
+          <p>The candidate should walk the interviewers through <strong>two case studies they are proud of</strong>. The presentation should focus on how they approached the design problem, their process, key decisions, and outcomes. The case studies should be relevant to the type of work they would do in this role.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Product Thinking, Communication</p>
+            <ul class="list-disc pl-6">
+              <li>Tell me about a time you had to balance user needs with business goals in a project.</li>
+              <li>How do you approach a design task when the requirements are unclear or incomplete?</li>
+              <li>Have you ever worked with a PM who changed direction mid-project? How did you handle it?</li>
+              <li>Describe a moment when you asked questions to improve a product idea.</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Craft Foundations, Feedback Openness, Visual Thinking</p>
+            <ul class="list-disc pl-6">
+              <li>Tell me how you usually start a design projectu2014what steps do you take first?</li>
+              <li>Describe a time you received tough feedback on a design. What did you do with it?</li>
+              <li>Walk me through how you think about hierarchy, layout, or visual clarity in your designs.</li>
+              <li>What's one design skill you're working to improve and how are you approaching it?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Engineering Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Systems Awareness, Communication</p>
+            <ul class="list-disc pl-6">
+              <li>Have you ever worked with developers or engineers before? What was that like?</li>
+              <li>How do you make sure your designs are feasible or easy to build?</li>
+              <li>Can you explain a design you made where constraints (like time or tech) influenced your decisions?</li>
+              <li>What's your process for handing off work or preparing it for implementation?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Growth Mindset, Team Fit</p>
+          <ul class="list-disc pl-6">
+            <li>What do you value most in a team or work environment?</li>
+            <li>How do you stay motivated when a project feels unclear or slow-moving?</li>
+            <li>Where do you hope to grow in the next year as a designer and teammate?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

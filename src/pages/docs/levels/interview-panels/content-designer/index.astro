@@ -1,0 +1,85 @@
+---
+import Layout from '../../../../../layouts/Layout.astro';
+import Card from '../../../../../components/Card.astro';
+
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' }
+];
+
+interface Role {
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+}
+
+const levels: Role[] = [
+  {
+    title: "Content Designer I",
+    description: "Interview panel for entry-level content designers",
+    href: "/docs/levels/interview-panels/content-designer/designer-1",
+    image: "🌱"
+  },
+  {
+    title: "Content Designer II",
+    description: "Interview panel for mid-level content designers",
+    href: "/docs/levels/interview-panels/content-designer/designer-2",
+    image: "⚡"
+  },
+  {
+    title: "Sr. Content Designer",
+    description: "Interview panel for senior content designers",
+    href: "/docs/levels/interview-panels/content-designer/senior-designer",
+    image: "🚀"
+  },
+  {
+    title: "Lead Content Designer",
+    description: "Interview panel for lead content designers",
+    href: "/docs/levels/interview-panels/content-designer/lead-designer",
+    image: "👥"
+  },
+  {
+    title: "Staff Content Designer",
+    description: "Interview panel for staff content designers",
+    href: "/docs/levels/interview-panels/content-designer/staff-designer",
+    image: "⭐"
+  },
+  {
+    title: "Principal Content Designer",
+    description: "Interview panel for principal content designers",
+    href: "/docs/levels/interview-panels/content-designer/principal-designer",
+    image: "🎯"
+  }
+];
+
+const title = "Content Designer";
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
+        {levels.map(level => (
+          <Card {...level} />
+        ))}
+      </div>
+    </article>
+  </main>
+</Layout>
