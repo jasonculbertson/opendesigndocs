@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Design Ops 2 Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Design Ops', href: '/docs/levels/interview-panels/design-ops' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Design Ops 2</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Skills Assessment</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: Design Leader</td><td>[Design Leader]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Design Team</td><td>[Designer Interviewers]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Cross-functional</td><td>[Cross-functional Partner]</td><td>45 min</td></tr>
+              <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Communication, Organization, Process Improvement</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to design operations, and what excites you about this opportunity?</li>
+            <li>Tell me about a time when you improved a process or workflow for a team.</li>
+            <li>How do you approach balancing multiple priorities and stakeholder needs?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Process Creation, Team Support, Problem-solving</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach creating and implementing new processes for a design team?</li>
+            <li>Tell me about a time you identified a gap in team operations and addressed it.</li>
+            <li>How do you measure the success of operational improvements?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Skills Assessment</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Process Design, Tool Proficiency, Documentation</p>
+          <p>The candidate will be given a design operations scenario to work through. They should demonstrate their approach to designing processes, creating documentation, and implementing operational improvements. The assessment should focus on their ability to identify inefficiencies, create solutions, and communicate those solutions effectively.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Leader Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Strategic Thinking, Resource Management, Team Support</p>
+            <ul class="list-disc pl-6">
+              <li>How do you align operational improvements with team and business goals?</li>
+              <li>Tell me about a time you had to manage resources or budget for a design team.</li>
+              <li>How do you approach supporting designers at different career stages?</li>
+              <li>What's your approach to implementing new tools or systems for a design team?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Team Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Designer Support, Tool Knowledge, Process Implementation</p>
+            <ul class="list-disc pl-6">
+              <li>How do you gather feedback from designers about their operational needs?</li>
+              <li>Tell me about a time you helped designers adopt a new tool or process.</li>
+              <li>How do you balance standardization with flexibility in design operations?</li>
+              <li>What approaches have you used to improve collaboration within design teams?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Cross-functional Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Communication, Stakeholder Management</p>
+            <ul class="list-disc pl-6">
+              <li>How do you build relationships with cross-functional partners?</li>
+              <li>Tell me about a time you had to coordinate work between design and other departments.</li>
+              <li>How do you communicate operational changes that affect multiple teams?</li>
+              <li>What's your approach to resolving conflicts between different stakeholders?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Growth Mindset, Team Fit</p>
+          <ul class="list-disc pl-6">
+            <li>What do you value most in a team or work environment?</li>
+            <li>How do you approach continuous improvement in your work and team processes?</li>
+            <li>Where do you hope to grow in the next year in your design operations career?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

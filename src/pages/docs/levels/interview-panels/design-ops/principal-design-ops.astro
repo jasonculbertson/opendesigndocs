@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Principal Design Ops Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'Design Ops', href: '/docs/levels/interview-panels/design-ops' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Principal Design Ops</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Vision Presentation</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: Executive Leadership</td><td>[Executive Leaders]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Design Leadership</td><td>[Design Leaders]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Cross-functional</td><td>[Cross-functional Executives]</td><td>45 min</td></tr>
+              <tr><td>Final/CEO Round</td><td>CEO and Executive Team</td><td>45 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Executive Presence, Strategic Vision, Industry Leadership</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to design operations at a principal level, and what excites you about this opportunity?</li>
+            <li>Tell me about your vision for the future of design operations in the industry.</li>
+            <li>How do you approach driving organizational transformation through design operations?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Leadership, Organizational Transformation, Business Impact</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach creating a long-term vision for design operations that aligns with business strategy?</li>
+            <li>Tell me about a time you transformed design operations at an organizational level.</li>
+            <li>How do you measure and communicate the business impact of design operations at scale?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Vision Presentation</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Vision, Organizational Transformation, Industry Leadership</p>
+          <p>The candidate should present their vision for the future of design operations at the company and in the industry. The presentation should cover their assessment of the current state, their vision for the future, how they would lead the transformation, and the business impact they expect to achieve. The presentation should demonstrate their thought leadership, strategic vision, and ability to drive organizational change at the highest levels.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Executive Leadership Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Strategic Alignment, Business Impact, Organizational Transformation</p>
+            <ul class="list-disc pl-6">
+              <li>How do you align design operations strategy with broader business strategy?</li>
+              <li>Tell me about a time you influenced executive decisions through design operations leadership.</li>
+              <li>How do you approach building executive relationships and influence?</li>
+              <li>What frameworks do you use to measure and communicate the business impact of design operations?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Leadership Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Design Excellence, Strategic Partnership, Organizational Influence</p>
+            <ul class="list-disc pl-6">
+              <li>How do you partner with design leadership to drive design excellence at scale?</li>
+              <li>Tell me about a time you transformed how design operates within an organization.</li>
+              <li>How do you balance the needs of the design organization with broader business goals?</li>
+              <li>What's your vision for how design operations can elevate design's impact on the business?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Cross-functional Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Strategic Partnership, Organizational Influence, Change Leadership</p>
+            <ul class="list-disc pl-6">
+              <li>How do you build strategic partnerships across the C-suite?</li>
+              <li>Tell me about a time you led a cross-functional transformation initiative.</li>
+              <li>How do you align design operations with other organizational functions and strategies?</li>
+              <li>What's your approach to driving organizational change across multiple functions?</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/CEO Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Vision, Business Leadership, Organizational Impact</p>
+          <ul class="list-disc pl-6">
+            <li>What's your vision for how design operations can drive business success at the highest level?</li>
+            <li>How do you approach building relationships and influence with the CEO and executive team?</li>
+            <li>Tell me about a time you had to make a difficult strategic decision that impacted the entire organization.</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>
