@@ -2,11 +2,11 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import vercel from '@astrojs/vercel/static';
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server',
   adapter: vercel({
     webAnalytics: {
       enabled: true
@@ -14,8 +14,7 @@ export default defineConfig({
     speedInsights: {
       enabled: true
     },
-    imageService: true,
-    edgeMiddleware: true // Enable edge middleware for API functionality
+    imageService: true
   }),
   integrations: [
     mdx({
