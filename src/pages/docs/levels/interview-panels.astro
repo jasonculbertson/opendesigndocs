@@ -36,7 +36,7 @@ const productRoles: Role[] = [
   {
     title: "UX Researcher",
     description: "Interview panel templates for researchers",
-    href: "/docs/levels/interview-panels/researcher",
+    href: "/docs/levels/interview-panels/ux-researcher",
     image: "🔍"
   },
   {
@@ -62,14 +62,7 @@ const creativeRoles: Role[] = [
   }
 ];
 
-const managerRoles: Role[] = [
-  {
-    title: "Design Manager",
-    description: "Interview panel templates for design managers",
-    href: "/docs/levels/interview-panels/manager",
-    image: "👥"
-  }
-];
+
 
 const title = "Interview Panels";
 ---
@@ -117,14 +110,7 @@ const title = "Interview Panels";
           </div>
         </section>
 
-        <section>
-          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Manager Roles</h2>
-          <div class="grid grid-cols-1 gap-4">
-            {managerRoles.map(role => (
-              <Card {...role} />
-            ))}
-          </div>
-        </section>
+
       </div>
     </article>
   </main>
