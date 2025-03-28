@@ -1,0 +1,171 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Sr. Researcher Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'UX Researcher', href: '/docs/levels/interview-panels/ux-researcher' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Sr. Researcher</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer(s)</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Research</td><td>[Research Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Communication, Curiosity, Growth Mindset</p>
+          <ul class="list-disc pl-6">
+            <li>What drew you to UX research, and what excites you about this opportunity?</li>
+            <li>Tell me about a time you were new to something. How did you go about learning it?</li>
+            <li>Can you describe a situation where you received feedback and how you acted on it?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Research Strategy, Collaboration, Leadership</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach developing a research strategy for a product area?</li>
+            <li>Tell me about a time you had to influence stakeholders with research findings.</li>
+            <li>How do you balance short-term research needs with longer-term strategic research?</li>
+          </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Research Methods, Storytelling, Impact</p>
+          <p>The candidate should walk the interviewers through <strong>two case studies they are proud of</strong>. The presentation should focus on how they approached the research problem, their methodology, key findings, and impact. The case studies should be relevant to the type of work they would do in this role.</p>
+        </section>
+
+        <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Product Thinking, Strategic Impact</p>
+            <ul class="list-disc pl-6">
+              <li>Tell me about a time your research significantly influenced product strategy.</li>
+              <li>How do you approach research when there are competing priorities or limited resources?</li>
+              <li>Describe how you've helped PMs make data-informed decisions.</li>
+              <li>How do you balance qualitative and quantitative insights when working with product teams?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Research Methods, Collaboration, Design Impact</p>
+            <ul class="list-disc pl-6">
+              <li>How do you partner with designers throughout the product development process?</li>
+              <li>Tell me about a time when your research helped resolve a design challenge.</li>
+              <li>How do you ensure research insights are actionable for designers?</li>
+              <li>What methods have you found most effective when collaborating with design teams?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Research Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Research Expertise, Mentorship, Methodological Rigor</p>
+            <ul class="list-disc pl-6">
+              <li>How do you evaluate which research methods are appropriate for different questions?</li>
+              <li>Tell me about a complex research project you led and how you approached it.</li>
+              <li>How do you mentor junior researchers or help them develop their skills?</li>
+              <li>Describe how you ensure research quality and rigor in your work.</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Leadership, Team Fit</p>
+          <ul class="list-disc pl-6">
+            <li>How do you approach building research culture within an organization?</li>
+            <li>Tell me about a time you had to navigate a challenging team dynamic.</li>
+            <li>What leadership qualities do you value and how do you demonstrate them?</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+</Layout>

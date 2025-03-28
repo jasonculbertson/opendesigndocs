@@ -1,0 +1,201 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../../layouts/Layout.astro';
+
+const title = "Researcher I Interview Panel";
+const breadcrumbs = [
+  { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
+  { text: 'UX Researcher', href: '/docs/levels/interview-panels/ux-researcher' }
+];
+---
+
+<style>
+  .role-section h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+  .role-table {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  td {
+    padding: 0.875rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  tr:hover td {
+    background: #f9fafb;
+  }
+</style>
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <nav class="flex mb-2" aria-label="Breadcrumb">
+        <ol class="flex items-center">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-gray-400">/</span>}
+              <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                {crumb.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      
+      <div class="prose max-w-none">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Researcher I</h1>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
+        <div class="role-table mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Interviewer</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Recruiter Screen</td>
+                <td>[Recruiter Name]</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>Hiring Manager Screen</td>
+                <td>[Manager Name]</td>
+                <td>45 min</td>
+              </tr>
+              <tr>
+                <td>Research Methods</td>
+                <td>[Researcher Name]</td>
+                <td>60 min</td>
+              </tr>
+              <tr>
+                <td>Research Exercise</td>
+                <td>[Senior Researcher Name]</td>
+                <td>60 min</td>
+              </tr>
+              <tr>
+                <td>Round 2: Research Analysis</td>
+                <td>[Researcher Name]</td>
+                <td>45 min</td>
+              </tr>
+              <tr>
+                <td>Round 2: Product Manager</td>
+                <td>[PM Name]</td>
+                <td>45 min</td>
+              </tr>
+              <tr>
+                <td>Round 2: Design Collaboration</td>
+                <td>[Designer Name]</td>
+                <td>45 min</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-lg font-medium text-gray-600 mt-8 mb-4 border-b pb-2">Round 2 Interviews</h3>
+
+        <div class="pl-4 border-l-2 border-gray-200">
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Communication, Curiosity, Growth Mindset</p>
+            <ul class="list-disc pl-6">
+              <li>What drew you to UX research, and what excites you about this opportunity?</li>
+              <li>Tell me about a time you were new to something. How did you go about learning it?</li>
+              <li>Can you describe a situation where you received feedback and how you acted on it?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Research Approach, Collaboration, Problem-solving</p>
+            <ul class="list-disc pl-6">
+              <li>Tell me about a research project you're particularly proud of. What was your role?</li>
+              <li>How do you approach working with designers and product managers?</li>
+              <li>How do you measure the success of your research work?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Research Methods</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Research Methodology, Study Design, Ethics</p>
+            <ul class="list-disc pl-6">
+              <li>Walk us through your approach to designing a research study.</li>
+              <li>How do you select appropriate research methods for different questions?</li>
+              <li>How do you ensure ethical considerations in your research?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Research Exercise</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Research Planning, Analysis, Insights</p>
+            <ul class="list-disc pl-6">
+              <li>Complete a timed research exercise based on a real-world scenario.</li>
+              <li>Develop a research plan for a given product question.</li>
+              <li>Analyze sample data and present insights and recommendations.</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Research Analysis Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Data Analysis, Synthesis, Insights</p>
+            <ul class="list-disc pl-6">
+              <li>How do you approach analyzing qualitative research data?</li>
+              <li>How do you synthesize findings from multiple research methods?</li>
+              <li>How do you communicate research insights to different stakeholders?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Product Thinking, Communication</p>
+            <ul class="list-disc pl-6">
+              <li>How do you collaborate with product managers in your research process?</li>
+              <li>How do you handle situations where product requirements conflict with research findings?</li>
+              <li>How do you advocate for the user's needs in product discussions?</li>
+            </ul>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Collaboration Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Design Collaboration, Visual Communication, Feedback</p>
+            <ul class="list-disc pl-6">
+              <li>How do you collaborate with designers in your research process?</li>
+              <li>How do you ensure research insights inform design decisions?</li>
+              <li>How do you give and receive feedback with design partners?</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </article>
+  </main>
+</Layout>
