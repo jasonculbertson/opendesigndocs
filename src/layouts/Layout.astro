@@ -3,6 +3,7 @@ import { ViewTransitions } from 'astro:transitions';
 import Sidebar from '../components/Sidebar.astro';
 import { shouldShowSubstack, shouldShowContentGate } from '../utils/pageUtils';
 import ContentGate from '../components/ContentGate';
+import DevTools from '../components/DevTools';
 import Analytics from '@vercel/analytics/astro';
 import '../styles/main.css';
 
@@ -124,6 +125,7 @@ const canonicalURL = new URL(path, siteUrl).toString();
       </main>
     </div>
     <Analytics />
+    {import.meta.env.DEV && <DevTools client:load />}
     <script is:inline>
       function setupMobileMenu() {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
