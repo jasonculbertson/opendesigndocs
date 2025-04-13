@@ -2,7 +2,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
 
-const title = "Graphic Designer Interview Panel";
+const title = "Graphic Designer L1 Interview Panel";
 const breadcrumbs = [
   { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
   { text: 'Graphic Designer', href: '/docs/levels/interview-panels/graphic-designer' }
@@ -70,7 +70,7 @@ const breadcrumbs = [
       </nav>
       
       <div class="prose max-w-none">
-        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Graphic Designer</h1>
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Graphic Designer L1</h1>
 
         <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
         <div class="role-table mb-6">
@@ -86,9 +86,9 @@ const breadcrumbs = [
               <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
               <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
               <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
-              <tr><td>Round 2: Creative Lead</td><td>[Creative Lead]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Design Team</td><td>[Designer Interviewers]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Marketing/Brand</td><td>[Marketing/Brand Partner]</td><td>45 min</td></tr>
+              <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Engineer</td><td>[Engineering Interviewer]</td><td>45 min</td></tr>
               <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
             </tbody>
           </table>
@@ -96,73 +96,75 @@ const breadcrumbs = [
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Communication, Creativity, Professional Experience</p>
+          <p class="italic text-sm mb-2">Focus Areas: Growth Potential, Visual Communication, Curiosity</p>
           <ul class="list-disc pl-6">
-            <li>What drew you to graphic design, and what excites you about this opportunity?</li>
-            <li>Tell me about your professional experience and the types of projects you've worked on.</li>
-            <li>How do you approach balancing creative exploration with project deadlines?</li>
+            <li>What kinds of design work are you most excited to grow into?</li>
+            <li>Tell me about a time you took feedback and used it to improve your work.</li>
+            <li>What kinds of creative projects do you enjoy outside of your job or school?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Design Process, Collaboration, Problem-solving</p>
+          <p class="italic text-sm mb-2">Focus Areas: Craft, Visual Foundations, Coachability</p>
           <ul class="list-disc pl-6">
-            <li>Walk me through your design process from concept to completion.</li>
-            <li>Tell me about a challenging design project and how you approached it.</li>
-            <li>How do you collaborate with stakeholders who may not have design expertise?</li>
+            <li>Walk me through a recent project — how did you approach the layout and visual direction?</li>
+            <li>How do you decide what makes a design "finished"?</li>
+            <li>Tell me about a time you struggled with a creative brief — how did you resolve it?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Visual Design Skills, Creative Thinking, Project Ownership</p>
-          <p>The candidate should present 4-6 diverse projects from their portfolio, explaining their design process, creative decisions, and outcomes. The presentation should demonstrate their visual design skills, creative thinking, and ability to own projects from concept to completion. Focus on projects that showcase a range of skills relevant to the role, including brand application, digital design, and print materials.</p>
+          <p class="italic text-sm mb-2">Focus Areas: Visual Execution, Composition, Storytelling</p>
+          <p>The candidate should walk through 2–3 pieces that show range and potential across layout, color, typography, or illustration.
+We're looking for intent behind design decisions, openness to critique, and creative voice — not perfection.</p>
         </section>
 
         <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
         <div class="pl-4 border-l-2 border-gray-200">
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Creative Lead Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Design Expertise, Creative Process, Visual Problem-solving</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Timelines, Design Communication</p>
             <ul class="list-disc pl-6">
-              <li>How do you approach creating designs that balance creativity with brand consistency?</li>
-              <li>Tell me about a time you had to solve a complex visual design challenge.</li>
-              <li>How do you stay current with design trends while maintaining a timeless quality in your work?</li>
-              <li>Walk me through how you make decisions about typography, color, and layout in your designs.</li>
+              <li>How do you make sure your designs support a specific business or campaign goal?</li>
+              <li>What do you do when you're given limited direction or vague feedback?</li>
+              <li>How do you communicate your timeline or progress with non-design teammates?</li>
+              <li>What's your process for clarifying a design brief?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Design Team Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Tool Proficiency, Design Systems</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Craft, Iteration, Design Language</p>
             <ul class="list-disc pl-6">
-              <li>How do you approach collaborating with other designers on shared projects?</li>
-              <li>Tell me about your experience working with design systems or brand guidelines.</li>
-              <li>What's your process for organizing and maintaining design files and assets?</li>
-              <li>How do you handle feedback from team members that might conflict with your design vision?</li>
+              <li>Tell me about your process from idea to final visual — how do you get started?</li>
+              <li>How do you ensure your work aligns with a brand or design system?</li>
+              <li>Show me an example where your design evolved after critique — what changed and why?</li>
+              <li>How do you balance creative ideas with visual consistency?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Marketing/Brand Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Brand Understanding, Marketing Awareness, Multi-channel Design</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Engineering Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Implementation Awareness, Handoff, Collaboration</p>
             <ul class="list-disc pl-6">
-              <li>How do you ensure your designs effectively communicate the intended message to the target audience?</li>
-              <li>Tell me about your experience designing across different channels (digital, print, social media, etc.).</li>
-              <li>How do you approach adapting designs for different formats while maintaining brand consistency?</li>
-              <li>What's your process for understanding marketing objectives before starting a design project?</li>
+              <li>Have you ever worked with developers or engineers to bring a design to life?</li>
+              <li>What file setup or tools do you use to keep your work dev-friendly?</li>
+              <li>Tell me about a time your design didn't turn out as expected in implementation — what happened?</li>
+              <li>How do you handle technical constraints in visual design?</li>
             </ul>
           </section>
         </div>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Growth Mindset, Team Fit</p>
+          <p class="italic text-sm mb-2">Focus Areas: Creativity, Team Fit, Growth Mindset</p>
           <ul class="list-disc pl-6">
-            <li>What do you value most in a creative team or work environment?</li>
-            <li>How do you approach balancing multiple projects with competing priorities?</li>
-            <li>Where do you see yourself growing professionally in the next few years?</li>
+            <li>What kind of team environment helps you do your best creative work?</li>
+            <li>How do you handle creative block or feedback you disagree with?</li>
+            <li>What are you most excited to learn in your next role?</li>
+            <li>How do you like to contribute to a team's culture or energy?</li>
           </ul>
         </section>
       </div>
