@@ -2,7 +2,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
 
-const title = "Junior Copywriter Interview Panel";
+const title = "Junior Copywriter L1 Interview Panel";
 const breadcrumbs = [
   { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
   { text: 'Copywriter', href: '/docs/levels/interview-panels/copywriter' }
@@ -70,7 +70,7 @@ const breadcrumbs = [
       </nav>
       
       <div class="prose max-w-none">
-        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Junior Copywriter</h1>
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Junior Copywriter L1</h1>
 
         <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
         <div class="role-table mb-6">
@@ -83,12 +83,12 @@ const breadcrumbs = [
               </tr>
             </thead>
             <tbody>
-              <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
-              <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
-              <tr><td>Writing Sample Review</td><td>All Hiring Team</td><td>60 min</td></tr>
-              <tr><td>Round 2: Senior Copywriter</td><td>[Senior Copywriter]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Content Team</td><td>[Content Team Members]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Marketing/Brand</td><td>[Marketing/Brand Partner]</td><td>45 min</td></tr>
+              <tr><td>Recruiter Screen</td><td>Recruiter</td><td>30 min</td></tr>
+              <tr><td>Hiring Manager Screen</td><td>Content Lead</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Round 2: PM Interview</td><td>Senior PM</td><td>45 min</td></tr>
+              <tr><td>Round 2: Designer Interview</td><td>Senior Designer</td><td>45 min</td></tr>
+              <tr><td>Round 2: Engineer Interview</td><td>Senior Engineer</td><td>45 min</td></tr>
               <tr><td>Final/Culture Round</td><td>Team Lead or Culture Team Member</td><td>30 min</td></tr>
             </tbody>
           </table>
@@ -96,73 +96,75 @@ const breadcrumbs = [
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Communication, Writing Background, Growth Mindset</p>
+          <p class="italic text-sm mb-2">Focus Areas: Curiosity, Communication, Growth Mindset</p>
           <ul class="list-disc pl-6">
-            <li>What drew you to copywriting, and what excites you about this opportunity?</li>
-            <li>Tell me about your writing background and experience.</li>
-            <li>How do you approach learning new writing styles or adapting to different brand voices?</li>
+            <li>What kind of writing excites you most — and where do you want to grow next?</li>
+            <li>Tell me about a time you took feedback that changed your approach.</li>
+            <li>How do you stay inspired or expand your creative vocabulary?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Writing Process, Collaboration, Creative Thinking</p>
+          <p class="italic text-sm mb-2">Focus Areas: Copy Craft, Openness to Feedback, Creative Thinking</p>
           <ul class="list-disc pl-6">
-            <li>Walk me through your writing process from brief to final copy.</li>
-            <li>Tell me about a time you had to collaborate with others on a writing project.</li>
-            <li>How do you approach receiving and implementing feedback on your writing?</li>
+            <li>Walk me through a recent writing assignment — what was the goal and how did you approach it?</li>
+            <li>What do you do when you're stuck or uninspired by a brief?</li>
+            <li>How do you know when your writing is working?</li>
           </ul>
         </section>
 
         <section class="mb-6">
-          <h3 class="text-lg font-semibold mt-6 mb-2">Writing Sample Review</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Writing Skills, Creative Thinking, Communication</p>
-          <p>The candidate should present 3-5 writing samples from their portfolio, explaining their writing process, creative decisions, and outcomes. They should also complete a short writing exercise during the interview to demonstrate their ability to write in different styles and adapt to feedback in real-time. The presentation should showcase their writing versatility, creative thinking, and ability to communicate ideas effectively.</p>
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Clarity, Tone, Conceptual Thinking</p>
+          <p>The candidate should walk through 2–3 writing samples that show range across tone, medium, or goal (marketing, product, social, etc.).
+Look for energy in the writing, understanding of the audience, and thoughtful copy choices — even if the work is from school or freelance.</p>
         </section>
 
         <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
         <div class="pl-4 border-l-2 border-gray-200">
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Senior Copywriter Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Writing Fundamentals, Creative Process, Problem-solving</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Message Framing, Stakeholder Collaboration, Delivery</p>
             <ul class="list-disc pl-6">
-              <li>How do you approach writing copy that aligns with brand voice and guidelines?</li>
-              <li>Tell me about a time you had to solve a challenging writing problem.</li>
-              <li>How do you stay inspired and keep your writing fresh?</li>
-              <li>Walk me through how you think about tone, voice, and messaging in your work.</li>
+              <li>How do you make sure your writing supports a business or campaign goal?</li>
+              <li>What do you do when a PM or stakeholder gives unclear feedback on your work?</li>
+              <li>How do you keep your writing on track across drafts or changing priorities?</li>
+              <li>Tell me about a time you helped clarify or simplify a message.</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Content Team Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Writing Process, Adaptability</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Visual Collaboration, Voice, Writing in Context</p>
             <ul class="list-disc pl-6">
-              <li>How do you organize your writing projects and manage deadlines?</li>
-              <li>Tell me about a time you had to write for a format or medium you weren't familiar with.</li>
-              <li>How do you approach working with editors or content strategists?</li>
-              <li>What's your process for researching topics before writing about them?</li>
+              <li>How do you work with designers to balance copy and layout?</li>
+              <li>Share an example of when your words helped improve the flow of a visual experience.</li>
+              <li>How do you make writing feel consistent across different screens or materials?</li>
+              <li>What do you do when space is tight or you're asked to cut your words in half?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Marketing/Brand Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Brand Understanding, Audience Awareness, Communication</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Engineer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Flexibility, Practical Awareness</p>
             <ul class="list-disc pl-6">
-              <li>How do you ensure your copy effectively communicates the intended message?</li>
-              <li>Tell me about a time you wrote something for a specific audience or campaign.</li>
-              <li>How do you approach writing across different channels or formats?</li>
-              <li>What's your process for understanding a brand before writing for it?</li>
+              <li>Have you ever worked with engineers or developers on implementation?</li>
+              <li>What's your process for writing in Figma or other design tools?</li>
+              <li>How do you make your copy handoff-ready?</li>
+              <li>Tell me about a time tech constraints required you to change or simplify your copy.</li>
             </ul>
           </section>
         </div>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Cultural Contribution, Growth Mindset, Team Fit</p>
+          <p class="italic text-sm mb-2">Focus Areas: Team Fit, Creative Identity, Growth Trajectory</p>
           <ul class="list-disc pl-6">
-            <li>What do you value most in a creative team or work environment?</li>
-            <li>How do you stay motivated when working on projects that might not be as exciting?</li>
-            <li>Where do you hope to grow in the next year as a writer and teammate?</li>
+            <li>What's your favorite piece of copy or brand voice — and why?</li>
+            <li>How do you want to contribute to a team beyond your writing?</li>
+            <li>What's something you've learned recently that's made you a better writer?</li>
+            <li>Where do you hope to grow in the next year?</li>
           </ul>
         </section>
       </div>
