@@ -2,7 +2,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
 
-const title = "Staff Researcher Interview Panel";
+const title = "Staff Researcher";
 const breadcrumbs = [
   { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
   { text: 'UX Researcher', href: '/docs/levels/interview-panels/ux-researcher' }
@@ -70,7 +70,7 @@ const breadcrumbs = [
       </nav>
       
       <div class="prose max-w-none">
-        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Staff Researcher</h1>
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">UX Researcher 4 (L4)</h1>
 
         <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
         <div class="role-table mb-6">
@@ -85,10 +85,10 @@ const breadcrumbs = [
             <tbody>
               <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
               <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
-              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Portfolio / Project Review</td><td>All Hiring Team</td><td>60 min</td></tr>
               <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
               <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Research</td><td>[Research Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Engineer</td><td>[Engineering Interviewer]</td><td>45 min</td></tr>
               <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
             </tbody>
           </table>
@@ -96,73 +96,77 @@ const breadcrumbs = [
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Communication, Technical Expertise, Growth Mindset</p>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Thinking, Communication Style, Research Vision</p>
           <ul class="list-disc pl-6">
-            <li>What drew you to UX research at this level, and what excites you about this opportunity?</li>
-            <li>Tell me about a research area where you've developed deep expertise.</li>
-            <li>How do you approach sharing your knowledge and expertise across an organization?</li>
+            <li>What's a product decision that was directly shaped by your research — and how did it happen?</li>
+            <li>How do you bring cross-functional partners along when defining ambiguous research problems?</li>
+            <li>What kind of influence do you try to have beyond the immediate project?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Technical Depth, Cross-functional Impact, Strategic Thinking</p>
+          <p class="italic text-sm mb-2">Focus Areas: Research Leadership, Roadmap Framing, Autonomy</p>
           <ul class="list-disc pl-6">
-            <li>How do you approach solving complex research problems that span multiple product areas?</li>
-            <li>Tell me about how you've influenced research practices or methodologies in your organization.</li>
-            <li>How do you balance depth of expertise with the need to have broad organizational impact?</li>
+            <li>Tell me about a time you led a multi-phase or cross-functional research initiative.</li>
+            <li>How do you help teams frame the right problems and questions upstream?</li>
+            <li>How do you balance fast product timelines with strategic research depth?</li>
           </ul>
         </section>
 
         <section class="mb-6">
-          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Research Innovation, Strategic Impact, Technical Excellence</p>
-          <p>The candidate should walk the interviewers through <strong>two case studies they are proud of</strong>. The presentation should focus on how they tackled complex research challenges, developed innovative approaches, and created significant organizational impact. The case studies should be relevant to the type of work they would do in this role.</p>
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio / Project Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Systems Thinking, Strategic Framing, Team Alignment</p>
+          <ul class="list-disc pl-6">
+            <li>The candidate should walk through two research case studies, each with complex product and stakeholder dynamics.</li>
+            <li>They should focus on how they scoped the work, influenced strategy or planning, dealt with ambiguity, and ensured findings translated into outcomes.</li>
+          </ul>
         </section>
 
         <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
         <div class="pl-4 border-l-2 border-gray-200">
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Strategic Partnership, Business Impact, Cross-functional Influence</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Round 2: PM</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Strategic Partnership, Planning, Influence</p>
             <ul class="list-disc pl-6">
-              <li>How do you approach influencing product strategy through research?</li>
-              <li>Tell me about a time you helped solve a complex business problem through research.</li>
-              <li>How do you help product teams make decisions when research findings are ambiguous?</li>
-              <li>Describe how you've helped elevate the role of research in product development.</li>
+              <li>Walk me through how you co-create research questions and plans with PMs.</li>
+              <li>Tell me about a time your research changed the prioritization of a roadmap.</li>
+              <li>How do you build trust with PMs when your insights challenge assumptions?</li>
+              <li>How do you help PMs advocate for user needs in company-wide planning?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Design Systems, Research Innovation, Collaborative Leadership</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Round 2: Designer</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Design Collaboration, Content Patterns, UX Systems</p>
             <ul class="list-disc pl-6">
-              <li>How have you helped integrate research into design systems or design processes?</li>
-              <li>Tell me about a time you developed a novel research approach to solve a design challenge.</li>
-              <li>How do you help design teams develop their research capabilities?</li>
-              <li>Describe how you balance being a thought partner versus a service provider to design teams.</li>
+              <li>How do you support designers in testing or evolving a design system or pattern?</li>
+              <li>Share an example where your insights elevated the design vision.</li>
+              <li>What role do you play in design critiques or reviews at this level?</li>
+              <li>How do you bring research into conversations about design quality and standards?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Research Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Research Innovation, Methodological Excellence, Technical Leadership</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Round 2: Engineer</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Cross-Functional Collaboration, Systems Awareness, Product Thinking</p>
             <ul class="list-disc pl-6">
-              <li>Tell me about a research methodology or approach you've developed or significantly improved.</li>
-              <li>How do you evaluate emerging research methods and determine their applicability?</li>
-              <li>Describe how you've helped raise the bar for research quality across an organization.</li>
-              <li>How do you approach solving research problems that don't have clear precedents?</li>
+              <li>How do you collaborate with engineering on early technical discovery or feasibility?</li>
+              <li>Tell me about a time your findings led to a shift in technical implementation.</li>
+              <li>How do you translate qualitative data into insights that engineers can use?</li>
+              <li>How do you advocate for users when tech and product goals are in tension?</li>
             </ul>
           </section>
         </div>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Organizational Impact, Vision, Leadership</p>
+          <p class="italic text-sm mb-2">Focus Areas: Mentorship, Research Craft, Leadership Signals</p>
           <ul class="list-disc pl-6">
-            <li>How do you approach creating lasting change in how an organization uses research?</li>
-            <li>Tell me about a time you had to navigate complex organizational dynamics to drive impact.</li>
-            <li>What's your vision for how research can evolve to better serve product development?</li>
+            <li>How do you help others grow in their research practice?</li>
+            <li>Tell me about a time you shaped research culture or quality across a team.</li>
+            <li>What are your values as a research leader — and how do you show them day to day?</li>
+            <li>What are you most proud of contributing outside of any single project?</li>
           </ul>
         </section>
       </div>
