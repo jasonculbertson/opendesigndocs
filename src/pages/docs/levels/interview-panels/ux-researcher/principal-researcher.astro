@@ -2,7 +2,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
 
-const title = "Principal Researcher Interview Panel";
+const title = "Principal Researcher";
 const breadcrumbs = [
   { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
   { text: 'UX Researcher', href: '/docs/levels/interview-panels/ux-researcher' }
@@ -85,10 +85,10 @@ const breadcrumbs = [
             <tbody>
               <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
               <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
-              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
+              <tr><td>Portfolio / Project Review</td><td>All Hiring Team</td><td>60 min</td></tr>
               <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
               <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
-              <tr><td>Round 2: Research</td><td>[Research Interviewer]</td><td>45 min</td></tr>
+              <tr><td>Round 2: Engineer</td><td>[Engineering Interviewer]</td><td>45 min</td></tr>
               <tr><td>Final/Culture Round</td><td>Executive or Culture Team Member</td><td>30 min</td></tr>
             </tbody>
           </table>
@@ -96,73 +96,77 @@ const breadcrumbs = [
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Communication, Vision, Industry Leadership</p>
+          <p class="italic text-sm mb-2">Focus Areas: Vision, Executive Influence, Strategic Scope</p>
           <ul class="list-disc pl-6">
-            <li>What drew you to UX research at this level, and what excites you about this opportunity?</li>
-            <li>Tell me about your vision for the future of UX research in the industry.</li>
-            <li>How do you approach driving research innovation and excellence at scale?</li>
+            <li>What kinds of problems or impact are you most excited to drive at the Principal level?</li>
+            <li>Tell me about a time your research shaped company-level thinking or planning.</li>
+            <li>How do you measure your influence when you're not directly attached to a single team?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Strategic Vision, Organizational Impact, Industry Leadership</p>
+          <p class="italic text-sm mb-2">Focus Areas: Organizational Strategy, Design Partnership, Change Leadership</p>
           <ul class="list-disc pl-6">
-            <li>How do you approach setting a research vision that aligns with business strategy?</li>
-            <li>Tell me about how you've transformed research practices or capabilities in an organization.</li>
-            <li>How do you measure and communicate the strategic value of research?</li>
+            <li>Describe how you've shaped strategy across multiple domains or lines of business.</li>
+            <li>How do you identify the highest-leverage places to invest research within a large org?</li>
+            <li>Tell me about a time you had to guide or influence senior leadership through resistance or misalignment.</li>
           </ul>
         </section>
 
         <section class="mb-6">
-          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Strategic Leadership, Organizational Transformation, Industry Impact</p>
-          <p>The candidate should walk the interviewers through <strong>two case studies they are proud of</strong>. The presentation should focus on how they've driven strategic research initiatives, transformed organizational capabilities, or influenced industry practices. The case studies should be relevant to the type of work they would do in this role.</p>
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio / Project Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Company-Wide Strategy, Legacy Work, Systems Thinking</p>
+          <ul class="list-disc pl-6">
+            <li>The candidate should present two major initiatives where they operated across teams or orgs.</li>
+            <li>They should explain how their research framed or redefined direction at scale, how they partnered with senior leadership, and what durable systems or structures they helped put in place.</li>
+          </ul>
         </section>
 
         <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
         <div class="pl-4 border-l-2 border-gray-200">
           <section class="mb-6">
             <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Executive Partnership, Strategic Influence, Business Impact</p>
+            <p class="italic text-sm mb-2">Focus Areas: Business Vision, Planning Influence, Product Framing</p>
             <ul class="list-disc pl-6">
-              <li>How do you partner with executive leadership to align research with business strategy?</li>
-              <li>Tell me about a time you influenced a major strategic decision through research.</li>
-              <li>How do you approach building research capabilities that directly impact business outcomes?</li>
-              <li>Describe how you've helped organizations balance short-term needs with long-term research vision.</li>
+              <li>Walk me through how you shaped product strategy with a VP or CPO-level leader.</li>
+              <li>How do you align research and product around ambiguous long-term bets?</li>
+              <li>How do you maintain research rigor when guiding leadership through complex trade-offs?</li>
+              <li>Tell me about a time you reframed the company's understanding of a user or market segment.</li>
+            </ul>
+          </section>
+          
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mt-6 mb-2">Design Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Design Systems, Vision Crafting, Culture Setting</p>
+            <ul class="list-disc pl-6">
+              <li>How have you contributed to shaping the UX strategy or vision for a full platform or ecosystem?</li>
+              <li>How do you guide design leadership through uncertainty or shifting narratives?</li>
+              <li>What role do you play in defining design principles or patterns across teams?</li>
+              <li>How do you elevate the strategic impact of content, interaction, or design decisions through research?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Design Transformation, Research-Design Integration, Strategic Partnership</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Engineering Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Infrastructure Awareness, Research at Scale, Technical Influence</p>
             <ul class="list-disc pl-6">
-              <li>How have you helped transform the relationship between research and design at an organizational level?</li>
-              <li>Tell me about how you've influenced design strategy or design leadership through research.</li>
-              <li>How do you approach building research capabilities that elevate design quality and innovation?</li>
-              <li>Describe your vision for how research and design should collaborate in the future.</li>
-            </ul>
-          </section>
-
-          <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Research Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Research Innovation, Organizational Transformation, Industry Leadership</p>
-            <ul class="list-disc pl-6">
-              <li>Tell me about how you've pioneered new research approaches or methodologies.</li>
-              <li>How do you approach building world-class research capabilities and teams?</li>
-              <li>Describe how you've influenced research practices beyond your organization.</li>
-              <li>What's your vision for how research needs to evolve to meet future challenges?</li>
+              <li>How have you influenced technical planning or platform investments through research?</li>
+              <li>What's your approach to integrating research with engineering roadmaps?</li>
+              <li>Tell me about a time you worked with engineering leadership to define scalable systems for user insight.</li>
+              <li>How do you bring engineering into discovery or vision work?</li>
             </ul>
           </section>
         </div>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Executive Presence, Organizational Leadership, Vision</p>
+          <p class="italic text-sm mb-2">Focus Areas: Strategic Presence, Org Evolution, Coaching</p>
           <ul class="list-disc pl-6">
-            <li>How do you approach influencing organizational culture and values through research?</li>
-            <li>Tell me about a time you had to navigate significant organizational challenges or changes.</li>
-            <li>What's your philosophy on developing the next generation of research leaders?</li>
+            <li>What does Principal-level IC leadership mean to you — and how do you embody it?</li>
+            <li>Tell me about a time you helped shape a research team's long-term strategy or charter.</li>
+            <li>How do you mentor Staff or Senior researchers to operate more strategically?</li>
+            <li>What kind of impact do you want to have on the org's culture, people, and product?</li>
           </ul>
         </section>
       </div>
