@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import { shouldShowSubstack, shouldShowContentGate } from '../utils/pageUtils';
 import ContentGate from '../components/ContentGate';
 import DevTools from '../components/DevTools';
-import Analytics from '@vercel/analytics/astro';
+// import Analytics from '@vercel/analytics/astro';
 import '../styles/main.css';
 
 interface Props {
@@ -124,70 +124,107 @@ const canonicalURL = new URL(path, siteUrl).toString();
         </div>
       </main>
     </div>
-    <Analytics />
+    {/* <Analytics /> */}
     {import.meta.env.DEV && <DevTools client:load />}
     <script is:inline>
-      function setupMobileMenu() {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const sidebar = document.getElementById('sidebar');
-        const menuIcon = document.getElementById('menu-icon');
-        const closeIcon = document.getElementById('close-icon');
-        const body = document.body;
-
-        function openMenu() {
-          sidebar?.classList.remove('-translate-x-full');
-          body.style.overflow = 'hidden';
-          menuIcon?.classList.remove('opacity-100', 'rotate-0');
-          menuIcon?.classList.add('opacity-0', 'rotate-180');
-          closeIcon?.classList.remove('opacity-0', '-rotate-180');
-          closeIcon?.classList.add('opacity-100', 'rotate-0');
-        }
-
-        function closeMenu() {
-          sidebar?.classList.add('-translate-x-full');
-          body.style.overflow = '';
-          menuIcon?.classList.remove('opacity-0', 'rotate-180');
-          menuIcon?.classList.add('opacity-100', 'rotate-0');
-          closeIcon?.classList.remove('opacity-100', 'rotate-0');
-          closeIcon?.classList.add('opacity-0', '-rotate-180');
-        }
-
-        mobileMenuButton?.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (sidebar?.classList.contains('-translate-x-full')) {
-            openMenu();
-          } else {
-            closeMenu();
-          }
-        });
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-          if (window.innerWidth > 1024) return;
-          
-          const isClickInsideSidebar = sidebar?.contains(e.target);
-          const isClickOnMenuButton = mobileMenuButton?.contains(e.target);
-          
-          if (!isClickInsideSidebar && !isClickOnMenuButton && !sidebar?.classList.contains('-translate-x-full')) {
-            closeMenu();
-          }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-          if (window.innerWidth > 1024) {
-            body.style.overflow = '';
-          }
-        });
-      }
-
-      // Setup on initial load
-      setupMobileMenu();
-
-      // Setup again after view transitions
+      // Simple and direct approach to mobile menu toggle
       document.addEventListener('astro:page-load', () => {
-        setupMobileMenu();
+        const handleMobileMenu = () => {
+          const mobileMenuButton = document.getElementById('mobile-menu-button');
+          const sidebar = document.getElementById('sidebar');
+          const menuIcon = document.getElementById('menu-icon');
+          const closeIcon = document.getElementById('close-icon');
+          
+          if (!mobileMenuButton || !sidebar || !menuIcon || !closeIcon) return;
+          
+          const toggleMenu = () => {
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            
+            if (isOpen) {
+              // Close menu
+              sidebar.classList.add('-translate-x-full');
+              document.body.style.overflow = '';
+              menuIcon.classList.remove('opacity-0', 'rotate-180');
+              menuIcon.classList.add('opacity-100', 'rotate-0');
+              closeIcon.classList.remove('opacity-100', 'rotate-0');
+              closeIcon.classList.add('opacity-0', '-rotate-180');
+            } else {
+              // Open menu
+              sidebar.classList.remove('-translate-x-full');
+              document.body.style.overflow = 'hidden';
+              menuIcon.classList.remove('opacity-100', 'rotate-0');
+              menuIcon.classList.add('opacity-0', 'rotate-180');
+              closeIcon.classList.remove('opacity-0', '-rotate-180');
+              closeIcon.classList.add('opacity-100', 'rotate-0');
+            }
+          };
+
+          // Direct click handler
+          mobileMenuButton.onclick = (e) => {
+            e.stopPropagation();
+            toggleMenu();
+          };
+
+          // Handle clicks outside the sidebar
+          document.addEventListener('click', (e) => {
+            if (window.innerWidth > 1024) return;
+            
+            const isClickInsideSidebar = sidebar.contains(e.target);
+            const isClickOnMenuButton = mobileMenuButton.contains(e.target);
+            
+            if (!isClickInsideSidebar && !isClickOnMenuButton && !sidebar.classList.contains('-translate-x-full')) {
+              toggleMenu();
+            }
+          });
+
+          // Handle window resize
+          window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) {
+              document.body.style.overflow = '';
+            }
+          });
+        };
+
+        // Run immediately
+        handleMobileMenu();
+        
+        // Also run after a small delay to ensure all elements are ready
+        setTimeout(handleMobileMenu, 100);
       });
+      
+      // Initial setup before Astro transitions
+      document.addEventListener('DOMContentLoaded', () => {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        if (mobileMenuButton) {
+          // Add a temporary click handler for the first page load
+          mobileMenuButton.onclick = (e) => {
+            e.stopPropagation();
+            const sidebar = document.getElementById('sidebar');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+            
+            if (sidebar) {
+              sidebar.classList.toggle('-translate-x-full');
+              document.body.style.overflow = sidebar.classList.contains('-translate-x-full') ? '' : 'hidden';
+              
+              if (menuIcon && closeIcon) {
+                if (sidebar.classList.contains('-translate-x-full')) {
+                  menuIcon.classList.remove('opacity-0', 'rotate-180');
+                  menuIcon.classList.add('opacity-100', 'rotate-0');
+                  closeIcon.classList.remove('opacity-100', 'rotate-0');
+                  closeIcon.classList.add('opacity-0', '-rotate-180');
+                } else {
+                  menuIcon.classList.remove('opacity-100', 'rotate-0');
+                  menuIcon.classList.add('opacity-0', 'rotate-180');
+                  closeIcon.classList.remove('opacity-0', '-rotate-180');
+                  closeIcon.classList.add('opacity-100', 'rotate-0');
+                }
+              }
+            }
+          };
+        }
+      });
+
     </script>
   </body>
 </html>
