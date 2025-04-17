@@ -1,0 +1,577 @@
+[
+  {
+    "level": "L2",
+    "title": "Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "Why this role, and what are you hoping to learn from it?",
+          "Describe a time you took initiative to learn something new.",
+          "Tell me about a moment when you collaborated across disciplines."
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "Tell me about a time you took ownership of a design project.",
+          "How do you ensure your design work aligns with both user needs and business goals?",
+          "What\u2019s your approach when working with cross-functional partners?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Show a project that challenged your thinking. What did you learn?",
+          "What decisions did you have to make under constraints?",
+          "How did you evolve the design over time?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Product Thinking",
+          "Collaboration",
+          "Prioritization"
+        ],
+        "questions": [
+          "Tell me about a time your design work impacted the roadmap.",
+          "How do you prioritize design trade-offs when working with product constraints?",
+          "Describe a time when you influenced a product direction.",
+          "How do you collaborate with PMs on strategy?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Feedback",
+          "Systems Thinking"
+        ],
+        "questions": [
+          "How do you evaluate if your design is successful?",
+          "Describe a time you helped evolve a design system.",
+          "How do you give and receive feedback with other designers?",
+          "Tell me about a time your design thinking influenced another designer's work."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Technical Collaboration",
+          "Feasibility Awareness",
+          "Trade-offs"
+        ],
+        "questions": [
+          "Describe a time you worked closely with engineering to solve a tricky problem.",
+          "How do you handle design constraints coming from technical limitations?",
+          "What\u2019s your handoff process like?",
+          "Tell me about a time when engineering input significantly changed your design."
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Team Fit",
+          "Growth Potential"
+        ],
+        "questions": [
+          "How do you support a culture of collaboration on your team?",
+          "What does great design culture look like to you?",
+          "How do you help others grow while growing yourself?",
+          "Tell me about a time you contributed to team morale or culture."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "L3",
+    "title": "Mid-Level Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "Why this role, and what are you hoping to learn from it?",
+          "Describe a time you took initiative to learn something new.",
+          "Tell me about a moment when you collaborated across disciplines."
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "Tell me about a time you took ownership of a design project.",
+          "How do you ensure your design work aligns with both user needs and business goals?",
+          "What\u2019s your approach when working with cross-functional partners?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Show a project that challenged your thinking. What did you learn?",
+          "What decisions did you have to make under constraints?",
+          "How did you evolve the design over time?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Product Thinking",
+          "Collaboration",
+          "Prioritization"
+        ],
+        "questions": [
+          "Tell me about a time your design work impacted the roadmap.",
+          "How do you prioritize design trade-offs when working with product constraints?",
+          "Describe a time when you influenced a product direction.",
+          "How do you collaborate with PMs on strategy?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Feedback",
+          "Systems Thinking"
+        ],
+        "questions": [
+          "How do you evaluate if your design is successful?",
+          "Describe a time you helped evolve a design system.",
+          "How do you give and receive feedback with other designers?",
+          "Tell me about a time your design thinking influenced another designer's work."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Technical Collaboration",
+          "Feasibility Awareness",
+          "Trade-offs"
+        ],
+        "questions": [
+          "Describe a time you worked closely with engineering to solve a tricky problem.",
+          "How do you handle design constraints coming from technical limitations?",
+          "What\u2019s your handoff process like?",
+          "Tell me about a time when engineering input significantly changed your design."
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Team Fit",
+          "Growth Potential"
+        ],
+        "questions": [
+          "How do you support a culture of collaboration on your team?",
+          "What does great design culture look like to you?",
+          "How do you help others grow while growing yourself?",
+          "Tell me about a time you contributed to team morale or culture."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "L4",
+    "title": "Senior Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "Why this role, and what are you hoping to learn from it?",
+          "Describe a time you took initiative to learn something new.",
+          "Tell me about a moment when you collaborated across disciplines."
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "Tell me about a time you took ownership of a design project.",
+          "How do you ensure your design work aligns with both user needs and business goals?",
+          "What\u2019s your approach when working with cross-functional partners?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Show a project that challenged your thinking. What did you learn?",
+          "What decisions did you have to make under constraints?",
+          "How did you evolve the design over time?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Product Thinking",
+          "Collaboration",
+          "Prioritization"
+        ],
+        "questions": [
+          "Tell me about a time your design work impacted the roadmap.",
+          "How do you prioritize design trade-offs when working with product constraints?",
+          "Describe a time when you influenced a product direction.",
+          "How do you collaborate with PMs on strategy?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Feedback",
+          "Systems Thinking"
+        ],
+        "questions": [
+          "How do you evaluate if your design is successful?",
+          "Describe a time you helped evolve a design system.",
+          "How do you give and receive feedback with other designers?",
+          "Tell me about a time your design thinking influenced another designer's work."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Technical Collaboration",
+          "Feasibility Awareness",
+          "Trade-offs"
+        ],
+        "questions": [
+          "Describe a time you worked closely with engineering to solve a tricky problem.",
+          "How do you handle design constraints coming from technical limitations?",
+          "What\u2019s your handoff process like?",
+          "Tell me about a time when engineering input significantly changed your design."
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Team Fit",
+          "Growth Potential"
+        ],
+        "questions": [
+          "How do you support a culture of collaboration on your team?",
+          "What does great design culture look like to you?",
+          "How do you help others grow while growing yourself?",
+          "Tell me about a time you contributed to team morale or culture."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "L5",
+    "title": "Staff Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "Why this role, and what are you hoping to learn from it?",
+          "Describe a time you took initiative to learn something new.",
+          "Tell me about a moment when you collaborated across disciplines."
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "Tell me about a time you took ownership of a design project.",
+          "How do you ensure your design work aligns with both user needs and business goals?",
+          "What\u2019s your approach when working with cross-functional partners?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Show a project that challenged your thinking. What did you learn?",
+          "What decisions did you have to make under constraints?",
+          "How did you evolve the design over time?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Product Thinking",
+          "Collaboration",
+          "Prioritization"
+        ],
+        "questions": [
+          "Tell me about a time your design work impacted the roadmap.",
+          "How do you prioritize design trade-offs when working with product constraints?",
+          "Describe a time when you influenced a product direction.",
+          "How do you collaborate with PMs on strategy?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Feedback",
+          "Systems Thinking"
+        ],
+        "questions": [
+          "How do you evaluate if your design is successful?",
+          "Describe a time you helped evolve a design system.",
+          "How do you give and receive feedback with other designers?",
+          "Tell me about a time your design thinking influenced another designer's work."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Technical Collaboration",
+          "Feasibility Awareness",
+          "Trade-offs"
+        ],
+        "questions": [
+          "Describe a time you worked closely with engineering to solve a tricky problem.",
+          "How do you handle design constraints coming from technical limitations?",
+          "What\u2019s your handoff process like?",
+          "Tell me about a time when engineering input significantly changed your design."
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Team Fit",
+          "Growth Potential"
+        ],
+        "questions": [
+          "How do you support a culture of collaboration on your team?",
+          "What does great design culture look like to you?",
+          "How do you help others grow while growing yourself?",
+          "Tell me about a time you contributed to team morale or culture."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "L6",
+    "title": "Principal Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "Why this role, and what are you hoping to learn from it?",
+          "Describe a time you took initiative to learn something new.",
+          "Tell me about a moment when you collaborated across disciplines."
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "Tell me about a time you took ownership of a design project.",
+          "How do you ensure your design work aligns with both user needs and business goals?",
+          "What\u2019s your approach when working with cross-functional partners?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Show a project that challenged your thinking. What did you learn?",
+          "What decisions did you have to make under constraints?",
+          "How did you evolve the design over time?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Product Thinking",
+          "Collaboration",
+          "Prioritization"
+        ],
+        "questions": [
+          "Tell me about a time your design work impacted the roadmap.",
+          "How do you prioritize design trade-offs when working with product constraints?",
+          "Describe a time when you influenced a product direction.",
+          "How do you collaborate with PMs on strategy?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Feedback",
+          "Systems Thinking"
+        ],
+        "questions": [
+          "How do you evaluate if your design is successful?",
+          "Describe a time you helped evolve a design system.",
+          "How do you give and receive feedback with other designers?",
+          "Tell me about a time your design thinking influenced another designer's work."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Technical Collaboration",
+          "Feasibility Awareness",
+          "Trade-offs"
+        ],
+        "questions": [
+          "Describe a time you worked closely with engineering to solve a tricky problem.",
+          "How do you handle design constraints coming from technical limitations?",
+          "What\u2019s your handoff process like?",
+          "Tell me about a time when engineering input significantly changed your design."
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Team Fit",
+          "Growth Potential"
+        ],
+        "questions": [
+          "How do you support a culture of collaboration on your team?",
+          "What does great design culture look like to you?",
+          "How do you help others grow while growing yourself?",
+          "Tell me about a time you contributed to team morale or culture."
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,116 @@
+[
+  {
+    "level": "L1",
+    "title": "Jr Product Designer",
+    "interview_plan": [
+      {
+        "stage": "Recruiter Screen",
+        "interviewer": "[Recruiter Name]",
+        "duration": "30 min",
+        "focus_areas": [
+          "Communication",
+          "Curiosity",
+          "Growth Mindset"
+        ],
+        "questions": [
+          "What drew you to product design, and what excites you about this opportunity?",
+          "Tell me about a time you were new to something. How did you go about learning it?",
+          "Can you describe a situation where you received feedback and how you acted on it?"
+        ]
+      },
+      {
+        "stage": "Hiring Manager Screen",
+        "interviewer": "[Hiring Manager Name]",
+        "duration": "45 min",
+        "focus_areas": [
+          "Collaboration",
+          "Craft Thinking",
+          "Autonomy"
+        ],
+        "questions": [
+          "How do you approach understanding user needs before designing?",
+          "Tell me about a time you had to collaborate with someone who thought differently than you.",
+          "When you're unsure how to start solving a design problem, what steps do you take?"
+        ]
+      },
+      {
+        "stage": "Portfolio Review",
+        "interviewer": "All Hiring Team",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft",
+          "Storytelling",
+          "Communication"
+        ],
+        "questions": [
+          "Walk us through a project in your portfolio that you're proud of.",
+          "What were the constraints or goals, and how did you respond to them?",
+          "What part of the project was most challenging, and how did you handle it?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 PM",
+        "interviewer": "[PM Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Collaboration",
+          "Product Thinking",
+          "Communication"
+        ],
+        "questions": [
+          "Tell me about a time you had to balance user needs with business goals in a project.",
+          "How do you approach a design task when the requirements are unclear or incomplete?",
+          "Have you ever worked with a PM who changed direction mid-project? How did you handle it?",
+          "Describe a moment when you asked questions to improve a product idea."
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Designer",
+        "interviewer": "[Designer Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Craft Foundations",
+          "Feedback Openness",
+          "Visual Thinking"
+        ],
+        "questions": [
+          "Tell me how you usually start a design project\u2014what steps do you take first?",
+          "Describe a time you received tough feedback on a design. What did you do with it?",
+          "Walk me through how you think about hierarchy, layout, or visual clarity in your designs.",
+          "What\u2019s one design skill you\u2019re working to improve and how are you approaching it?"
+        ]
+      },
+      {
+        "stage": "Round 2 \u2013 Engineering",
+        "interviewer": "[Engineering Interviewer]",
+        "duration": "30\u201345 min",
+        "focus_areas": [
+          "Collaboration",
+          "Systems Awareness",
+          "Communication"
+        ],
+        "questions": [
+          "Have you ever worked with developers or engineers before? What was that like?",
+          "How do you make sure your designs are feasible or easy to build?",
+          "Can you explain a design you made where constraints (like time or tech) influenced your decisions?",
+          "What\u2019s your process for handing off work or preparing it for implementation?"
+        ]
+      },
+      {
+        "stage": "Final/Culture Round",
+        "interviewer": "Executive or Culture Team Member",
+        "duration": "30 min",
+        "focus_areas": [
+          "Cultural Contribution",
+          "Growth Mindset",
+          "Team Fit"
+        ],
+        "questions": [
+          "What do you value most in a team or work environment?",
+          "How do you stay motivated when a project feels unclear or slow-moving?",
+          "Where do you hope to grow in the next year as a designer and teammate?"
+        ]
+      }
+    ]
+  }
+]
