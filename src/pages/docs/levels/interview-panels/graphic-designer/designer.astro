@@ -2,10 +2,10 @@
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
 
-const title = "Senior Design Ops Interview Panel";
+const title = "Designer Interview Panel";
 const breadcrumbs = [
   { text: 'Interview Panels', href: '/docs/levels/interview-panels' },
-  { text: 'Design Ops', href: '/docs/levels/interview-panels/design-ops' }
+  { text: 'Graphic Designer', href: '/docs/levels/interview-panels/graphic-designer' }
 ];
 ---
 
@@ -70,7 +70,7 @@ const breadcrumbs = [
       </nav>
       
       <div class="prose max-w-none">
-        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Senior Design Ops</h1>
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px] mb-6">Designer</h1>
 
         <h2 class="text-xl font-semibold mt-8 mb-4">Interview Stages</h2>
         <div class="role-table mb-6">
@@ -85,6 +85,7 @@ const breadcrumbs = [
             <tbody>
               <tr><td>Recruiter Screen</td><td>[Recruiter Name]</td><td>30 min</td></tr>
               <tr><td>Hiring Manager Screen</td><td>[Hiring Manager Name]</td><td>45 min</td></tr>
+              <tr><td>Portfolio Review</td><td>All Hiring Team</td><td>60 min</td></tr>
               <tr><td>Round 2: PM</td><td>[PM Interviewer]</td><td>45 min</td></tr>
               <tr><td>Round 2: Designer</td><td>[Designer Interviewer]</td><td>45 min</td></tr>
               <tr><td>Round 2: Engineer</td><td>[Engineering Interviewer]</td><td>45 min</td></tr>
@@ -95,68 +96,75 @@ const breadcrumbs = [
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Recruiter Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Leadership, Systems Thinking, Influence</p>
+          <p class="italic text-sm mb-2">Focus Areas: Communication, Growth, Autonomy</p>
           <ul class="list-disc pl-6">
-            <li>Tell me about a program or system you helped scale across multiple teams.</li>
-            <li>What types of challenges do you love solving in a design org?</li>
-            <li>How do you balance structure and flexibility in your work?</li>
+            <li>What types of design projects do you feel most confident leading?</li>
+            <li>How do you balance meeting a deadline with making something visually excellent?</li>
+            <li>What kind of feedback helps you grow the most?</li>
           </ul>
         </section>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Hiring Manager Screen</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Strategic Ops Leadership, Cross-Org Execution, Coaching</p>
+          <p class="italic text-sm mb-2">Focus Areas: Execution, Ownership, Creative Decision-Making</p>
           <ul class="list-disc pl-6">
-            <li>Walk me through a time you helped a design org evolve a key workflow, ritual, or system.</li>
-            <li>How do you ensure operational efforts are aligned with org priorities and design quality?</li>
-            <li>How do you support the growth and success of other Ops partners or team coordinators?</li>
+            <li>Walk me through a project you owned from start to finish — what were the key decisions you made?</li>
+            <li>How do you balance creative exploration with staying on brand?</li>
+            <li>Tell me about a time you had to push back on unclear or conflicting feedback.</li>
           </ul>
+        </section>
+
+        <section class="mb-6">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Portfolio Review</h3>
+          <p class="italic text-sm mb-2">Focus Areas: Visual Systems, Concept Development, Consistency</p>
+          <p>The candidate should present 2–3 projects that demonstrate strong typographic, compositional, and conceptual craft.
+Look for clarity in storytelling, polish in execution, and an ability to adapt design for different mediums or audiences.</p>
         </section>
 
         <h3 class="text-lg font-medium text-gray-700 mt-8 mb-3">Round 2 Interviews</h3>
         <div class="pl-4 border-l-2 border-gray-200">
           <section class="mb-6">
             <h3 class="text-lg font-semibold mt-6 mb-2">PM Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Alignment, Planning, Strategic Collaboration</p>
+            <p class="italic text-sm mb-2">Focus Areas: Business Alignment, Cross-Functional Collaboration, Clarity</p>
             <ul class="list-disc pl-6">
-              <li>How do you partner with PMs to ensure design has what it needs to succeed?</li>
-              <li>Share an example of a time you influenced planning or prioritization decisions.</li>
-              <li>How do you ensure that progress, blockers, and goals are visible across disciplines?</li>
-              <li>What role do you play in cross-functional rituals and cadence?</li>
+              <li>Tell me about a time you collaborated with marketing or product to align visuals to goals.</li>
+              <li>How do you clarify ambiguous briefs or missing requirements?</li>
+              <li>How do you adjust design direction based on stakeholder feedback?</li>
+              <li>What's your process for presenting work to non-designers?</li>
             </ul>
           </section>
 
           <section class="mb-6">
-            <h3 class="text-lg font-semibold mt-6 mb-2">Design Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Design Advocacy, Process Stewardship, Enablement</p>
+            <h3 class="text-lg font-semibold mt-6 mb-2">Designer Interview</h3>
+            <p class="italic text-sm mb-2">Focus Areas: Visual Strategy, Design Language, Iteration</p>
             <ul class="list-disc pl-6">
-              <li>What's your approach to building systems that improve design quality or speed?</li>
-              <li>Share a time you introduced a change to a design team's ways of working — how did you roll it out?</li>
-              <li>How do you balance the needs of junior and senior designers in the systems you create?</li>
-              <li>What role do you play in onboarding, documentation, or leveling frameworks?</li>
+              <li>How do you build on existing design systems to create new, fresh visuals?</li>
+              <li>Tell me about a time you had to explore multiple creative directions — how did you decide which one to move forward with?</li>
+              <li>What role do you play in critique — both giving and receiving feedback?</li>
+              <li>How do you maintain craft quality under fast timelines?</li>
             </ul>
           </section>
 
           <section class="mb-6">
             <h3 class="text-lg font-semibold mt-6 mb-2">Engineering Interview</h3>
-            <p class="italic text-sm mb-2">Focus Areas: Delivery, Communication, Systems Integration</p>
+            <p class="italic text-sm mb-2">Focus Areas: Collaboration, Handoff, Technical Flexibility</p>
             <ul class="list-disc pl-6">
-              <li>How do you partner with engineering to improve collaboration and reduce delivery friction?</li>
-              <li>Share a time you helped resolve misalignment between design and engineering timelines or expectations.</li>
-              <li>How do you ensure your operational systems work across disciplines?</li>
-              <li>What kinds of cross-functional roadmapping or coordination have you supported?</li>
+              <li>How do you collaborate with developers on responsive or interactive visual assets?</li>
+              <li>Tell me about a time you adapted your design due to technical limitations.</li>
+              <li>What tools or processes do you use for clean handoff?</li>
+              <li>How do you test how your visuals behave in production?</li>
             </ul>
           </section>
         </div>
 
         <section class="mb-6">
           <h3 class="text-lg font-semibold mt-6 mb-2">Final/Culture Round</h3>
-          <p class="italic text-sm mb-2">Focus Areas: Leadership Presence, Cultural Impact, Strategic Growth</p>
+          <p class="italic text-sm mb-2">Focus Areas: Design Advocacy, Autonomy, Creative Process</p>
           <ul class="list-disc pl-6">
-            <li>What does senior-level leadership in Design Ops look like to you?</li>
-            <li>How do you build psychological safety and operational clarity across a team?</li>
-            <li>Tell me about a time you shaped team culture or created a lasting ritual.</li>
-            <li>What are you most proud of operationally — and what are you hoping to evolve next?</li>
+            <li>How do you champion design value to non-design stakeholders?</li>
+            <li>Tell me about a time you resolved creative differences with a colleague.</li>
+            <li>What does "good design" mean to you, and how has that evolved over time?</li>
+            <li>How have you grown both personally and professionally in your last role?</li>
           </ul>
         </section>
       </div>
