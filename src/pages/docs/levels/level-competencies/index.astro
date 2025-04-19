@@ -4,7 +4,13 @@ import Card from '../../../../components/Card.astro';
 
 const title = "Level Competencies";
 
-const breadcrumbs = [];
+// Define the breadcrumb type structure
+type Breadcrumb = {
+  text: string;
+  href: string;
+};
+
+const breadcrumbs: Breadcrumb[] = [];
 
 const resources = [
   {
