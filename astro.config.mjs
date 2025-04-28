@@ -25,7 +25,5 @@ export default defineConfig({
     tailwind(),
     react()
   ],
-  vite: {
-    envPrefix: 'SUPABASE_'
-  }
+  // Removing the vite config that restricts env prefix
 });
