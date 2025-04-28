@@ -1,5 +1,6 @@
 ---
 import HomeLayout from '../layouts/HomeLayout.astro';
+import AuthOverlay from '../components/AuthOverlay.tsx';
 
 const title = "Open Design Docs";
 
@@ -43,7 +44,8 @@ const featuredResources = [
             </a>
           </div>
           <div class="hidden lg:flex items-center space-x-4">
-            <a href="/docs/leadership/day-1" class="text-sm text-gray-600 hover:text-gray-900">Documentation</a>
+            <a href="#" id="signin-link" class="text-sm text-gray-600 hover:text-gray-900">Sign In</a>
+            <button id="signup-button" class="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">Get Started</button>
           </div>
         </div>
       </div>
@@ -58,12 +60,13 @@ const featuredResources = [
               <h1 class="text-4xl sm:text-6xl lg:text-7xl font-['Fraunces'] text-gray-900 mb-4 sm:mb-6">Resources for building great design teams.</h1>
               <p class="text-base sm:text-lg lg:text-xl font-semibold text-gray-600 mb-6 sm:mb-8 pt-2 sm:pt-4">Access comprehensive guides, templates, and insights to help you build and scale effective design organizations.</p>
               <div class="mt-6 sm:mt-10">
-                <a
-                  href="https://www.opendesigndocs.com/docs/levels/levels-titles"
-                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-lg transition-colors"
+                <button
+                  id="browse-resources-btn"
+                  type="button"
+                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-lg transition-colors cursor-pointer"
                 >
                   Browse all resources
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -91,4 +94,36 @@ const featuredResources = [
       </div>
     </div>
   </div>
+
+  <AuthOverlay client:idle />
+
 </HomeLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const browseButton = document.getElementById('browse-resources-btn');
+    const signinLink = document.getElementById('signin-link');
+    const signupButton = document.getElementById('signup-button');
+
+    if (browseButton) {
+      browseButton.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_up' } }));
+      });
+    }
+
+    if (signinLink) {
+      signinLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_in' } }));
+      });
+    }
+
+    if (signupButton) {
+      signupButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_up' } }));
+      });
+    }
+  });
+</script>
