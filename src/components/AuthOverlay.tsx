@@ -12,7 +12,7 @@ interface OpenAuthEvent extends CustomEvent<OpenAuthEventDetail> {}
 const AuthOverlay: React.FC = () => {
   const [supabaseClient] = useState(() => createSupabaseBrowserClient()); 
   const [isOpen, setIsOpen] = useState(false);
-  const [authTitle, setAuthTitle] = useState('Welcome back.'); 
+  const [authTitle, setAuthTitle] = useState('Welcome back'); 
   const [initialView, setInitialView] = useState<'sign_in' | 'sign_up'>('sign_in'); 
   const [marketingConsent, setMarketingConsent] = useState(true); 
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,14 @@ const AuthOverlay: React.FC = () => {
       const view = customEvent.detail?.view || 'sign_in';
 
       setInitialView(view); 
-      setAuthTitle(view === 'sign_up' ? 'Get unlimited free access' : 'Welcome back.');
+      
+      // Set the appropriate title based on the view
+      if (view === 'sign_up') {
+        setAuthTitle('Get unlimited free access');
+      } else {
+        setAuthTitle('Welcome back');
+      }
+      
       setIsOpen(true);
     };
 
@@ -64,19 +71,53 @@ const AuthOverlay: React.FC = () => {
     };
   }, [isOpen]);
 
+  // Add direct click handlers for auth links
   useEffect(() => {
-    if (isOpen && authContentRef.current) {
+    if (isOpen) {
+      // Function to find and add click handlers to auth links
+      const setupClickHandlers = () => {
+        // Find the 'Forgot your password?' link
+        const forgotPasswordLinks = document.querySelectorAll('a');
+        forgotPasswordLinks.forEach(link => {
+          if (link.textContent?.includes('Forgot your password')) {
+            // Remove existing listeners to avoid duplicates
+            link.removeEventListener('click', handleForgotPasswordClick);
+            // Add click handler
+            link.addEventListener('click', handleForgotPasswordClick);
+          }
+        });
+        
+        // Find any 'Sign in' links that might appear on the reset password page
+        const signInLinks = document.querySelectorAll('a');
+        signInLinks.forEach(link => {
+          if (link.textContent?.includes('Sign in')) {
+            // Remove existing listeners to avoid duplicates
+            link.removeEventListener('click', handleSignInClick);
+            // Add click handler
+            link.addEventListener('click', handleSignInClick);
+          }
+        });
+      };
+      
+      // Click handlers
+      const handleForgotPasswordClick = () => {
+        setTimeout(() => setAuthTitle('Forgot password?'), 50);
+      };
+      
+      const handleSignInClick = () => {
+        setTimeout(() => setAuthTitle('Welcome back'), 50);
+      };
+      
+      // Set up initial handlers
+      setupClickHandlers();
+      
+      // Set up a MutationObserver to detect when new links are added
       const observer = new MutationObserver(() => {
-        const content = authContentRef.current?.innerText || '';
-        if (content.includes('Create a password')) {
-          setAuthTitle('Get unlimited free access');
-        } else {
-          setAuthTitle('Welcome back.');
-        }
+        setupClickHandlers();
       });
-
-      observer.observe(authContentRef.current, { childList: true, subtree: true });
-
+      
+      observer.observe(document.body, { childList: true, subtree: true });
+      
       return () => {
         observer.disconnect();
       };
@@ -88,6 +129,11 @@ const AuthOverlay: React.FC = () => {
   }
 
   const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '/auth/callback';
+  
+  // Log the exact redirect URL for debugging
+  if (typeof window !== 'undefined') {
+    console.log('Auth redirect URL:', redirectTo);
+  }
 
   return (
     <div style={{
@@ -114,9 +160,19 @@ const AuthOverlay: React.FC = () => {
           &times;
         </button>
         <div style={{ maxWidth: '400px', width: '90%', margin: '0 auto' }}> 
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '2rem', color: '#111827' }}>
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '0.25rem', color: '#111827' }}>
             {authTitle}
           </h1>
+          {(authTitle === 'Welcome back' || authTitle === 'Get unlimited free access') && (
+            <p style={{ fontSize: '0.875rem', fontWeight: 500, textAlign: 'center', marginBottom: '1.75rem', color: '#4b5563' }}>
+              Essential resources for design leaders.
+            </p>
+          )}
+          {authTitle === 'Forgot password?' && (
+            <p style={{ fontSize: '0.875rem', fontWeight: 500, textAlign: 'center', marginBottom: '1.75rem', color: '#4b5563' }}>
+              We'll send you instructions to reset your password.
+            </p>
+          )}
           <div ref={authContentRef}>
             {/* ~~Marketing Consent Checkbox Moved From Here~~ */} 
             <Auth
@@ -143,9 +199,10 @@ const AuthOverlay: React.FC = () => {
                 variables: {
                   sign_in: { email_label: 'Your email address', password_label: 'Your password' },
                   sign_up: { email_label: 'Your email address', password_label: 'Create a password' },
+
                 },
               }}
-              view={initialView} 
+              view={initialView}
             />
             {/* Marketing Consent Checkbox - Renders only on sign-up, after Auth component, left-aligned */} 
             {authTitle === 'Get unlimited free access' && (
