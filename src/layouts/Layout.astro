@@ -112,6 +112,12 @@ const showSidebar = path.startsWith('/docs');
           </button>
         </div>
 
+        <!-- Mobile overlay backdrop -->
+        <div 
+          id="mobile-overlay" 
+          class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden opacity-0 transition-opacity duration-300"
+        ></div>
+
         <div class="flex">
           <main class="flex-1 lg:pl-[250px] flex flex-col min-h-screen">
             <div class="pt-20 lg:pt-8 flex-1">
@@ -131,15 +137,16 @@ const showSidebar = path.startsWith('/docs');
       {import.meta.env.DEV && <DevTools client:load />}
     </ClerkReactIsland>
     <script is:inline>
-      // Simple and direct approach to mobile menu toggle
+      // Enhanced mobile menu with overlay
       document.addEventListener('astro:page-load', () => {
         const handleMobileMenu = () => {
           const mobileMenuButton = document.getElementById('mobile-menu-button');
           const sidebar = document.getElementById('sidebar');
+          const overlay = document.getElementById('mobile-overlay');
           const menuIcon = document.getElementById('menu-icon');
           const closeIcon = document.getElementById('close-icon');
           
-          if (!mobileMenuButton || !sidebar || !menuIcon || !closeIcon) return;
+          if (!mobileMenuButton || !sidebar || !overlay || !menuIcon || !closeIcon) return;
           
           const toggleMenu = () => {
             const isOpen = !sidebar.classList.contains('-translate-x-full');
@@ -147,6 +154,8 @@ const showSidebar = path.startsWith('/docs');
             if (isOpen) {
               // Close menu
               sidebar.classList.add('-translate-x-full');
+              overlay.classList.add('hidden', 'opacity-0');
+              overlay.classList.remove('opacity-50');
               document.body.style.overflow = '';
               menuIcon.classList.remove('opacity-0', 'rotate-180');
               menuIcon.classList.add('opacity-100', 'rotate-0');
@@ -155,6 +164,8 @@ const showSidebar = path.startsWith('/docs');
             } else {
               // Open menu
               sidebar.classList.remove('-translate-x-full');
+              overlay.classList.remove('hidden', 'opacity-0');
+              overlay.classList.add('opacity-50');
               document.body.style.overflow = 'hidden';
               menuIcon.classList.remove('opacity-100', 'rotate-0');
               menuIcon.classList.add('opacity-0', 'rotate-180');
@@ -169,14 +180,22 @@ const showSidebar = path.startsWith('/docs');
             toggleMenu();
           };
 
-          // Handle clicks outside the sidebar
+          // Handle overlay clicks
+          overlay.onclick = () => {
+            if (!sidebar.classList.contains('-translate-x-full')) {
+              toggleMenu();
+            }
+          };
+
+          // Handle clicks outside the sidebar (backup)
           document.addEventListener('click', (e) => {
             if (window.innerWidth > 1024) return;
             
             const isClickInsideSidebar = sidebar.contains(e.target);
             const isClickOnMenuButton = mobileMenuButton.contains(e.target);
+            const isClickOnOverlay = overlay.contains(e.target);
             
-            if (!isClickInsideSidebar && !isClickOnMenuButton && !sidebar.classList.contains('-translate-x-full')) {
+            if (!isClickInsideSidebar && !isClickOnMenuButton && !isClickOnOverlay && !sidebar.classList.contains('-translate-x-full')) {
               toggleMenu();
             }
           });
@@ -185,6 +204,8 @@ const showSidebar = path.startsWith('/docs');
           window.addEventListener('resize', () => {
             if (window.innerWidth > 1024) {
               document.body.style.overflow = '';
+              overlay.classList.add('hidden', 'opacity-0');
+              overlay.classList.remove('opacity-50');
             }
           });
         };
@@ -204,12 +225,26 @@ const showSidebar = path.startsWith('/docs');
           mobileMenuButton.onclick = (e) => {
             e.stopPropagation();
             const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
             const menuIcon = document.getElementById('menu-icon');
             const closeIcon = document.getElementById('close-icon');
             
-            if (sidebar) {
+            if (sidebar && overlay) {
+              const isClosing = !sidebar.classList.contains('-translate-x-full');
+              
               sidebar.classList.toggle('-translate-x-full');
-              document.body.style.overflow = sidebar.classList.contains('-translate-x-full') ? '' : 'hidden';
+              
+              if (isClosing) {
+                // Closing
+                overlay.classList.add('hidden', 'opacity-0');
+                overlay.classList.remove('opacity-50');
+                document.body.style.overflow = '';
+              } else {
+                // Opening
+                overlay.classList.remove('hidden', 'opacity-0');
+                overlay.classList.add('opacity-50');
+                document.body.style.overflow = 'hidden';
+              }
               
               if (menuIcon && closeIcon) {
                 if (sidebar.classList.contains('-translate-x-full')) {

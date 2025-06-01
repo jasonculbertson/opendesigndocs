@@ -17,7 +17,11 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
   return (
     <ClerkProvider>
       {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
-      {!isHomepage && <UserProfileButton />}
+      {!isHomepage && (
+        <div className="hidden lg:block">
+          <UserProfileButton />
+        </div>
+      )}
       {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
       {children}
       <ClerkAuthOverlay allowClose={true} />

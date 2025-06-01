@@ -22,6 +22,7 @@ import {
   Mic,
   FileVideo
 } from 'lucide-react';
+import UserProfileSidebar from './UserProfileSidebar';
 
 interface Props {
   currentPath?: string;
@@ -120,9 +121,21 @@ export default function Sidebar({ currentPath = '/' }: Props) {
   return (
     <aside
       id="sidebar"
-      className="fixed top-0 left-0 bottom-0 z-50 w-[280px] lg:w-[250px] bg-[#f9f9f9] backdrop-blur-md overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-[#e5e5e5] lg:border-r lg:border-[#e5e5e5] shadow-[0px_0px_20px_rgba(0,0,0,0.1)] lg:shadow-none"
+      className="fixed top-0 left-0 bottom-0 z-[60] w-[280px] lg:w-[250px] bg-[#f9f9f9] backdrop-blur-md overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-[#e5e5e5] lg:border-r lg:border-[#e5e5e5] shadow-[0px_0px_20px_rgba(0,0,0,0.1)] lg:shadow-none"
     >
       <nav className="p-4 h-full flex flex-col min-h-screen">
+        {/* Mobile logo */}
+        <div className="flex lg:hidden items-center mb-8 pt-4 pl-2">
+          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </a>
+        </div>
+        
+        {/* Desktop logo */}
         <div className="hidden lg:flex items-center gap-2 mb-8">
           <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -164,6 +177,9 @@ export default function Sidebar({ currentPath = '/' }: Props) {
             </div>
           ))}
         </div>
+        
+        {/* User Profile Section */}
+        <UserProfileSidebar />
       </nav>
     </aside>
   );
