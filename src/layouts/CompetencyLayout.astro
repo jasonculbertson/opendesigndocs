@@ -29,7 +29,7 @@ const showContentGate = shouldShowContentGate(path);
           </ol>
         </nav>
         {showContentGate ? (
-          <ClerkReactIsland client:idle>
+          <ClerkReactIsland currentPath={path} client:idle>
             <ContentGate threshold={40}>
               <div class="prose">
                 <slot />
