@@ -1,12 +1,11 @@
 ---
 import Layout from './Layout.astro';
-import ContentGate from '../components/ContentGate';
+// ContentGate removed to disable auth modal
 
 const { title } = Astro.props;
 ---
 
 <Layout title={title}>
-  <ContentGate client:load>
-    <slot />
-  </ContentGate>
+  <!-- ContentGate removed to allow direct content access -->
+  <slot />
 </Layout>

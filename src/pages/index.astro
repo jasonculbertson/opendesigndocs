@@ -1,8 +1,11 @@
 ---
 import HomeLayout from '../layouts/HomeLayout.astro';
-import AuthOverlay from '../components/AuthOverlay.tsx';
+import HomeHeader from '../components/HomeHeader';
+import ClerkReactIsland from '../components/ClerkReactIsland';
 
 const title = "Open Design Docs";
+const redirectTo = Astro.url.searchParams.get('redirect');
+const redirectToLevels = '/docs/levels/levels-titles';
 
 const featuredResources = [
   {
@@ -30,7 +33,7 @@ const featuredResources = [
 <HomeLayout title={title}>
   <div class="min-h-screen bg-[#FAFAFA]">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
@@ -43,10 +46,11 @@ const featuredResources = [
               <span class="text-[15px] font-medium text-gray-900 leading-none">Open Design Docs</span>
             </a>
           </div>
-          <div class="hidden lg:flex items-center space-x-4">
-            <a href="#" id="signin-link" class="text-sm text-gray-600 hover:text-gray-900">Sign In</a>
-            <button id="signup-button" class="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">Get Started</button>
-          </div>
+          <HomeHeader client:load />
+          
+          <!-- Clerk Island for auth overlay functionality -->
+          <ClerkReactIsland currentPath={Astro.url.pathname} showSidebar={false} client:load>
+          </ClerkReactIsland>
         </div>
       </div>
     </nav>
@@ -57,13 +61,13 @@ const featuredResources = [
         <div class="max-w-4xl relative">
           <div class="flex items-start justify-between">
             <div class="flex-1">
-              <h1 class="text-4xl sm:text-6xl lg:text-7xl font-['Fraunces'] text-gray-900 mb-4 sm:mb-6">Resources for building great design teams.</h1>
+              <h1 class="text-4xl sm:text-6xl lg:text-7xl font-serif text-gray-900 mb-4 sm:mb-6">Resources for building great design teams.</h1>
               <p class="text-base sm:text-lg lg:text-xl font-semibold text-gray-600 mb-6 sm:mb-8 pt-2 sm:pt-4">Access comprehensive guides, templates, and insights to help you build and scale effective design organizations.</p>
               <div class="mt-6 sm:mt-10">
                 <button
                   id="browse-resources-btn"
                   type="button"
-                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-lg transition-colors cursor-pointer"
+                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-md transition-colors cursor-pointer"
                 >
                   Browse all resources
                 </button>
@@ -79,8 +83,12 @@ const featuredResources = [
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Featured Resources</h2>
         <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredResources.map(resource => (
-            <a href={resource.href} class="group block">
+          {featuredResources.map((resource, index) => (
+            <button 
+              class="group block text-left w-full cursor-pointer featured-resource-btn" 
+              data-href={resource.href}
+              id={`featured-resource-${index}`}
+            >
               <div class="relative bg-white rounded-2xl border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
                 <div class="text-sm font-medium text-gray-500 mb-3">{resource.section}</div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-3">
@@ -88,42 +96,100 @@ const featuredResources = [
                 </h3>
                 <p class="text-gray-600 text-base">{resource.description}</p>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </div>
     </div>
+    <!-- Full-width Footer -->
+    <footer class="py-8 mt-12">
+      <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="border-t border-gray-200 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="text-sm text-gray-500">
+              &copy; {new Date().getFullYear()} Open Design Docs. All rights reserved.
+            </div>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+              <a href="/legal/privacy" class="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
+              <a href="/legal/terms" class="text-sm text-gray-500 hover:text-gray-700">Terms</a>
+              <a href="https://linkedin.com/in/jasonculbertson" class="text-sm text-gray-500 hover:text-gray-700">Contact</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
-
-  <AuthOverlay client:idle />
+  
 
 </HomeLayout>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const browseButton = document.getElementById('browse-resources-btn');
-    const signinLink = document.getElementById('signin-link');
-    const signupButton = document.getElementById('signup-button');
+    const redirectToLevels = '/docs/levels/levels-titles';
+    const redirectTo = new URLSearchParams(window.location.search).get('redirect');
+
+    // Setup auth event listeners
+    function setupAuthListeners() {
+      const signinLink = document.getElementById('signin-link');
+      const signupButton = document.getElementById('signup-button');
+
+      if (signinLink) {
+        signinLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+            detail: {
+              view: 'sign_in',
+              redirectTo: redirectToLevels
+            }
+          }));
+        });
+      }
+
+      if (signupButton) {
+        signupButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+            detail: {
+              view: 'sign_up',
+              redirectTo: redirectToLevels
+            }
+          }));
+        });
+      }
+    }
+
+    // Setup auth listeners immediately
+    setupAuthListeners();
+
+    // Setup again after React hydration
+    setTimeout(setupAuthListeners, 1000);
 
     if (browseButton) {
       browseButton.addEventListener('click', (e) => {
-        e.preventDefault(); 
-        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_up' } }));
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+          detail: {
+            view: 'sign_up',
+            redirectTo: redirectToLevels
+          }
+        }));
       });
     }
 
-    if (signinLink) {
-      signinLink.addEventListener('click', (e) => {
+    // Handle featured resource clicks
+    const featuredResourceButtons = document.querySelectorAll('.featured-resource-btn');
+    featuredResourceButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
         e.preventDefault();
-        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_in' } }));
+        const href = button.getAttribute('data-href');
+        window.dispatchEvent(new CustomEvent('openAuthOverlay', { 
+          detail: { 
+            view: 'sign_up',
+            redirectTo: href
+          } 
+        }));
       });
-    }
-
-    if (signupButton) {
-      signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_up' } }));
-      });
-    }
+    });
   });
 </script>

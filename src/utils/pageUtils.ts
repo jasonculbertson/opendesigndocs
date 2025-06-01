@@ -99,6 +99,9 @@ export function shouldShowContentGate(pathname: string): boolean {
      // Levels section
      '/docs/levels/levels-titles',
      
+     // Level Competencies
+     '/docs/levels/level-competencies/design-ops',
+     
      // Job Descriptions - UX Designer
      '/docs/levels/job-descriptions/ux-designer/designer-1',
      '/docs/levels/job-descriptions/ux-designer/designer-2',

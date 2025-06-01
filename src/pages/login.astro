@@ -1,0 +1,21 @@
+---
+import LoginModal from '../components/LoginModal';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Login | Open Design Docs</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { background: #FAFAFA; min-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <div class="flex items-center justify-center min-h-screen">
+      <LoginModal client:only="react" />
+    </div>
+  </body>
+</html> 

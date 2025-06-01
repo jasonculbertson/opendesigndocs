@@ -372,36 +372,4 @@ body {
   display: block;
 }
 
-/* Override Supabase Auth UI button styles to match homepage */
-/* Targets the main submit button in the Auth UI */
-.supabase-auth-ui_ui-button[type='submit'] {
-  /* Background and Hover */
-  background-color: rgb(0, 0, 0) !important; /* bg-indigo-600 */
-  color: #ffffff !important; /* text-white */
-  border: none !important; /* Remove default border */
-
-  /* Font */
-  font-size: 1rem !important; /* text-base */
-  font-weight: 500 !important; /* font-medium */
-  font-family: inherit !important; /* Use site font */
-
-  /* Padding */
-  padding: 0.75rem 1.5rem !important; /* py-3 px-6 */
-
-  /* Border Radius */
-  border-radius: 0.5rem !important; /* rounded-lg */
-
-  /* Transition */
-  transition: background-color 0.2s ease-in-out !important;
-}
-
-.supabase-auth-ui_ui-button[type='submit']:hover {
-  background-color: rgb(29, 29, 29) !important; /* hover:bg-indigo-700 */
-  color: #ffffff !important; /* Ensure text stays white on hover */
-}
-
-/* Optional: Style the focus state */
-.supabase-auth-ui_ui-button[type='submit']:focus {
-  outline: none !important;
-  box-shadow: 0 0 0 3px rgba(29, 29, 29, 0.4) !important; /* Example focus ring like Tailwind's focus:ring */
-}
+/* Remove all custom Supabase Auth UI overrides below to restore default look */

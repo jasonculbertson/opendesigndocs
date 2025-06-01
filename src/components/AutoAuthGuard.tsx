@@ -1,0 +1,38 @@
+import React, { useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
+
+interface AutoAuthGuardProps {
+  currentPath: string;
+}
+
+export default function AutoAuthGuard({ currentPath }: AutoAuthGuardProps) {
+  const { isSignedIn, isLoaded } = useUser();
+
+  useEffect(() => {
+    // Wait for Clerk to load
+    if (!isLoaded) return;
+
+    // Don't trigger on homepage
+    if (currentPath === '/') return;
+
+    // Debug logging
+    console.log('AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
+
+    // Temporarily disabled to debug blank page issue
+    // If user is not signed in and on a subpage, trigger auth overlay
+    // if (!isSignedIn) {
+    //   // Small delay to ensure the page has loaded
+    //   setTimeout(() => {
+    //     window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+    //       detail: {
+    //         view: 'sign_up',
+    //         redirectTo: currentPath
+    //       }
+    //     }));
+    //   }, 100);
+    // }
+  }, [isSignedIn, isLoaded, currentPath]);
+
+  // This component doesn't render anything visible
+  return null;
+} 

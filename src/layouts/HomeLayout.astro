@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
+import ClerkReactIsland from '../components/ClerkReactIsland';
 import '../styles/main.css';
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+const path = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -16,11 +18,13 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <title>{title}</title>
     <ViewTransitions />
   </head>
   <body>
-    <slot />
+    <ClerkReactIsland client:idle showSidebar={false} currentPath={path}>
+      <slot />
+    </ClerkReactIsland>
   </body>
 </html>

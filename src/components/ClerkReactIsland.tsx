@@ -1,0 +1,26 @@
+import React from "react";
+import ClerkProvider from "./ClerkProvider";
+import ClerkAuthOverlay from "./ClerkAuthOverlay";
+import Sidebar from "./Sidebar";
+import UserProfileButton from "./UserProfileButton";
+import AutoAuthGuard from "./AutoAuthGuard";
+
+interface ClerkReactIslandProps extends React.PropsWithChildren<{}> {
+  currentPath: string;
+  showSidebar?: boolean;
+}
+
+export default function ClerkReactIsland({ children, currentPath, showSidebar = true }: ClerkReactIslandProps) {
+  console.log('ClerkReactIsland rendering on path:', currentPath);
+  const isHomepage = currentPath === '/';
+  
+  return (
+    <ClerkProvider>
+      {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
+      {!isHomepage && <UserProfileButton />}
+      {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
+      {children}
+      <ClerkAuthOverlay allowClose={true} />
+    </ClerkProvider>
+  );
+} 

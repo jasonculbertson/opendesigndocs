@@ -1,7 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
-import ContentGate from '../../../components/ContentGate';
+
 
 const entry = await getEntry('docs', 'levels/reviews');
 const { Content } = await entry.render();
@@ -11,7 +11,7 @@ const breadcrumbs: { text: string; href: string }[] = [];
 ---
 
 <Layout title={entry.data.title}>
-  <ContentGate client:load>
+  
     <main class="relative min-h-screen">
       <div class="py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[680px] mx-auto">
@@ -33,5 +33,5 @@ const breadcrumbs: { text: string; href: string }[] = [];
         </div>
       </div>
     </main>
-  </ContentGate>
+  
 </Layout>
