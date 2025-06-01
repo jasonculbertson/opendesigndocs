@@ -178,8 +178,10 @@ export default function Sidebar({ currentPath = '/' }: Props) {
           ))}
         </div>
         
-        {/* User Profile Section */}
-        <UserProfileSidebar />
+        {/* User Profile Section - Mobile only */}
+        <div className="lg:hidden">
+          <UserProfileSidebar />
+        </div>
       </nav>
     </aside>
   );
