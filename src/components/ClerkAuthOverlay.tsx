@@ -200,53 +200,6 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                   </svg>
                   Continue with Google
                 </button>
-                
-                <button
-                  onClick={async () => {
-                    try {
-                      // Always try sign-in first - it works for both new and existing users
-                      await signIn?.authenticateWithRedirect({
-                        strategy: 'oauth_apple',
-                        redirectUrl: window.location.origin + redirectTo,
-                        redirectUrlComplete: window.location.origin + redirectTo,
-                      });
-                    } catch (error) {
-                      console.error('Apple auth error:', error);
-                      // If sign-in fails and we're in sign-up mode, try sign-up
-                      if (initialView === 'sign_up') {
-                        try {
-                          await signUp?.authenticateWithRedirect({
-                            strategy: 'oauth_apple',
-                            redirectUrl: window.location.origin + redirectTo,
-                            redirectUrlComplete: window.location.origin + redirectTo,
-                          });
-                        } catch (signUpError) {
-                          console.error('Apple sign-up error:', signUpError);
-                        }
-                      }
-                    }
-                  }}
-                  style={{
-                    width: '300px',
-                    padding: '14px 20px',
-                    backgroundColor: '#1a1a1a',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                  </svg>
-                  Continue with Apple
-                </button>
               </div>
 
               <div style={{ position: 'relative', marginBottom: '24px' }}>
