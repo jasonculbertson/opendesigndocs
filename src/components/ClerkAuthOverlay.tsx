@@ -157,7 +157,7 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                       // Always try sign-in first - it works for both new and existing users
                       await signIn?.authenticateWithRedirect({
                         strategy: 'oauth_google',
-                        redirectUrl: window.location.origin + redirectTo,
+                        redirectUrl: window.location.origin,
                         redirectUrlComplete: window.location.origin + redirectTo,
                       });
                     } catch (error) {
@@ -167,7 +167,7 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         try {
                           await signUp?.authenticateWithRedirect({
                             strategy: 'oauth_google',
-                            redirectUrl: window.location.origin + redirectTo,
+                            redirectUrl: window.location.origin,
                             redirectUrlComplete: window.location.origin + redirectTo,
                           });
                         } catch (signUpError) {
@@ -231,7 +231,32 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
               </div>
 
               <button
-                onClick={() => setEmailSent(true)}
+                onClick={async () => {
+                  try {
+                    if (initialView === 'sign_up') {
+                      // Sign up with magic link
+                      await signUp?.create({
+                        emailAddress: email,
+                      });
+                      await signUp?.prepareEmailAddressVerification({
+                        strategy: 'email_link',
+                        redirectUrl: window.location.origin + redirectTo,
+                      });
+                      setEmailSent(true);
+                    } else {
+                      // Sign in with magic link
+                      await signIn?.create({
+                        strategy: 'email_link',
+                        identifier: email,
+                        redirectUrl: window.location.origin + redirectTo,
+                      });
+                      setEmailSent(true);
+                    }
+                  } catch (error) {
+                    console.error('Email authentication error:', error);
+                    // Show error to user if needed
+                  }
+                }}
                 disabled={!email.trim()}
                 style={{
                   width: '300px',
