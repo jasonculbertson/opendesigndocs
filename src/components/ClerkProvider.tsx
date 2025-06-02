@@ -1,8 +1,27 @@
-import React from 'react';
-import { ClerkProvider as ClerkReactProvider } from '@clerk/clerk-react';
+import React, { useEffect } from 'react';
+import { ClerkProvider as ClerkReactProvider, useUser } from '@clerk/clerk-react';
 
 interface ClerkProviderProps {
   children: React.ReactNode;
+}
+
+function DebugAuthState() {
+  const { user, isSignedIn, isLoaded } = useUser();
+  
+  useEffect(() => {
+    console.log('Clerk Auth State Change:', {
+      isLoaded,
+      isSignedIn,
+      user: user ? {
+        id: user.id,
+        email: user.primaryEmailAddress?.emailAddress,
+        imageUrl: user.imageUrl
+      } : null,
+      timestamp: new Date().toISOString()
+    });
+  }, [isLoaded, isSignedIn, user]);
+  
+  return null;
 }
 
 const ClerkProvider: React.FC<ClerkProviderProps> = ({ children }) => {
@@ -15,6 +34,7 @@ const ClerkProvider: React.FC<ClerkProviderProps> = ({ children }) => {
 
   return (
     <ClerkReactProvider publishableKey={publishableKey}>
+      <DebugAuthState />
       {children}
     </ClerkReactProvider>
   );

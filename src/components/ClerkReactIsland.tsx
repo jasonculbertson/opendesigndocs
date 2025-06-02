@@ -14,6 +14,13 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
   console.log('ClerkReactIsland rendering on path:', currentPath);
   const isHomepage = currentPath === '/';
   
+  console.log('ClerkReactIsland conditions:', {
+    isHomepage,
+    showSidebar,
+    willShowUserProfileButton: !isHomepage,
+    willShowSidebar: showSidebar && !isHomepage
+  });
+  
   return (
     <ClerkProvider>
       {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
