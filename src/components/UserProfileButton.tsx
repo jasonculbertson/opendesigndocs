@@ -21,10 +21,23 @@ function LogoutIcon() {
 }
 
 export default function UserProfileButton() {
-  const { user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const { signOut, openUserProfile } = useClerk();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('UserProfileButton - Debug Info:', {
+      isLoaded,
+      isSignedIn,
+      user: user ? {
+        id: user.id,
+        imageUrl: user.imageUrl,
+        email: user.primaryEmailAddress?.emailAddress
+      } : null
+    });
+  }, [isLoaded, isSignedIn, user]);
 
   // Close menu on outside click
   useEffect(() => {
@@ -39,7 +52,41 @@ export default function UserProfileButton() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [open]);
 
-  if (!user) return null;
+  if (!isLoaded) {
+    console.log('UserProfileButton - Still loading...');
+    return (
+      <div style={{
+        position: 'absolute',
+        top: 16,
+        right: 24,
+        zIndex: 100,
+      }}>
+        <div style={{
+          width: 32,
+          height: 32,
+          borderRadius: '50%',
+          backgroundColor: '#f3f4f6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{
+            width: 16,
+            height: 16,
+            borderRadius: '50%',
+            backgroundColor: '#d1d5db'
+          }} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn || !user) {
+    console.log('UserProfileButton - User not signed in');
+    return null;
+  }
+
+  console.log('UserProfileButton - Rendering profile button');
 
   const handleOpenProfile = () => {
     setOpen(false);
