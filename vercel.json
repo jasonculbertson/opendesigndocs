@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "src/pages/**/*.{astro,ts}": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "buildCommand": "npm run build",
   "framework": "astro"
 }
