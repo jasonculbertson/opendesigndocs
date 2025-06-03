@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { ClerkProvider } from '@clerk/clerk-react';
 import ClerkAuthOverlay from "./ClerkAuthOverlay";
 import Sidebar from "./Sidebar";
 import UserProfileButton from "./UserProfileButton";
@@ -10,6 +11,12 @@ interface ClerkReactIslandProps extends React.PropsWithChildren<{}> {
 }
 
 export default function ClerkReactIsland({ children, currentPath, showSidebar = true }: ClerkReactIslandProps) {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   console.log('ClerkReactIsland rendering on path:', currentPath);
   const isHomepage = currentPath === '/';
   
@@ -19,9 +26,25 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
     willShowUserProfileButton: !isHomepage,
     willShowSidebar: showSidebar && !isHomepage
   });
+
+  // During SSR, render basic structure without Clerk
+  if (!isClient) {
+    return (
+      <>
+        {children}
+      </>
+    );
+  }
+
+  const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+  if (!publishableKey) {
+    console.error('Missing Clerk publishable key');
+    return <>{children}</>;
+  }
   
   return (
-    <>
+    <ClerkProvider publishableKey={publishableKey}>
       {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
       {!isHomepage && (
         <div className="hidden lg:block">
@@ -31,6 +54,6 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
       {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
       {children}
       <ClerkAuthOverlay allowClose={true} />
-    </>
+    </ClerkProvider>
   );
 } 

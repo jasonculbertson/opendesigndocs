@@ -1,7 +1,7 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import ClerkReactIsland from '../components/ClerkReactIsland';
-import ClerkProviderWrapper from '../components/ClerkProviderWrapper';
+
 import '../styles/main.css';
 
 interface Props {
@@ -24,10 +24,8 @@ const path = Astro.url.pathname;
     <ViewTransitions />
   </head>
   <body>
-    <ClerkProviderWrapper client:load>
-      <ClerkReactIsland client:idle showSidebar={false} currentPath={path}>
-        <slot />
-      </ClerkReactIsland>
-    </ClerkProviderWrapper>
+    <ClerkReactIsland client:idle showSidebar={false} currentPath={path}>
+      <slot />
+    </ClerkReactIsland>
   </body>
 </html>
