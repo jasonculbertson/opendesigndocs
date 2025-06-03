@@ -4,6 +4,11 @@ import Layout from '../../../../layouts/Layout.astro';
 
 
 const entry = await getEntry('docs', 'leadership/quarter-2/individual-assessment');
+
+if (!entry) {
+  throw new Error('Content not found');
+}
+
 const { Content } = await entry.render();
 
 const breadcrumbs = [
