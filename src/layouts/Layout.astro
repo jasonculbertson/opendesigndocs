@@ -64,7 +64,7 @@ const showSidebar = path.startsWith('/docs');
     <ViewTransitions />
   </head>
   <body>
-    <ClerkProviderWrapper client:only="react">
+    <ClerkProviderWrapper client:load>
       <ClerkReactIsland client:idle currentPath={path} showSidebar={showSidebar}>
       <div class="min-h-screen bg-white">
         <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center px-4">
