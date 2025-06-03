@@ -1,7 +1,6 @@
 ---
 import HomeLayout from '../layouts/HomeLayout.astro';
 import HomeHeader from '../components/HomeHeader';
-import ClerkReactIsland from '../components/ClerkReactIsland';
 
 const title = "Open Design Docs";
 const redirectTo = Astro.url.searchParams.get('redirect');
@@ -47,10 +46,6 @@ const featuredResources = [
             </a>
           </div>
           <HomeHeader client:load />
-          
-          <!-- Clerk Island for auth overlay functionality -->
-          <ClerkReactIsland currentPath={Astro.url.pathname} showSidebar={false} client:load>
-          </ClerkReactIsland>
         </div>
       </div>
     </nav>

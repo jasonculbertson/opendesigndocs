@@ -3,6 +3,7 @@ import { ViewTransitions } from 'astro:transitions';
 import { shouldShowSubstack, shouldShowContentGate } from '../utils/pageUtils';
 import ContentGate from '../components/ContentGate';
 import ClerkReactIsland from '../components/ClerkReactIsland';
+import ClerkProviderWrapper from '../components/ClerkProviderWrapper';
 import DevTools from '../components/DevTools';
 import Footer from '../components/Footer.astro';
 // import Analytics from '@vercel/analytics/astro';
@@ -63,7 +64,8 @@ const showSidebar = path.startsWith('/docs');
     <ViewTransitions />
   </head>
   <body>
-    <ClerkReactIsland client:idle currentPath={path} showSidebar={showSidebar}>
+    <ClerkProviderWrapper client:load>
+      <ClerkReactIsland client:idle currentPath={path} showSidebar={showSidebar}>
       <div class="min-h-screen bg-white">
         <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center px-4">
           <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" class="flex items-center gap-2">
@@ -135,7 +137,8 @@ const showSidebar = path.startsWith('/docs');
       </div>
       {/* <Analytics /> */}
       {import.meta.env.DEV && <DevTools client:load />}
-    </ClerkReactIsland>
+      </ClerkReactIsland>
+    </ClerkProviderWrapper>
     <script is:inline>
       // Enhanced mobile menu with overlay
       document.addEventListener('astro:page-load', () => {

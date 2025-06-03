@@ -1,7 +1,6 @@
 ---
 import Layout from './Layout.astro';
 import ContentGate from '../components/ContentGate';
-import ClerkReactIsland from '../components/ClerkReactIsland';
 import { shouldShowContentGate } from '../utils/pageUtils';
 
 const { frontmatter, breadcrumbs } = Astro.props;
@@ -29,13 +28,11 @@ const showContentGate = shouldShowContentGate(path);
           </ol>
         </nav>
         {showContentGate ? (
-          <ClerkReactIsland currentPath={path} client:idle>
-            <ContentGate threshold={40}>
-              <div class="prose">
-                <slot />
-              </div>
-            </ContentGate>
-          </ClerkReactIsland>
+          <ContentGate threshold={40}>
+            <div class="prose">
+              <slot />
+            </div>
+          </ContentGate>
         ) : (
           <div class="prose">
             <slot />

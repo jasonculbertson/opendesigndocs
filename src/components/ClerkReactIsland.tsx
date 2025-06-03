@@ -1,5 +1,4 @@
 import React from "react";
-import ClerkProvider from "./ClerkProvider";
 import ClerkAuthOverlay from "./ClerkAuthOverlay";
 import Sidebar from "./Sidebar";
 import UserProfileButton from "./UserProfileButton";
@@ -22,7 +21,7 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
   });
   
   return (
-    <ClerkProvider>
+    <>
       {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
       {!isHomepage && (
         <div className="hidden lg:block">
@@ -32,6 +31,6 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
       {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
       {children}
       <ClerkAuthOverlay allowClose={true} />
-    </ClerkProvider>
+    </>
   );
 } 
