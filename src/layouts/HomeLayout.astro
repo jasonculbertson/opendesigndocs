@@ -24,7 +24,7 @@ const path = Astro.url.pathname;
     <ViewTransitions />
   </head>
   <body>
-    <ClerkProviderWrapper client:load>
+    <ClerkProviderWrapper client:only="react">
       <ClerkReactIsland client:idle showSidebar={false} currentPath={path}>
         <slot />
       </ClerkReactIsland>
