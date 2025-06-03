@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ClerkProvider } from '@clerk/clerk-react';
-import ClerkAuthOverlay from "./ClerkAuthOverlay";
 import Sidebar from "./Sidebar";
 import UserProfileButton from "./UserProfileButton";
 import AutoAuthGuard from "./AutoAuthGuard";
@@ -27,12 +26,11 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
     willShowSidebar: showSidebar && !isHomepage
   });
 
-  // During SSR, render basic structure - ClerkAuthOverlay handles its own SSR protection
+  // During SSR, render basic structure - no auth overlay needed since auth is bypassed
   if (!isClient) {
     return (
       <>
         {children}
-        <ClerkAuthOverlay allowClose={true} />
       </>
     );
   }
@@ -44,7 +42,6 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
     return (
       <>
         {children}
-        <ClerkAuthOverlay allowClose={true} />
       </>
     );
   }
@@ -59,7 +56,6 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
       )}
       {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
       {children}
-      <ClerkAuthOverlay allowClose={true} />
     </ClerkProvider>
   );
 } 
