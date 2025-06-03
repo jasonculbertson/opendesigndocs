@@ -33,19 +33,10 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
     setIsClient(true);
   }, []);
 
-  // Close overlay if user is signed in
-  useEffect(() => {
-    if (isSignedIn) {
-      setIsOpen(false);
-      // Redirect if needed
-      if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
-        window.location.href = redirectTo;
-      }
-    }
-  }, [isSignedIn, redirectTo]);
-
+  // Set up event listener regardless of SSR/client state - this is crucial for homepage buttons
   useEffect(() => {
     const handleOpenAuth = (event: Event) => {
+      console.log('🎯 openAuthOverlay event received:', event);
       const customEvent = event as OpenAuthEvent;
       const view = customEvent.detail?.view || 'sign_in';
       const redirect = customEvent.detail?.redirectTo;
@@ -55,11 +46,31 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
       setAuthTitle(view === 'sign_up' ? 'Get unlimited free access' : 'Welcome back');
       setIsOpen(true);
     };
-    window.addEventListener('openAuthOverlay', handleOpenAuth);
-    return () => window.removeEventListener('openAuthOverlay', handleOpenAuth);
-  }, []);
+    
+    if (typeof window !== 'undefined') {
+      console.log('🔧 Setting up openAuthOverlay event listener');
+      window.addEventListener('openAuthOverlay', handleOpenAuth);
+      return () => {
+        console.log('🧹 Cleaning up openAuthOverlay event listener');
+        window.removeEventListener('openAuthOverlay', handleOpenAuth);
+      };
+    }
+  }, []); // No dependencies - set up once and keep
+
+  // Close overlay if user is signed in (only on client)
+  useEffect(() => {
+    if (isClient && isSignedIn) {
+      setIsOpen(false);
+      // Redirect if needed
+      if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
+        window.location.href = redirectTo;
+      }
+    }
+  }, [isClient, isSignedIn, redirectTo]);
 
   useEffect(() => {
+    if (!isClient) return; // Only handle these effects on client side
+    
     if (!allowClose) {
       if (isOpen) {
         document.body.style.overflow = 'hidden';
@@ -95,15 +106,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
         document.body.style.overflow = '';
       };
     }
-  }, [isOpen, allowClose]);
+  }, [isClient, isOpen, allowClose]);
 
-  // Don't render anything during SSR
-  if (!isClient) {
-    return null;
-  }
-
-  if (!isOpen) {
-    return null;
+  // Always render something to maintain event listeners, but only show UI on client when open
+  if (!isClient || !isOpen) {
+    return <div style={{ display: 'none' }} />;
   }
 
   return (
