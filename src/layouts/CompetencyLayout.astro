@@ -1,11 +1,8 @@
 ---
 import Layout from './Layout.astro';
-import ContentGate from '../components/ContentGate';
-import { shouldShowContentGate } from '../utils/pageUtils';
 
 const { frontmatter, breadcrumbs } = Astro.props;
 const path = Astro.url.pathname;
-const showContentGate = shouldShowContentGate(path);
 ---
 
 <Layout title={frontmatter.title}>
@@ -27,17 +24,9 @@ const showContentGate = shouldShowContentGate(path);
             ))}
           </ol>
         </nav>
-        {showContentGate ? (
-          <ContentGate threshold={40}>
-            <div class="prose">
-              <slot />
-            </div>
-          </ContentGate>
-        ) : (
-          <div class="prose">
-            <slot />
-          </div>
-        )}
+        <div class="prose">
+          <slot />
+        </div>
       </article>
     </main>
 </Layout>

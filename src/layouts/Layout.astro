@@ -1,11 +1,10 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import { shouldShowSubstack, shouldShowContentGate } from '../utils/pageUtils';
-import ContentGate from '../components/ContentGate';
-import ClerkReactIsland from '../components/ClerkReactIsland';
-
-import DevTools from '../components/DevTools';
 import Footer from '../components/Footer.astro';
+import ClerkReactIsland from '../components/ClerkReactIsland';
+import DevTools from '../components/DevTools';
+import { ViewTransitions } from 'astro:transitions';
+import { shouldShowSubstack } from '../utils/pageUtils';
+
 // import Analytics from '@vercel/analytics/astro';
 import '../styles/main.css';
 // import '../styles/global.css'; // Re-add import for global styles
@@ -27,7 +26,6 @@ const {
 
 const path = Astro.url.pathname;
 const showSubstack = shouldShowSubstack(path);
-const showContentGate = shouldShowContentGate(path);
 const siteUrl = 'https://opendesigndocs.com';
 const canonicalURL = new URL(path, siteUrl).toString();
 const showSidebar = path.startsWith('/docs');
