@@ -9,30 +9,35 @@ export default function AutoAuthGuard({ currentPath }: AutoAuthGuardProps) {
   const { isSignedIn, isLoaded } = useUser();
 
   useEffect(() => {
-    // Wait for Clerk to load
-    if (!isLoaded) return;
+    // TEMPORARILY DISABLED FOR TESTING
+    // We'll re-enable this once Clerk authentication is working properly
+    console.log('🔒 AutoAuthGuard DISABLED - allowing free access to:', currentPath);
+    return;
 
-    // Don't trigger on homepage
-    if (currentPath === '/') return;
+    // // Wait for Clerk to load
+    // if (!isLoaded) return;
 
-    // Debug logging
-    console.log('🔒 AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
+    // // Don't trigger on homepage
+    // if (currentPath === '/') return;
 
-    // If user is not signed in and on a subpage, trigger auth overlay
-    if (!isSignedIn) {
-      console.log('🚫 User not authenticated, triggering auth overlay');
-      // Small delay to ensure the page has loaded
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-          detail: {
-            view: 'sign_up',
-            redirectTo: currentPath
-          }
-        }));
-      }, 100);
-    } else {
-      console.log('✅ User is authenticated, allowing access');
-    }
+    // // Debug logging
+    // console.log('🔒 AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
+
+    // // If user is not signed in and on a subpage, trigger auth overlay
+    // if (!isSignedIn) {
+    //   console.log('🚫 User not authenticated, triggering auth overlay');
+    //   // Small delay to ensure the page has loaded
+    //   setTimeout(() => {
+    //     window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+    //       detail: {
+    //         view: 'sign_up',
+    //         redirectTo: currentPath
+    //       }
+    //     }));
+    //   }, 100);
+    // } else {
+    //   console.log('✅ User is authenticated, allowing access');
+    // }
   }, [isSignedIn, isLoaded, currentPath]);
 
   // This component doesn't render anything visible

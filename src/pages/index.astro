@@ -45,7 +45,10 @@ const featuredResources = [
               <span class="text-[15px] font-medium text-gray-900 leading-none">Open Design Docs</span>
             </a>
           </div>
-          <HomeHeader client:load />
+          <!-- Hide auth buttons for now -->
+          <div style="opacity: 0; pointer-events: none;">
+            <HomeHeader client:load />
+          </div>
         </div>
       </div>
     </nav>
@@ -59,13 +62,12 @@ const featuredResources = [
               <h1 class="text-4xl sm:text-6xl lg:text-7xl font-serif text-gray-900 mb-4 sm:mb-6">Resources for building great design teams.</h1>
               <p class="text-base sm:text-lg lg:text-xl font-semibold text-gray-600 mb-6 sm:mb-8 pt-2 sm:pt-4">Access comprehensive guides, templates, and insights to help you build and scale effective design organizations.</p>
               <div class="mt-6 sm:mt-10">
-                <button
-                  id="browse-resources-btn"
-                  type="button"
-                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-md transition-colors cursor-pointer"
+                <a
+                  href={redirectToLevels}
+                  class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-[rgb(79,70,229)] hover:bg-[rgb(67,56,202)] rounded-md transition-colors cursor-pointer no-underline"
                 >
                   Browse all resources
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -79,9 +81,9 @@ const featuredResources = [
         <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Featured Resources</h2>
         <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredResources.map((resource, index) => (
-            <button 
-              class="group block text-left w-full cursor-pointer featured-resource-btn" 
-              data-href={resource.href}
+            <a 
+              href={resource.href}
+              class="group block text-left w-full cursor-pointer no-underline"
               id={`featured-resource-${index}`}
             >
               <div class="relative bg-white rounded-2xl border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
@@ -91,7 +93,7 @@ const featuredResources = [
                 </h3>
                 <p class="text-gray-600 text-base">{resource.description}</p>
               </div>
-            </button>
+            </a>
           ))}
         </div>
       </div>
@@ -118,73 +120,4 @@ const featuredResources = [
 
 </HomeLayout>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const browseButton = document.getElementById('browse-resources-btn');
-    const redirectToLevels = '/docs/levels/levels-titles';
-    const redirectTo = new URLSearchParams(window.location.search).get('redirect');
-
-    // Setup auth event listeners
-    function setupAuthListeners() {
-      const signinLink = document.getElementById('signin-link');
-      const signupButton = document.getElementById('signup-button');
-
-      if (signinLink) {
-        signinLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-            detail: {
-              view: 'sign_in',
-              redirectTo: redirectToLevels
-            }
-          }));
-        });
-      }
-
-      if (signupButton) {
-        signupButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-            detail: {
-              view: 'sign_up',
-              redirectTo: redirectToLevels
-            }
-          }));
-        });
-      }
-    }
-
-    // Setup auth listeners immediately
-    setupAuthListeners();
-
-    // Setup again after React hydration
-    setTimeout(setupAuthListeners, 1000);
-
-    if (browseButton) {
-      browseButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-          detail: {
-            view: 'sign_up',
-            redirectTo: redirectToLevels
-          }
-        }));
-      });
-    }
-
-    // Handle featured resource clicks
-    const featuredResourceButtons = document.querySelectorAll('.featured-resource-btn');
-    featuredResourceButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = button.getAttribute('data-href');
-        window.dispatchEvent(new CustomEvent('openAuthOverlay', { 
-          detail: { 
-            view: 'sign_up',
-            redirectTo: href
-          } 
-        }));
-      });
-    });
-  });
-</script>
+<!-- Authentication temporarily disabled - buttons now go directly to pages -->
