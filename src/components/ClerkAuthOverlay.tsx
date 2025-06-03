@@ -153,27 +153,26 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                 <button
                   onClick={async () => {
+                    console.log('🚀 Google OAuth clicked:', { initialView, redirectTo });
                     try {
-                      // Always try sign-in first - it works for both new and existing users
-                      await signIn?.authenticateWithRedirect({
-                        strategy: 'oauth_google',
-                        redirectUrl: window.location.origin,
-                        redirectUrlComplete: window.location.origin + redirectTo,
-                      });
-                    } catch (error) {
-                      console.error('Google auth error:', error);
-                      // If sign-in fails and we're in sign-up mode, try sign-up
                       if (initialView === 'sign_up') {
-                        try {
-                          await signUp?.authenticateWithRedirect({
-                            strategy: 'oauth_google',
-                            redirectUrl: window.location.origin,
-                            redirectUrlComplete: window.location.origin + redirectTo,
-                          });
-                        } catch (signUpError) {
-                          console.error('Google sign-up error:', signUpError);
-                        }
+                        console.log('Starting Google sign-up flow...');
+                        await signUp?.authenticateWithRedirect({
+                          strategy: 'oauth_google',
+                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
+                        });
+                      } else {
+                        console.log('Starting Google sign-in flow...');
+                        await signIn?.authenticateWithRedirect({
+                          strategy: 'oauth_google',
+                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
+                        });
                       }
+                    } catch (error) {
+                      console.error('Google OAuth error:', error);
+                      alert(`Google authentication failed: ${error}`);
                     }
                   }}
                   style={{

@@ -27,11 +27,12 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
     willShowSidebar: showSidebar && !isHomepage
   });
 
-  // During SSR, render basic structure without Clerk
+  // During SSR, render basic structure with auth overlay (for homepage buttons)
   if (!isClient) {
     return (
       <>
         {children}
+        <ClerkAuthOverlay allowClose={true} />
       </>
     );
   }
@@ -40,7 +41,12 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
 
   if (!publishableKey) {
     console.error('Missing Clerk publishable key');
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <ClerkAuthOverlay allowClose={true} />
+      </>
+    );
   }
   
   return (

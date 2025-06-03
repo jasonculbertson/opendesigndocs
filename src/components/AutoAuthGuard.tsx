@@ -16,21 +16,23 @@ export default function AutoAuthGuard({ currentPath }: AutoAuthGuardProps) {
     if (currentPath === '/') return;
 
     // Debug logging
-    console.log('AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
+    console.log('🔒 AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
 
-    // Temporarily disabled to debug blank page issue
     // If user is not signed in and on a subpage, trigger auth overlay
-    // if (!isSignedIn) {
-    //   // Small delay to ensure the page has loaded
-    //   setTimeout(() => {
-    //     window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-    //       detail: {
-    //         view: 'sign_up',
-    //         redirectTo: currentPath
-    //       }
-    //     }));
-    //   }, 100);
-    // }
+    if (!isSignedIn) {
+      console.log('🚫 User not authenticated, triggering auth overlay');
+      // Small delay to ensure the page has loaded
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('openAuthOverlay', {
+          detail: {
+            view: 'sign_up',
+            redirectTo: currentPath
+          }
+        }));
+      }, 100);
+    } else {
+      console.log('✅ User is authenticated, allowing access');
+    }
   }, [isSignedIn, isLoaded, currentPath]);
 
   // This component doesn't render anything visible
