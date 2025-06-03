@@ -14,6 +14,7 @@ interface OpenAuthEventDetail {
 type OpenAuthEvent = CustomEvent<OpenAuthEventDetail>;
 
 function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
+  const [isClient, setIsClient] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [authTitle, setAuthTitle] = useState('Get unlimited free access');
   const [initialView, setInitialView] = useState<'sign_in' | 'sign_up'>('sign_up');
@@ -22,16 +23,22 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const { isSignedIn } = useUser();
-  const { signIn } = useSignIn();
-  const { signUp } = useSignUp();
+
+  // Only use Clerk hooks on client side
+  const { isSignedIn } = isClient ? useUser() : { isSignedIn: false };
+  const { signIn } = isClient ? useSignIn() : { signIn: null };
+  const { signUp } = isClient ? useSignUp() : { signUp: null };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Close overlay if user is signed in
   useEffect(() => {
     if (isSignedIn) {
       setIsOpen(false);
       // Redirect if needed
-      if (redirectTo && redirectTo !== window.location.pathname) {
+      if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
         window.location.href = redirectTo;
       }
     }
@@ -89,6 +96,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
       };
     }
   }, [isOpen, allowClose]);
+
+  // Don't render anything during SSR
+  if (!isClient) {
+    return null;
+  }
 
   if (!isOpen) {
     return null;

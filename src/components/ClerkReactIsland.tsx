@@ -27,7 +27,7 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
     willShowSidebar: showSidebar && !isHomepage
   });
 
-  // During SSR, render basic structure with auth overlay (for homepage buttons)
+  // During SSR, render basic structure - ClerkAuthOverlay handles its own SSR protection
   if (!isClient) {
     return (
       <>
