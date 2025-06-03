@@ -232,30 +232,40 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
 
               <button
                 onClick={async () => {
+                  console.log('Email button clicked:', { email, initialView });
                   try {
                     if (initialView === 'sign_up') {
+                      console.log('Attempting sign up with email...');
                       // Sign up with magic link
-                      await signUp?.create({
+                      const signUpResult = await signUp?.create({
                         emailAddress: email,
                       });
-                      await signUp?.prepareEmailAddressVerification({
+                      console.log('SignUp create result:', signUpResult);
+                      
+                      const prepareResult = await signUp?.prepareEmailAddressVerification({
                         strategy: 'email_link',
                         redirectUrl: window.location.origin + redirectTo,
                       });
+                      console.log('Prepare email verification result:', prepareResult);
                       setEmailSent(true);
                     } else {
+                      console.log('Attempting sign in with email...');
                       // Sign in with magic link
-                      await signIn?.create({
+                      const signInResult = await signIn?.create({
                         strategy: 'email_link',
                         identifier: email,
                         redirectUrl: window.location.origin + redirectTo,
                       });
+                      console.log('SignIn create result:', signInResult);
                       setEmailSent(true);
                     }
-                  } catch (error) {
-                    console.error('Email authentication error:', error);
-                    // Show error to user if needed
-                  }
+                                      } catch (error) {
+                      console.error('Email authentication error:', error);
+                      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                      console.error('Error details:', error);
+                      // For now, let's show the error in an alert so user knows something went wrong
+                      alert(`Authentication error: ${errorMsg || 'Please try again'}`);
+                    }
                 }}
                 disabled={!email.trim()}
                 style={{
