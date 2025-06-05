@@ -7,6 +7,8 @@ interface Props {
   isDraft?: boolean;
   href?: string;
   description?: string;
+  compact?: boolean;
+  youtube?: boolean;
 }
 
 const { 
@@ -16,7 +18,9 @@ const {
   thumbnailUrl, 
   isDraft = false, 
   href,
-  description = '' 
+  description = '',
+  compact = false,
+  youtube = false
 } = Astro.props;
 
 function getYouTubeVideoId(url: string | undefined) {
@@ -27,10 +31,33 @@ function getYouTubeVideoId(url: string | undefined) {
 }
 
 const videoId = getYouTubeVideoId(href);
+
+// YouTube-style sizing
+const containerClass = youtube 
+  ? 'group relative bg-white cursor-pointer' 
+  : `group relative rounded-xl overflow-hidden bg-white border border-[#e5e7eb] hover:border-[#d1d5db] transition-colors ${compact ? 'max-w-sm' : ''}`;
+
+const thumbnailClass = youtube
+  ? 'aspect-video relative overflow-hidden rounded-xl bg-gray-100'
+  : 'aspect-video relative overflow-hidden';
+
+const playButtonSize = youtube ? 'w-12 h-12' : compact ? 'w-12 h-12' : 'w-16 h-16';
+const playIconSize = youtube ? 'w-6 h-6' : compact ? 'w-6 h-6' : 'w-8 h-8';
+
+const textContainerClass = youtube ? 'mt-3' : compact ? 'p-3' : 'p-4';
+const titleClass = youtube 
+  ? 'font-medium text-[15px] leading-[1.4] text-[#0f0f0f] line-clamp-2 mb-1'
+  : compact 
+    ? 'font-medium leading-snug text-[#1a1f36] text-sm line-clamp-2'
+    : 'font-medium text-[15px] leading-snug text-[#1a1f36]';
+
+const timestampClass = youtube 
+  ? 'text-[13px] text-[#606060] leading-[1.4]'
+  : 'mt-1 text-[13px] text-[#3c4257]';
 ---
 
 <article 
-  class="group relative rounded-xl overflow-hidden bg-white border border-[#e5e7eb] hover:border-[#d1d5db] transition-colors"
+  class={containerClass}
   itemscope 
   itemtype="http://schema.org/VideoObject"
 >
@@ -40,7 +67,7 @@ const videoId = getYouTubeVideoId(href);
   <meta itemprop="description" content={description} />
   {href && <meta itemprop="embedUrl" content={`https://www.youtube.com/embed/${videoId}`} />}
 
-  <div class="aspect-video relative overflow-hidden">
+  <div class={thumbnailClass}>
     <div id={`thumbnail-${videoId}`} class="relative cursor-pointer">
       <img 
         src={thumbnailUrl} 
@@ -55,10 +82,10 @@ const videoId = getYouTubeVideoId(href);
           onclick={`loadYouTubeVideo('${videoId}')`}
           aria-label={`Play video: ${title}`}
         >
-          <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors">
+          <div class={`${playButtonSize} flex items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors`}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              class="w-8 h-8 text-black" 
+              class={`${playIconSize} text-black`}
               viewBox="0 0 24 24" 
               fill="currentColor"
               aria-hidden="true"
@@ -68,7 +95,7 @@ const videoId = getYouTubeVideoId(href);
           </div>
         </button>
       )}
-      <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/70 rounded text-white text-[13px] font-medium" aria-label="Video duration">
+      <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-white text-[12px] font-medium" aria-label="Video duration">
         {duration}
       </div>
       {isDraft && (
@@ -82,8 +109,8 @@ const videoId = getYouTubeVideoId(href);
     </div>
   </div>
 
-  <div class="p-4">
-    <h3 class="font-medium text-[15px] leading-snug text-[#1a1f36]" itemprop="name">
+  <div class={textContainerClass}>
+    <h3 class={titleClass} itemprop="name">
       {href ? (
         <a href={href} class="hover:underline" target="_blank" rel="noopener noreferrer">
           {title}
@@ -92,11 +119,20 @@ const videoId = getYouTubeVideoId(href);
         title
       )}
     </h3>
-    <p class="mt-1 text-[13px] text-[#3c4257]">
+    <p class={timestampClass}>
       <time datetime={new Date(timestamp).toISOString()}>{timestamp}</time>
     </p>
   </div>
 </article>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 
 <script is:inline>
   function loadYouTubeVideo(videoId) {
