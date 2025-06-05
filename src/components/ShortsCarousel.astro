@@ -141,7 +141,7 @@ const needsScrolling = shorts.length > 6;
       wrapper.style.cssText = 'aspect-ratio: 9/16; border-radius: 8px; overflow: hidden; background-color: #000; width: 100%; height: 100%;';
       
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&cc_load_policy=0&disablekb=1`;
       iframe.title = 'YouTube Short player';
       iframe.frameBorder = '0';
       iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
