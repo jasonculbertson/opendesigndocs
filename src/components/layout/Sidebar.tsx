@@ -1,28 +1,17 @@
 import React from 'react';
 import {
-  BookOpen,
   Clock,
   Users,
-  Calendar,
   Target,
   Rocket,
-  LogOut,
   Palette,
   Box,
-  UserPlus,
-  Play,
-  Video,
   ChevronRight,
   FileText,
-  User,
-  Film,
-  Menu,
   Layers,
-  ImagePlus,
   Mic,
   FileVideo
 } from 'lucide-react';
-import UserProfileSidebar from './UserProfileSidebar';
 
 interface Props {
   currentPath?: string;
@@ -117,7 +106,7 @@ const links = [
   }
 ];
 
-export default function Sidebar({ currentPath = '/' }: Props) {
+const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
   return (
     <aside
       id="sidebar"
@@ -178,11 +167,10 @@ export default function Sidebar({ currentPath = '/' }: Props) {
           ))}
         </div>
         
-        {/* User Profile Section - Mobile only */}
-        <div className="lg:hidden">
-          <UserProfileSidebar />
-        </div>
+        {/* User Profile Section - Mobile only - Removed to prevent Clerk context issues */}
       </nav>
     </aside>
   );
-} 
+});
+
+export default Sidebar;

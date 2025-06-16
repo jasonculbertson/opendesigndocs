@@ -1,12 +1,8 @@
 ---
-interface Props {
-  title: string;
-  timestamp: string;
-  duration: string;
-  thumbnailUrl: string;
+import type { VideoData } from '../../utils/videoUtils';
+
+interface Props extends VideoData {
   isDraft?: boolean;
-  href?: string;
-  description?: string;
   compact?: boolean;
   youtube?: boolean;
 }
@@ -23,26 +19,22 @@ const {
   youtube = false
 } = Astro.props;
 
-function getYouTubeVideoId(url: string | undefined) {
-  if (!url) return null;
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-}
+// Import video utilities
+const { getYouTubeVideoId, videoStyles } = await import('../../utils/videoUtils');
 
 const videoId = getYouTubeVideoId(href);
 
-// YouTube-style sizing
+// Component styling based on type
 const containerClass = youtube 
   ? 'group relative bg-white cursor-pointer' 
   : `group relative rounded-xl overflow-hidden bg-white border border-[#e5e7eb] hover:border-[#d1d5db] transition-colors ${compact ? 'max-w-sm' : ''}`;
 
 const thumbnailClass = youtube
-  ? 'aspect-video relative overflow-hidden rounded-xl bg-gray-100'
-  : 'aspect-video relative overflow-hidden';
+  ? `${videoStyles.aspectVideo} relative overflow-hidden rounded-xl bg-gray-100`
+  : videoStyles.aspectVideo + ' relative overflow-hidden';
 
-const playButtonSize = youtube ? 'w-12 h-12' : compact ? 'w-12 h-12' : 'w-16 h-16';
-const playIconSize = youtube ? 'w-6 h-6' : compact ? 'w-6 h-6' : 'w-8 h-8';
+const playButtonSize = youtube || compact ? videoStyles.playButton.small : videoStyles.playButton.medium;
+const playIconSize = youtube || compact ? videoStyles.playIcon.small : videoStyles.playIcon.medium;
 
 const textContainerClass = youtube ? 'mt-3' : compact ? 'p-3' : 'p-4';
 const titleClass = youtube 
@@ -65,21 +57,21 @@ const timestampClass = youtube
   <meta itemprop="duration" content={duration} />
   <meta itemprop="thumbnailUrl" content={thumbnailUrl} />
   <meta itemprop="description" content={description} />
-  {href && <meta itemprop="embedUrl" content={`https://www.youtube.com/embed/${videoId}`} />}
+  {href && videoId && <meta itemprop="embedUrl" content={`https://www.youtube.com/embed/${videoId}`} />}
 
   <div class={thumbnailClass}>
     <div id={`thumbnail-${videoId}`} class="relative cursor-pointer">
       <img 
         src={thumbnailUrl} 
         alt={`Thumbnail for ${title}`}
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        class={`w-full h-full object-cover ${videoStyles.hover}`}
         itemprop="thumbnail"
         loading="lazy"
       />
       {videoId && (
         <button 
           class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors"
-          onclick={`loadYouTubeVideo('${videoId}')`}
+          onclick={`window.loadYouTubeVideo && window.loadYouTubeVideo('${videoId}', 'thumbnail-${videoId}', '${title.replace(/'/g, "\\'")}')`}
           aria-label={`Play video: ${title}`}
         >
           <div class={`${playButtonSize} flex items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors`}>
@@ -95,7 +87,7 @@ const timestampClass = youtube
           </div>
         </button>
       )}
-      <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-white text-[12px] font-medium" aria-label="Video duration">
+      <div class={videoStyles.duration} aria-label="Video duration">
         {duration}
       </div>
       {isDraft && (
@@ -103,9 +95,6 @@ const timestampClass = youtube
           New
         </div>
       )}
-    </div>
-    <div id={`player-${videoId}`} class="hidden absolute inset-0">
-      <!-- YouTube player will be loaded here -->
     </div>
   </div>
 
@@ -120,7 +109,7 @@ const timestampClass = youtube
       )}
     </h3>
     <p class={timestampClass}>
-      <time datetime={new Date(timestamp).toISOString()}>{timestamp}</time>
+      <time datetime={new Date(timestamp || '').toISOString()}>{timestamp}</time>
     </p>
   </div>
 </article>
@@ -135,26 +124,10 @@ const timestampClass = youtube
 </style>
 
 <script is:inline>
-  function loadYouTubeVideo(videoId) {
-    const thumbnailEl = document.getElementById(`thumbnail-${videoId}`);
-    const playerEl = document.getElementById(`player-${videoId}`);
-    
-    if (thumbnailEl && playerEl) {
-      thumbnailEl.style.display = 'none';
-      playerEl.style.display = 'block';
-      
-      const iframe = document.createElement('iframe');
-      iframe.width = '100%';
-      iframe.height = '100%';
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      iframe.title = 'YouTube video player';
-      iframe.frameBorder = '0';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      iframe.style.position = 'absolute';
-      iframe.style.inset = '0';
-      
-      playerEl.appendChild(iframe);
-    }
-  }
+// Import and make video loading function available globally
+async function initVideoLoader() {
+  const { loadYouTubeVideo } = await import('/src/utils/videoUtils.js');
+  window.loadYouTubeVideo = loadYouTubeVideo;
+}
+initVideoLoader();
 </script>

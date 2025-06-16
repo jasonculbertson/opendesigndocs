@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ClerkProvider } from '@clerk/clerk-react';
-import Sidebar from "./Sidebar";
-import UserProfileButton from "./UserProfileButton";
 import AutoAuthGuard from "./AutoAuthGuard";
 
 interface ClerkReactIslandProps extends React.PropsWithChildren<{}> {
@@ -11,20 +9,24 @@ interface ClerkReactIslandProps extends React.PropsWithChildren<{}> {
 
 export default function ClerkReactIsland({ children, currentPath, showSidebar = true }: ClerkReactIslandProps) {
   const [isClient, setIsClient] = useState(false);
+  const [clientPath, setClientPath] = useState(currentPath);
   
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  console.log('ClerkReactIsland rendering on path:', currentPath);
-  const isHomepage = currentPath === '/';
+  // Update client path when it changes
+  useEffect(() => {
+    setClientPath(currentPath);
+  }, [currentPath]);
+
+  // Use clientPath for UI decisions to reduce re-renders
+  const isHomepage = clientPath === '/';
   
-  console.log('ClerkReactIsland conditions:', {
-    isHomepage,
-    showSidebar,
-    willShowUserProfileButton: !isHomepage,
-    willShowSidebar: showSidebar && !isHomepage
-  });
+  // Only log in development to reduce noise
+  if (import.meta.env.DEV) {
+    console.log('ClerkReactIsland path updated:', clientPath);
+  }
 
   // During SSR, render basic structure - no auth overlay needed since auth is bypassed
   if (!isClient) {
@@ -48,13 +50,7 @@ export default function ClerkReactIsland({ children, currentPath, showSidebar = 
   
   return (
     <ClerkProvider publishableKey={publishableKey}>
-      {!isHomepage && <AutoAuthGuard currentPath={currentPath} />}
-      {!isHomepage && (
-        <div className="hidden lg:block">
-          <UserProfileButton />
-        </div>
-      )}
-      {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
+      {!isHomepage && <AutoAuthGuard currentPath={clientPath} />}
       {children}
     </ClerkProvider>
   );

@@ -1,6 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import ClerkReactIsland from '../components/ClerkReactIsland';
+import AppShell from '../components/layout/AppShell';
 
 import '../styles/main.css';
 
@@ -24,8 +24,10 @@ const path = Astro.url.pathname;
     <ViewTransitions />
   </head>
   <body>
-    <ClerkReactIsland client:idle showSidebar={false} currentPath={path}>
-      <slot />
-    </ClerkReactIsland>
+    <!-- Persistent App Shell for auth/sidebar -->
+    <AppShell client:idle currentPath={path} showSidebar={false} transition:persist />
+    
+    <!-- Main content -->
+    <slot />
   </body>
 </html>

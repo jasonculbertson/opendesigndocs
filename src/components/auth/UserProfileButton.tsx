@@ -20,7 +20,7 @@ function LogoutIcon() {
   );
 }
 
-export default function UserProfileButton() {
+const UserProfileButton = React.memo(function UserProfileButton() {
   const { user, isSignedIn, isLoaded } = useUser();
   const { signOut, openUserProfile } = useClerk();
   const [open, setOpen] = useState(false);
@@ -289,4 +289,6 @@ export default function UserProfileButton() {
       )}
     </div>
   );
-} 
+});
+
+export default UserProfileButton;

@@ -1,7 +1,7 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
-import VideoCard from '../../../components/VideoCard.astro';
-import ShortsCarousel from '../../../components/ShortsCarousel.astro';
+import WideLayout from '../../../layouts/WideLayout.astro';
+import VideoCard from '../../../components/media/VideoCard.astro';
+import ShortsCarousel from '../../../components/media/ShortsCarousel.astro';
 
 // YouTube Shorts data
 const shorts = [
@@ -70,19 +70,8 @@ const videos = [
 const title = "Design Leadership Interviews";
 ---
 
-<Layout title={title}>
-  <!-- CSS to override layout width constraints for this page -->
-  <style is:global>
-    /* Target the specific containers that limit width on this page */
-    .max-w-\[900px\] {
-      max-width: 100% !important;
-    }
-    .max-w-\[680px\] {
-      max-width: 1400px !important;
-    }
-  </style>
-  
-  <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-8 py-8">
+<WideLayout title={title}>
+  <div class="py-8">
     <div class="mb-8">
       <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       <p class="mt-2 text-[15px] text-[#3c4257]">Learn from experienced design leaders through in-depth interviews and quick insights.</p>
@@ -102,4 +91,4 @@ const title = "Design Leadership Interviews";
       </div>
     </div>
   </div>
-</Layout>
+</WideLayout>

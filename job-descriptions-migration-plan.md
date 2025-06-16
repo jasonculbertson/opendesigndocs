@@ -238,9 +238,9 @@ sed -i '' 's|/docs/team/recruiting/job-descriptions-jds|/docs/levels/job-descrip
 
 3. Check that navigation menus correctly link to the new job descriptions pages.
 
-### 4. Content Gate Verification
+### 4. Authentication Verification
 
-1. Verify that the ContentGate configuration in `pageUtils.ts` has been updated to include the new job descriptions paths.
+1. Verify that the authentication system works correctly with the migrated content.
 
 ### 5. Final Checks
 

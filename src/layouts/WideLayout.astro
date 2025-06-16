@@ -5,23 +5,22 @@ import AppShell from '../components/layout/AppShell';
 import { ViewTransitions } from 'astro:transitions';
 import { shouldShowSubstack } from '../utils/pageUtils';
 
-// import Analytics from '@vercel/analytics/astro';
 import '../styles/main.css';
-// import '../styles/global.css'; // Re-add import for global styles
-// Auth overlay removed from subpages
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
   type?: string;
+  maxWidth?: string;
 }
 
 const { 
   title,
   description = "Open Design Docs - A comprehensive resource for design leadership and management",
   image = "/og-image.jpg",
-  type = "website"
+  type = "website",
+  maxWidth = "1400px"
 } = Astro.props;
 
 const path = Astro.url.pathname;
@@ -123,10 +122,8 @@ const showSidebar = path.startsWith('/docs');
         <div class="flex">
           <main class="flex-1 lg:pl-[250px] flex flex-col min-h-screen">
             <div class="pt-20 lg:pt-8 flex-1">
-              <div class="max-w-[900px] mx-auto px-4 lg:px-0">
-                <div class="relative max-w-[680px] mx-auto">
-                  <slot />
-                </div>
+              <div class="w-full px-4 lg:px-8" style={`max-width: ${maxWidth}; margin: 0 auto;`}>
+                <slot />
               </div>
             </div>
             <div class="mt-auto">
@@ -135,9 +132,9 @@ const showSidebar = path.startsWith('/docs');
           </main>
         </div>
       </div>
-      {/* <Analytics /> */}
 
     </div>
+
     <script is:inline>
       // Enhanced mobile menu with overlay
       document.addEventListener('astro:page-load', () => {
@@ -201,71 +198,10 @@ const showSidebar = path.startsWith('/docs');
               toggleMenu();
             }
           });
-
-          // Handle window resize
-          window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) {
-              document.body.style.overflow = '';
-              overlay.classList.add('hidden', 'opacity-0');
-              overlay.classList.remove('opacity-50');
-            }
-          });
         };
 
-        // Run immediately
         handleMobileMenu();
-        
-        // Also run after a small delay to ensure all elements are ready
-        setTimeout(handleMobileMenu, 100);
       });
-      
-      // Initial setup before Astro transitions
-      document.addEventListener('DOMContentLoaded', () => {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        if (mobileMenuButton) {
-          // Add a temporary click handler for the first page load
-          mobileMenuButton.onclick = (e) => {
-            e.stopPropagation();
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            const menuIcon = document.getElementById('menu-icon');
-            const closeIcon = document.getElementById('close-icon');
-            
-            if (sidebar && overlay) {
-              const isClosing = !sidebar.classList.contains('-translate-x-full');
-              
-              sidebar.classList.toggle('-translate-x-full');
-              
-              if (isClosing) {
-                // Closing
-                overlay.classList.add('hidden', 'opacity-0');
-                overlay.classList.remove('opacity-50');
-                document.body.style.overflow = '';
-              } else {
-                // Opening
-                overlay.classList.remove('hidden', 'opacity-0');
-                overlay.classList.add('opacity-50');
-                document.body.style.overflow = 'hidden';
-              }
-              
-              if (menuIcon && closeIcon) {
-                if (sidebar.classList.contains('-translate-x-full')) {
-                  menuIcon.classList.remove('opacity-0', 'rotate-180');
-                  menuIcon.classList.add('opacity-100', 'rotate-0');
-                  closeIcon.classList.remove('opacity-100', 'rotate-0');
-                  closeIcon.classList.add('opacity-0', '-rotate-180');
-                } else {
-                  menuIcon.classList.remove('opacity-100', 'rotate-0');
-                  menuIcon.classList.add('opacity-0', 'rotate-180');
-                  closeIcon.classList.remove('opacity-0', '-rotate-180');
-                  closeIcon.classList.add('opacity-100', 'rotate-0');
-                }
-              }
-            }
-          };
-        }
-      });
-
     </script>
   </body>
-</html>
+</html> 

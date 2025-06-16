@@ -1,6 +1,6 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
-import Card from '../../../../components/Card.astro';
+import Card from '../../../../components/ui/Card.astro';
 
 const title = "Level Competencies";
 
@@ -113,8 +113,8 @@ const managerRoles = [
 ---
 
 <Layout title={title}>
-  <main class="py-8 px-4 sm:px-6 lg:px-8">
-    <article class="max-w-[680px] mx-auto">
+  <main class="py-8 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto px-4 sm:px-0">
       <nav class="flex mb-2" aria-label="Breadcrumb">
         <ol class="flex items-center">
           {breadcrumbs.map((crumb) => (
@@ -129,9 +129,9 @@ const managerRoles = [
       <div class="mb-8">
         <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       </div>
-      <div class="space-y-12">
+      <div class="space-y-8">
         <section>
-          <h2 class="text-xl font-semibold text-[#1a1f36] mb-6">Product Role Competencies</h2>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Product Role Competencies</h2>
           <div class="grid grid-cols-1 gap-4">
             {productRoles.map(role => (
               <Card {...role} />
@@ -140,7 +140,7 @@ const managerRoles = [
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold text-[#1a1f36] mb-6">Creative Role Competencies</h2>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Creative Role Competencies</h2>
           <div class="grid grid-cols-1 gap-4">
             {creativeRoles.map(role => (
               <Card {...role} />
@@ -148,7 +148,7 @@ const managerRoles = [
           </div>
         </section>
         <section>
-          <h2 class="text-xl font-semibold text-[#1a1f36] mb-6">Manager Role Competencies</h2>
+          <h2 class="text-[20px] font-semibold text-[#1a1f36] mb-4">Manager Role Competencies</h2>
           <div class="grid grid-cols-1 gap-4">
             {managerRoles.map(role => (
               <Card {...role} />
