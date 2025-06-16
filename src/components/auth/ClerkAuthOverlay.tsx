@@ -36,7 +36,6 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   // Set up event listener regardless of SSR/client state - this is crucial for homepage buttons
   useEffect(() => {
     const handleOpenAuth = (event: Event) => {
-      console.log('🎯 openAuthOverlay event received:', event);
       const customEvent = event as OpenAuthEvent;
       const view = customEvent.detail?.view || 'sign_in';
       const redirect = customEvent.detail?.redirectTo;
@@ -48,10 +47,8 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
     };
     
     if (typeof window !== 'undefined') {
-      console.log('🔧 Setting up openAuthOverlay event listener');
       window.addEventListener('openAuthOverlay', handleOpenAuth);
       return () => {
-        console.log('🧹 Cleaning up openAuthOverlay event listener');
         window.removeEventListener('openAuthOverlay', handleOpenAuth);
       };
     }
@@ -172,17 +169,14 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                 <button
                   onClick={async () => {
-                    console.log('🚀 Google OAuth clicked:', { initialView, redirectTo });
                     try {
                       if (initialView === 'sign_up') {
-                        console.log('Starting Google sign-up flow...');
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
                           redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       } else {
-                        console.log('Starting Google sign-in flow...');
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
@@ -250,40 +244,32 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
 
               <button
                 onClick={async () => {
-                  console.log('Email button clicked:', { email, initialView });
                   try {
                     if (initialView === 'sign_up') {
-                      console.log('Attempting sign up with email...');
                       // Sign up with magic link
-                      const signUpResult = await signUp?.create({
+                      await signUp?.create({
                         emailAddress: email,
                       });
-                      console.log('SignUp create result:', signUpResult);
                       
-                      const prepareResult = await signUp?.prepareEmailAddressVerification({
+                      await signUp?.prepareEmailAddressVerification({
                         strategy: 'email_link',
                         redirectUrl: window.location.origin + redirectTo,
                       });
-                      console.log('Prepare email verification result:', prepareResult);
                       setEmailSent(true);
                     } else {
-                      console.log('Attempting sign in with email...');
                       // Sign in with magic link
-                      const signInResult = await signIn?.create({
+                      await signIn?.create({
                         strategy: 'email_link',
                         identifier: email,
                         redirectUrl: window.location.origin + redirectTo,
                       });
-                      console.log('SignIn create result:', signInResult);
                       setEmailSent(true);
                     }
-                                      } catch (error) {
-                      console.error('Email authentication error:', error);
-                      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-                      console.error('Error details:', error);
-                      // For now, let's show the error in an alert so user knows something went wrong
-                      alert(`Authentication error: ${errorMsg || 'Please try again'}`);
-                    }
+                  } catch (error) {
+                    console.error('Email authentication error:', error);
+                    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                    alert(`Authentication error: ${errorMsg || 'Please try again'}`);
+                  }
                 }}
                 disabled={!email.trim()}
                 style={{

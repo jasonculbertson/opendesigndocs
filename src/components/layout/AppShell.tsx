@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import UserProfileButton from '../auth/UserProfileButton';
 import UserProfileSidebar from '../auth/UserProfileSidebar';
 import AutoAuthGuard from '../auth/AutoAuthGuard';
+import { getClerkConfig, logClerkError } from '../../utils/clerkConfig';
 
 interface AppShellProps {
   currentPath: string;
@@ -20,9 +21,7 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       const newPath = window.location.pathname;
       setActualPath(newPath);
       
-      if (import.meta.env.DEV) {
-        console.log('AppShell path updated:', newPath);
-      }
+      // Path updated silently
     };
 
     // Listen for Astro's page load events
@@ -36,15 +35,7 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
   const isHomepage = actualPath === '/';
   const shouldShowSidebar = showSidebar && !isHomepage;
 
-  if (import.meta.env.DEV) {
-    console.log('AppShell render:', {
-      actualPath,
-      isHomepage,
-      shouldShowSidebar,
-      isSignedIn,
-      isLoaded
-    });
-  }
+  // AppShell rendering (debug logging removed)
 
   return (
     <>
@@ -89,10 +80,10 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     );
   }
 
-  const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const clerkConfig = getClerkConfig();
 
-  if (!publishableKey) {
-    console.error('Missing Clerk publishable key');
+  if (!clerkConfig.isConfigured) {
+    logClerkError(clerkConfig.error!, 'AppShell');
     const isHomepage = currentPath === '/';
     const shouldShowSidebar = showSidebar && !isHomepage;
     
@@ -104,7 +95,7 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
   }
   
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider publishableKey={clerkConfig.publishableKey!}>
       <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
     </ClerkProvider>
   );

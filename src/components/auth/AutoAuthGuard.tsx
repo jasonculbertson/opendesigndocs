@@ -11,7 +11,7 @@ export default function AutoAuthGuard({ currentPath }: AutoAuthGuardProps) {
   useEffect(() => {
     // TEMPORARILY DISABLED FOR TESTING
     // We'll re-enable this once Clerk authentication is working properly
-    console.log('🔒 AutoAuthGuard DISABLED - allowing free access to:', currentPath);
+    // AutoAuthGuard disabled - allowing free access
     return;
 
     // // Wait for Clerk to load

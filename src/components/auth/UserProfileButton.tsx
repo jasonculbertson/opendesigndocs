@@ -26,18 +26,7 @@ const UserProfileButton = React.memo(function UserProfileButton() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('UserProfileButton - Debug Info:', {
-      isLoaded,
-      isSignedIn,
-      user: user ? {
-        id: user.id,
-        imageUrl: user.imageUrl,
-        email: user.primaryEmailAddress?.emailAddress
-      } : null
-    });
-  }, [isLoaded, isSignedIn, user]);
+  // Component state tracking (debug logging removed)
 
   // Close menu on outside click
   useEffect(() => {
@@ -53,7 +42,6 @@ const UserProfileButton = React.memo(function UserProfileButton() {
   }, [open]);
 
   if (!isLoaded) {
-    console.log('UserProfileButton - Still loading...');
     return (
       <div style={{
         position: 'absolute',
@@ -82,11 +70,8 @@ const UserProfileButton = React.memo(function UserProfileButton() {
   }
 
   if (!isSignedIn || !user) {
-    console.log('UserProfileButton - User not signed in');
     return null;
   }
-
-  console.log('UserProfileButton - Rendering profile button');
 
   const handleOpenProfile = () => {
     setOpen(false);

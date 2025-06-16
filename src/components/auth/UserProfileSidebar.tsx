@@ -8,9 +8,7 @@ export default function UserProfileSidebar() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  useEffect(() => {
-    console.log("UserProfileSidebar: isLoaded =", isLoaded, "isSignedIn =", isSignedIn, "user =", user);
-  }, [isLoaded, isSignedIn, user]);
+  // Component state tracking (debug logging removed)
 
   // Close dropdown on outside click
   useEffect(() => {
