@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser, SignIn, SignUp, useSignIn, useSignUp } from '@clerk/clerk-react';
 import { dark } from '@clerk/themes';
+import { addAuthEventListener, type AuthEventDetail } from '../../utils/authEvents';
 
 interface ClerkAuthOverlayProps {
   allowClose?: boolean;
 }
 
-interface OpenAuthEventDetail {
-  view?: 'sign_in' | 'sign_up';
-  redirectTo?: string;
-}
-
-type OpenAuthEvent = CustomEvent<OpenAuthEventDetail>;
+// Using AuthEventDetail from authEvents utility
 
 function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   const [isClient, setIsClient] = useState(false);
@@ -33,12 +29,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
     setIsClient(true);
   }, []);
 
-  // Set up event listener regardless of SSR/client state - this is crucial for homepage buttons
+  // Set up event listener using the standardized auth event system
   useEffect(() => {
-    const handleOpenAuth = (event: Event) => {
-      const customEvent = event as OpenAuthEvent;
-      const view = customEvent.detail?.view || 'sign_in';
-      const redirect = customEvent.detail?.redirectTo;
+    const handleOpenAuth = (detail: AuthEventDetail) => {
+      const view = detail.view || 'sign_in';
+      const redirect = detail.redirectTo;
 
       setInitialView(view);
       setRedirectTo(redirect || (typeof window !== 'undefined' ? window.location.pathname : '/'));
@@ -46,12 +41,10 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
       setIsOpen(true);
     };
     
-    if (typeof window !== 'undefined') {
-      window.addEventListener('openAuthOverlay', handleOpenAuth);
-      return () => {
-        window.removeEventListener('openAuthOverlay', handleOpenAuth);
-      };
-    }
+    // Use the standardized event system
+    const cleanup = addAuthEventListener('ClerkAuthOverlay', handleOpenAuth);
+    
+    return cleanup;
   }, []); // No dependencies - set up once and keep
 
   // Close overlay if user is signed in (only on client)

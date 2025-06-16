@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import UserProfileButton from '../auth/UserProfileButton';
 import UserProfileSidebar from '../auth/UserProfileSidebar';
 import AutoAuthGuard from '../auth/AutoAuthGuard';
+import AuthErrorBoundary from '../auth/AuthErrorBoundary';
 import { getClerkConfig, logClerkError } from '../../utils/clerkConfig';
 
 interface AppShellProps {
@@ -95,9 +96,15 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
   }
   
   return (
-    <ClerkProvider publishableKey={clerkConfig.publishableKey!}>
-      <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
-    </ClerkProvider>
+    <AuthErrorBoundary
+      onError={(error, errorInfo) => {
+        logClerkError(`AppShell error: ${error.message}`, 'AppShell');
+      }}
+    >
+      <ClerkProvider publishableKey={clerkConfig.publishableKey!}>
+        <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
+      </ClerkProvider>
+    </AuthErrorBoundary>
   );
 }
 

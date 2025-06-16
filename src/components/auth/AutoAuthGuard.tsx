@@ -1,44 +1,148 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
+import { dispatchAuthEvent } from '../../utils/authEvents';
 
 interface AutoAuthGuardProps {
   currentPath: string;
+  gracePeriodMs?: number;
+  enabled?: boolean;
 }
 
-export default function AutoAuthGuard({ currentPath }: AutoAuthGuardProps) {
+interface AuthState {
+  hasTriggeredAuth: boolean;
+  isGracePeriodActive: boolean;
+  userIntent: 'browsing' | 'direct_access' | 'navigation';
+}
+
+export default function AutoAuthGuard({ 
+  currentPath, 
+  gracePeriodMs = 3000, // 3 second grace period
+  enabled = false // Disabled by default for gradual rollout
+}: AutoAuthGuardProps) {
   const { isSignedIn, isLoaded } = useUser();
+  const [authState, setAuthState] = useState<AuthState>({
+    hasTriggeredAuth: false,
+    isGracePeriodActive: true,
+    userIntent: 'direct_access'
+  });
+  const gracePeriodTimer = useRef<NodeJS.Timeout>();
+  const mountTime = useRef<number>(Date.now());
 
+  // Detect user intent based on behavior
   useEffect(() => {
-    // TEMPORARILY DISABLED FOR TESTING
-    // We'll re-enable this once Clerk authentication is working properly
-    // AutoAuthGuard disabled - allowing free access
-    return;
+    const detectUserIntent = () => {
+      const timeOnPage = Date.now() - mountTime.current;
+      const hasReferrer = document.referrer !== '';
+      const isFromSameSite = document.referrer.includes(window.location.hostname);
+      
+      if (timeOnPage < 500 && !hasReferrer) {
+        return 'direct_access'; // Direct URL access
+      } else if (timeOnPage < 500 && isFromSameSite) {
+        return 'navigation'; // Site navigation
+      } else {
+        return 'browsing'; // User is actively browsing
+      }
+    };
 
-    // // Wait for Clerk to load
-    // if (!isLoaded) return;
+    setAuthState(prev => ({
+      ...prev,
+      userIntent: detectUserIntent()
+    }));
+  }, []);
 
-    // // Don't trigger on homepage
-    // if (currentPath === '/') return;
+  // Grace period management
+  useEffect(() => {
+    if (!enabled) return;
 
-    // // Debug logging
-    // console.log('🔒 AutoAuthGuard:', { isSignedIn, isLoaded, currentPath });
+    // Start grace period timer
+    gracePeriodTimer.current = setTimeout(() => {
+      setAuthState(prev => ({
+        ...prev,
+        isGracePeriodActive: false
+      }));
+    }, gracePeriodMs);
 
-    // // If user is not signed in and on a subpage, trigger auth overlay
-    // if (!isSignedIn) {
-    //   console.log('🚫 User not authenticated, triggering auth overlay');
-    //   // Small delay to ensure the page has loaded
-    //   setTimeout(() => {
-    //     window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-    //       detail: {
-    //         view: 'sign_up',
-    //         redirectTo: currentPath
-    //       }
-    //     }));
-    //   }, 100);
-    // } else {
-    //   console.log('✅ User is authenticated, allowing access');
-    // }
-  }, [isSignedIn, isLoaded, currentPath]);
+    // Clear timer on unmount
+    return () => {
+      if (gracePeriodTimer.current) {
+        clearTimeout(gracePeriodTimer.current);
+      }
+    };
+  }, [enabled, gracePeriodMs]);
+
+  // Main authentication logic
+  useEffect(() => {
+    if (!enabled) {
+      // When disabled, just track state for analytics
+      if (import.meta.env.DEV) {
+        console.log('🔒 AutoAuthGuard disabled - tracking only:', { 
+          currentPath, 
+          isSignedIn, 
+          userIntent: authState.userIntent 
+        });
+      }
+      return;
+    }
+
+    // Wait for Clerk to load
+    if (!isLoaded) return;
+
+    // Don't trigger on homepage
+    if (currentPath === '/') return;
+
+    // Don't trigger during grace period
+    if (authState.isGracePeriodActive) return;
+
+    // Don't trigger if already triggered
+    if (authState.hasTriggeredAuth) return;
+
+    // Only trigger for non-authenticated users
+    if (!isSignedIn) {
+      // Respect user intent - be less aggressive for browsing users
+      const shouldTriggerAuth = () => {
+        switch (authState.userIntent) {
+          case 'direct_access':
+            return true; // Always trigger for direct access
+          case 'navigation':
+            return true; // Trigger for site navigation
+          case 'browsing':
+            return false; // Don't interrupt active browsing
+          default:
+            return true;
+        }
+      };
+
+      if (shouldTriggerAuth()) {
+        setAuthState(prev => ({ ...prev, hasTriggeredAuth: true }));
+        
+        // Trigger auth overlay with appropriate messaging
+        const authDetail = {
+          view: 'sign_up' as const,
+          redirectTo: currentPath,
+          context: authState.userIntent
+        };
+
+        if (import.meta.env.DEV) {
+          console.log('🔒 AutoAuthGuard triggering auth:', authDetail);
+        }
+
+        // Small delay to ensure smooth UX
+        setTimeout(() => {
+          dispatchAuthEvent(authDetail);
+        }, 100);
+      }
+    }
+  }, [enabled, isSignedIn, isLoaded, currentPath, authState, gracePeriodMs]);
+
+  // Reset auth state when user signs in
+  useEffect(() => {
+    if (isSignedIn && authState.hasTriggeredAuth) {
+      setAuthState(prev => ({
+        ...prev,
+        hasTriggeredAuth: false
+      }));
+    }
+  }, [isSignedIn, authState.hasTriggeredAuth]);
 
   // This component doesn't render anything visible
   return null;

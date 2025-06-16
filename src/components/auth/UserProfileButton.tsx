@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useUser, useClerk } from '@clerk/clerk-react';
+import { UserProfileLoading } from '../ui/LoadingStates';
 
 function SettingsIcon() {
   return (
@@ -49,22 +50,7 @@ const UserProfileButton = React.memo(function UserProfileButton() {
         right: 24,
         zIndex: 100,
       }}>
-        <div style={{
-          width: 32,
-          height: 32,
-          borderRadius: '50%',
-          backgroundColor: '#f3f4f6',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            backgroundColor: '#d1d5db'
-          }} />
-        </div>
+        <UserProfileLoading />
       </div>
     );
   }
