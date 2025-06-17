@@ -52,10 +52,15 @@ export default function AutoAuthGuard({
 
   // Grace period management
   useEffect(() => {
+    console.log('🔒 AutoAuthGuard grace period setup:', { enabled, gracePeriodMs });
+    
     if (!enabled) return;
 
+    console.log('🔒 AutoAuthGuard starting grace period timer...');
+    
     // Start grace period timer
     gracePeriodTimer.current = setTimeout(() => {
+      console.log('🔒 AutoAuthGuard grace period ended, auth can now trigger');
       setAuthState(prev => ({
         ...prev,
         isGracePeriodActive: false
@@ -65,6 +70,7 @@ export default function AutoAuthGuard({
     // Clear timer on unmount
     return () => {
       if (gracePeriodTimer.current) {
+        console.log('🔒 AutoAuthGuard clearing grace period timer');
         clearTimeout(gracePeriodTimer.current);
       }
     };
@@ -72,32 +78,55 @@ export default function AutoAuthGuard({
 
   // Main authentication logic
   useEffect(() => {
+    // Always log for debugging on live site
+    console.log('🔒 AutoAuthGuard state:', { 
+      enabled,
+      currentPath, 
+      isSignedIn, 
+      isLoaded,
+      userIntent: authState.userIntent,
+      isGracePeriodActive: authState.isGracePeriodActive,
+      hasTriggeredAuth: authState.hasTriggeredAuth
+    });
+
     if (!enabled) {
       // When disabled, just track state for analytics
-      if (import.meta.env.DEV) {
-        console.log('🔒 AutoAuthGuard disabled - tracking only:', { 
-          currentPath, 
-          isSignedIn, 
-          userIntent: authState.userIntent 
-        });
-      }
+      console.log('🔒 AutoAuthGuard disabled - tracking only:', { 
+        currentPath, 
+        isSignedIn, 
+        userIntent: authState.userIntent 
+      });
       return;
     }
 
     // Wait for Clerk to load
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      console.log('🔒 AutoAuthGuard waiting for Clerk to load...');
+      return;
+    }
 
     // Don't trigger on homepage
-    if (currentPath === '/') return;
+    if (currentPath === '/') {
+      console.log('🔒 AutoAuthGuard skipping homepage');
+      return;
+    }
 
     // Don't trigger during grace period
-    if (authState.isGracePeriodActive) return;
+    if (authState.isGracePeriodActive) {
+      console.log('🔒 AutoAuthGuard grace period active, waiting...');
+      return;
+    }
 
     // Don't trigger if already triggered
-    if (authState.hasTriggeredAuth) return;
+    if (authState.hasTriggeredAuth) {
+      console.log('🔒 AutoAuthGuard already triggered auth');
+      return;
+    }
 
     // Only trigger for non-authenticated users
     if (!isSignedIn) {
+      console.log('🔒 AutoAuthGuard user not signed in, checking intent...');
+      
       // Respect user intent - be less aggressive for browsing users
       const shouldTriggerAuth = () => {
         switch (authState.userIntent) {
@@ -113,6 +142,7 @@ export default function AutoAuthGuard({
       };
 
       if (shouldTriggerAuth()) {
+        console.log('🔒 AutoAuthGuard triggering auth...');
         setAuthState(prev => ({ ...prev, hasTriggeredAuth: true }));
         
         // Trigger auth overlay with appropriate messaging
@@ -122,15 +152,17 @@ export default function AutoAuthGuard({
           context: authState.userIntent
         };
 
-        if (import.meta.env.DEV) {
-          console.log('🔒 AutoAuthGuard triggering auth:', authDetail);
-        }
+        console.log('🔒 AutoAuthGuard triggering auth:', authDetail);
 
         // Small delay to ensure smooth UX
         setTimeout(() => {
           dispatchAuthEvent(authDetail);
         }, 100);
+      } else {
+        console.log('🔒 AutoAuthGuard respecting user intent, not triggering auth');
       }
+    } else {
+      console.log('🔒 AutoAuthGuard user is signed in, no action needed');
     }
   }, [enabled, isSignedIn, isLoaded, currentPath, authState, gracePeriodMs]);
 

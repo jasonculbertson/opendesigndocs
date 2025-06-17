@@ -67,7 +67,14 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       const redirect = detail.redirectTo;
       const finalRedirect = redirect || (typeof window !== 'undefined' ? window.location.pathname : '/');
 
-      console.log('🎯 Auth overlay opened:', { view, redirect, finalRedirect });
+      console.log('🎯 Auth overlay opened:', { 
+        view, 
+        redirect, 
+        finalRedirect,
+        context: detail.context,
+        timestamp: detail.timestamp,
+        currentPath: typeof window !== 'undefined' ? window.location.pathname : 'unknown'
+      });
       
       setInitialView(view);
       setRedirectTo(finalRedirect);
