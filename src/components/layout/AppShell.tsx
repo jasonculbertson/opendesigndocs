@@ -5,6 +5,7 @@ import UserProfileButton from '../auth/UserProfileButton';
 import UserProfileSidebar from '../auth/UserProfileSidebar';
 import AutoAuthGuard from '../auth/AutoAuthGuard';
 import AuthErrorBoundary from '../auth/AuthErrorBoundary';
+import ClerkAuthOverlay from '../auth/ClerkAuthOverlay';
 import { getClerkConfig, logClerkError } from '../../utils/clerkConfig';
 
 interface AppShellProps {
@@ -56,8 +57,11 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
         </div>
       )}
 
-      {/* Auth Guard for non-homepage routes */}
-      {!isHomepage && <AutoAuthGuard currentPath={actualPath} />}
+      {/* Auth Guard for non-homepage routes - ENABLED FOR TESTING */}
+      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} />}
+      
+      {/* Auth Overlay - responds to AutoAuthGuard events */}
+      <ClerkAuthOverlay allowClose={true} />
     </>
   );
 }

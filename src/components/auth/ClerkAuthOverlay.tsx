@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useUser, SignIn, SignUp, useSignIn, useSignUp } from '@clerk/clerk-react';
-import { dark } from '@clerk/themes';
+import { useUser, useSignIn, useSignUp } from '@clerk/clerk-react';
 import { addAuthEventListener, type AuthEventDetail } from '../../utils/authEvents';
 
 interface ClerkAuthOverlayProps {
@@ -20,14 +19,33 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   const [emailSent, setEmailSent] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // Only use Clerk hooks on client side
-  const { isSignedIn } = isClient ? useUser() : { isSignedIn: false };
-  const { signIn } = isClient ? useSignIn() : { signIn: null };
-  const { signUp } = isClient ? useSignUp() : { signUp: null };
-
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Early return for SSR - don't render anything on server
+  if (!isClient) {
+    return null;
+  }
+
+  // Now safe to use hooks after isClient check
+  return <ClerkAuthOverlayClient allowClose={allowClose} />;
+}
+
+function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [authTitle, setAuthTitle] = useState('Get unlimited free access');
+  const [initialView, setInitialView] = useState<'sign_in' | 'sign_up'>('sign_up');
+  const [redirectTo, setRedirectTo] = useState<string>(typeof window !== 'undefined' ? window.location.pathname : '/');
+  const [email, setEmail] = useState('');
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  // Now safe to call hooks - only called on client
+  const { isSignedIn } = useUser();
+  const { signIn } = useSignIn();
+  const { signUp } = useSignUp();
 
   // Set up event listener using the standardized auth event system
   useEffect(() => {
@@ -49,18 +67,16 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
 
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
-    if (isClient && isSignedIn) {
+    if (isSignedIn) {
       setIsOpen(false);
       // Redirect if needed
       if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
         window.location.href = redirectTo;
       }
     }
-  }, [isClient, isSignedIn, redirectTo]);
+  }, [isSignedIn, redirectTo]);
 
   useEffect(() => {
-    if (!isClient) return; // Only handle these effects on client side
-    
     if (!allowClose) {
       if (isOpen) {
         document.body.style.overflow = 'hidden';
@@ -96,10 +112,10 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
         document.body.style.overflow = '';
       };
     }
-  }, [isClient, isOpen, allowClose]);
+  }, [isOpen, allowClose]);
 
-  // Always render something to maintain event listeners, but only show UI on client when open
-  if (!isClient || !isOpen) {
+  // Always render something to maintain event listeners, but only show UI when open
+  if (!isOpen) {
     return <div style={{ display: 'none' }} />;
   }
 
@@ -166,13 +182,13 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                       if (initialView === 'sign_up') {
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrl: `${window.location.origin}${redirectTo}`,
                           redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       } else {
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrl: `${window.location.origin}${redirectTo}`,
                           redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       }
@@ -264,33 +280,26 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                     alert(`Authentication error: ${errorMsg || 'Please try again'}`);
                   }
                 }}
-                disabled={!email.trim()}
                 style={{
                   width: '300px',
                   padding: '14px 20px',
-                  backgroundColor: email.trim() ? '#1a1a1a' : '#e2e8f0',
-                  color: email.trim() ? 'white' : '#999',
-                  border: 'none',
+                  backgroundColor: '#ffffff',
+                  color: '#1a1a1a',
+                  border: '1px solid #e0e0e0',
                   borderRadius: '6px',
                   fontSize: '15px',
                   fontWeight: 500,
-                  cursor: email.trim() ? 'pointer' : 'not-allowed',
-                  marginBottom: '24px',
-                  transition: 'all 0.2s ease',
-                  opacity: email.trim() ? 1 : 0.6
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
                 }}
-                                 onMouseOver={(e) => {
-                   if (email.trim()) {
-                     (e.target as HTMLButtonElement).style.backgroundColor = '#000000';
-                   }
-                 }}
-                 onMouseOut={(e) => {
-                   if (email.trim()) {
-                     (e.target as HTMLButtonElement).style.backgroundColor = '#1a1a1a';
-                   }
-                 }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#f8f8f8';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#ffffff';
+                }}
               >
-                Continue with email
+                Continue with Email
               </button>
             </>
           ) : (

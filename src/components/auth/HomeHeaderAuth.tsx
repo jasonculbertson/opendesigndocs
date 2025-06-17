@@ -1,14 +1,31 @@
 import React from 'react';
 import { useUser } from '@clerk/clerk-react';
+import { dispatchAuthEvent } from '../../utils/authEvents';
 
 export default function HomeHeaderAuth() {
   const { user, isSignedIn, isLoaded } = useUser();
 
+  const handleSignIn = () => {
+    dispatchAuthEvent({
+      view: 'sign_in',
+      redirectTo: window.location.pathname,
+      context: 'manual',
+    });
+  };
+
+  const handleSignUp = () => {
+    dispatchAuthEvent({
+      view: 'sign_up',
+      redirectTo: window.location.pathname,
+      context: 'manual',
+    });
+  };
+
   if (!isLoaded) {
     return (
       <div className="hidden lg:flex items-center space-x-4">
-        <a href="#" id="signin-link" className="text-sm text-gray-600 hover:text-gray-900">Sign In</a>
-        <button id="signup-button" className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium rounded-md hover:bg-black transition-colors">Get Started</button>
+        <button onClick={handleSignIn} className="text-sm text-gray-600 hover:text-gray-900">Sign In</button>
+        <button onClick={handleSignUp} className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium rounded-md hover:bg-black transition-colors">Get Started</button>
       </div>
     );
   }
@@ -33,8 +50,8 @@ export default function HomeHeaderAuth() {
 
   return (
     <div className="hidden lg:flex items-center space-x-4">
-      <a href="#" id="signin-link" className="text-sm text-gray-600 hover:text-gray-900">Sign In</a>
-      <button id="signup-button" className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium rounded-md hover:bg-black transition-colors">Get Started</button>
+      <button onClick={handleSignIn} className="text-sm text-gray-600 hover:text-gray-900">Sign In</button>
+      <button onClick={handleSignUp} className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium rounded-md hover:bg-black transition-colors">Get Started</button>
     </div>
   );
 } 
