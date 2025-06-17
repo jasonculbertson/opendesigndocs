@@ -290,7 +290,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                   fontSize: '15px',
                   fontWeight: 500,
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  marginBottom: '24px'
                 }}
                 onMouseOver={(e) => {
                   (e.target as HTMLButtonElement).style.backgroundColor = '#f8f8f8';
