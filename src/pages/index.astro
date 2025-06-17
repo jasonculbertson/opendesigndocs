@@ -50,11 +50,6 @@ const featuredResources = [
             <!-- Static auth buttons -->
             <button onclick="window.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_in', redirectTo: '/', context: 'manual' } }))" class="text-sm text-gray-600 hover:text-gray-900">Sign In</button>
             <button onclick="window.dispatchEvent(new CustomEvent('openAuthOverlay', { detail: { view: 'sign_up', redirectTo: '/', context: 'manual' } }))" class="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium rounded-md hover:bg-black transition-colors">Get Started</button>
-            
-            <!-- React component (hidden fallback) -->
-            <div style="display: none;">
-              <HomeHeaderAuth client:load />
-            </div>
           </div>
         </div>
       </div>
