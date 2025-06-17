@@ -466,6 +466,49 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                              console.log('🔄 Redirecting after signup:', finalRedirect);
                              window.location.href = finalRedirect;
                            }, 1000); // Longer delay to ensure Clerk state sync
+                         } else if (result?.status === 'missing_requirements') {
+                           console.log('⚠️ Missing requirements detected, attempting to complete signup');
+                           
+                           try {
+                             // Check what's missing
+                             const missingFields = signUp.missingFields || [];
+                             console.log('📋 Missing fields:', missingFields);
+                             
+                             // Try to complete with minimal information
+                             const completeResult = await signUp.update({
+                               firstName: email.split('@')[0], // Use part of email as name
+                               lastName: '',
+                             });
+                             
+                             console.log('✅ Signup completion attempt result:', completeResult.status);
+                             
+                             if (completeResult.status === 'complete') {
+                               // Success! Now we can complete the signup
+                               const finalResult = await signUp.create();
+                               console.log('✅ Final signup result:', finalResult.status);
+                               
+                               // Force close the overlay and redirect since verification is complete
+                               setIsOpen(false);
+                               setEmailSent(false);
+                               setShowCodeInput(false);
+                               setCode('');
+                               
+                               console.log('🔄 Manually closing overlay and redirecting...');
+                               
+                               // Give Clerk a moment to update the session state, then redirect
+                               setTimeout(() => {
+                                 const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                                 console.log('🔄 Redirecting after completing missing requirements:', finalRedirect);
+                                 window.location.href = finalRedirect;
+                               }, 1000);
+                             } else {
+                               console.log('⚠️ Still missing requirements after update:', completeResult.status);
+                               alert('We need additional information to complete your signup. Please try again or contact support.');
+                             }
+                           } catch (error) {
+                             console.error('❌ Error completing signup with missing requirements:', error);
+                             alert('We could not complete your signup. Please try again or contact support.');
+                           }
                          } else {
                            console.log('⚠️ Verification incomplete, status:', result?.status);
                            alert('Verification incomplete. Please try again.');
