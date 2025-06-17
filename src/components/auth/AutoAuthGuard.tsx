@@ -35,12 +35,21 @@ export default function AutoAuthGuard({
       const hasReferrer = document.referrer !== '';
       const isFromSameSite = document.referrer.includes(window.location.hostname);
       
-      if (timeOnPage < 500 && !hasReferrer) {
+      console.log('🔒 AutoAuthGuard intent detection:', {
+        timeOnPage,
+        hasReferrer,
+        referrer: document.referrer,
+        isFromSameSite,
+        hostname: window.location.hostname
+      });
+      
+      // Use a longer timeframe for production (2000ms instead of 500ms)
+      if (timeOnPage < 2000 && !hasReferrer) {
         return 'direct_access'; // Direct URL access
-      } else if (timeOnPage < 500 && isFromSameSite) {
+      } else if (timeOnPage < 2000 && isFromSameSite) {
         return 'navigation'; // Site navigation
       } else {
-        return 'browsing'; // User is actively browsing
+        return 'direct_access'; // FIXED: Default to direct_access instead of browsing for reliability
       }
     };
 
@@ -135,7 +144,7 @@ export default function AutoAuthGuard({
           case 'navigation':
             return true; // Trigger for site navigation
           case 'browsing':
-            return false; // Don't interrupt active browsing
+            return true; // FIXED: Always trigger auth for all intents on production
           default:
             return true;
         }
