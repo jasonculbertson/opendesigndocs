@@ -439,35 +439,60 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                          throw new Error('No signup attempt found. Please start over.');
                        }
                        
-                       // Verify the email address with the code
-                       console.log('🔍 Attempting email verification...');
-                       const result = await signUp.attemptEmailAddressVerification({
-                         code: code,
-                       });
-                       
-                       console.log('✅ Verification result:', result?.status);
-                       
-                       if (result?.status === 'complete') {
-                         console.log('✅ Email verified, signup complete');
-                         console.log('🔄 Should be signed in now, overlay will close automatically');
+                       try {
+                         // Verify the email address with the code
+                         console.log('🔍 Attempting email verification...');
+                         const result = await signUp.attemptEmailAddressVerification({
+                           code: code,
+                         });
                          
-                         // Force close the overlay and redirect since verification is complete
-                         setIsOpen(false);
-                         setEmailSent(false);
-                         setShowCodeInput(false);
-                         setCode('');
+                         console.log('✅ Verification result:', result?.status);
                          
-                         console.log('🔄 Manually closing overlay and redirecting...');
-                         
-                         // Give Clerk a moment to update the session state, then redirect
-                         setTimeout(() => {
-                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                           console.log('🔄 Redirecting after signup:', finalRedirect);
-                           window.location.href = finalRedirect;
-                         }, 1000); // Longer delay to ensure Clerk state sync
-                       } else {
-                         console.log('⚠️ Verification incomplete, status:', result?.status);
-                         alert('Verification incomplete. Please try again.');
+                         if (result?.status === 'complete') {
+                           console.log('✅ Email verified, signup complete');
+                           console.log('🔄 Should be signed in now, overlay will close automatically');
+                           
+                           // Force close the overlay and redirect since verification is complete
+                           setIsOpen(false);
+                           setEmailSent(false);
+                           setShowCodeInput(false);
+                           setCode('');
+                           
+                           console.log('🔄 Manually closing overlay and redirecting...');
+                           
+                           // Give Clerk a moment to update the session state, then redirect
+                           setTimeout(() => {
+                             const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                             console.log('🔄 Redirecting after signup:', finalRedirect);
+                             window.location.href = finalRedirect;
+                           }, 1000); // Longer delay to ensure Clerk state sync
+                         } else {
+                           console.log('⚠️ Verification incomplete, status:', result?.status);
+                           alert('Verification incomplete. Please try again.');
+                         }
+                       } catch (error) {
+                         // Check specifically for already verified error
+                         if (error && typeof error === 'object' && 'errors' in error) {
+                           const clerkError = (error as any).errors?.[0];
+                           if (clerkError && clerkError.code === 'verification_already_verified') {
+                             console.log('✅ Email was already verified, proceeding with redirect');
+                             
+                             // Force close the overlay and redirect since verification is already complete
+                             setIsOpen(false);
+                             setEmailSent(false);
+                             setShowCodeInput(false);
+                             setCode('');
+                             
+                             // Give Clerk a moment to update the session state, then redirect
+                             setTimeout(() => {
+                               const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                               console.log('🔄 Redirecting after already verified signup:', finalRedirect);
+                               window.location.href = finalRedirect;
+                             }, 1000);
+                             return;
+                           }
+                         }
+                         throw error; // Re-throw if not the specific error we're handling
                        }
                      } else {
                        console.log('🔑 Current signin state:', signIn?.status);
@@ -476,36 +501,61 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                          throw new Error('No signin attempt found. Please start over.');
                        }
                        
-                       // Verify the email code for sign-in
-                       console.log('🔍 Attempting first factor verification...');
-                       const result = await signIn.attemptFirstFactor({
-                         strategy: 'email_code',
-                         code: code,
-                       });
-                       
-                       console.log('✅ Verification result:', result?.status);
-                       
-                       if (result?.status === 'complete') {
-                         console.log('✅ Sign-in complete');
-                         console.log('🔄 Should be signed in now, overlay will close automatically');
+                       try {
+                         // Verify the email code for sign-in
+                         console.log('🔍 Attempting first factor verification...');
+                         const result = await signIn.attemptFirstFactor({
+                           strategy: 'email_code',
+                           code: code,
+                         });
                          
-                         // Force close the overlay and redirect since verification is complete
-                         setIsOpen(false);
-                         setEmailSent(false);
-                         setShowCodeInput(false);
-                         setCode('');
+                         console.log('✅ Verification result:', result?.status);
                          
-                         console.log('🔄 Manually closing overlay and redirecting...');
-                         
-                         // Give Clerk a moment to update the session state, then redirect
-                         setTimeout(() => {
-                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                           console.log('🔄 Redirecting after signin:', finalRedirect);
-                           window.location.href = finalRedirect;
-                         }, 1000); // Longer delay to ensure Clerk state sync
-                       } else {
-                         console.log('⚠️ Verification incomplete, status:', result?.status);
-                         alert('Verification incomplete. Please try again.');
+                         if (result?.status === 'complete') {
+                           console.log('✅ Sign-in complete');
+                           console.log('🔄 Should be signed in now, overlay will close automatically');
+                           
+                           // Force close the overlay and redirect since verification is complete
+                           setIsOpen(false);
+                           setEmailSent(false);
+                           setShowCodeInput(false);
+                           setCode('');
+                           
+                           console.log('🔄 Manually closing overlay and redirecting...');
+                           
+                           // Give Clerk a moment to update the session state, then redirect
+                           setTimeout(() => {
+                             const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                             console.log('🔄 Redirecting after signin:', finalRedirect);
+                             window.location.href = finalRedirect;
+                           }, 1000); // Longer delay to ensure Clerk state sync
+                         } else {
+                           console.log('⚠️ Verification incomplete, status:', result?.status);
+                           alert('Verification incomplete. Please try again.');
+                         }
+                       } catch (error) {
+                         // Check specifically for already verified error
+                         if (error && typeof error === 'object' && 'errors' in error) {
+                           const clerkError = (error as any).errors?.[0];
+                           if (clerkError && clerkError.code === 'verification_already_verified') {
+                             console.log('✅ Email was already verified, proceeding with redirect');
+                             
+                             // Force close the overlay and redirect since verification is already complete
+                             setIsOpen(false);
+                             setEmailSent(false);
+                             setShowCodeInput(false);
+                             setCode('');
+                             
+                             // Give Clerk a moment to update the session state, then redirect
+                             setTimeout(() => {
+                               const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                               console.log('🔄 Redirecting after already verified signin:', finalRedirect);
+                               window.location.href = finalRedirect;
+                             }, 1000);
+                             return;
+                           }
+                         }
+                         throw error; // Re-throw if not the specific error we're handling
                        }
                      }
                    } catch (error) {
@@ -531,6 +581,143 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                      }
                    }
                  }}
+                disabled={code.length !== 6}
+                style={{
+                  width: '300px',
+                  padding: '14px 20px',
+                  backgroundColor: code.length === 6 ? '#1a1a1a' : '#ccc',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  cursor: code.length === 6 ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '24px'
+                }}
+              >
+                Verify Code
+              </button>
+
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
+                <button
+                  onClick={() => {
+                    setShowCodeInput(false);
+                    setEmailSent(false);
+                    setCode('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#666',
+                    fontSize: '14px',
+                    textDecoration: 'underline',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Use a different email
+                </button>
+                
+                <button
+                  onClick={async () => {
+                    try {
+                      if (initialView === 'sign_up') {
+                        try {
+                          await signUp?.prepareEmailAddressVerification({
+                            strategy: 'email_code',
+                          });
+                          setCode('');
+                          alert('New code sent!');
+                        } catch (error) {
+                          // Check specifically for already verified error
+                          if (error && typeof error === 'object' && 'errors' in error) {
+                            const clerkError = (error as any).errors?.[0];
+                            if (clerkError && clerkError.code === 'verification_already_verified') {
+                              console.log('✅ Email was already verified, proceeding with redirect');
+                              
+                              // Force close the overlay and redirect since verification is already complete
+                              setIsOpen(false);
+                              setEmailSent(false);
+                              setShowCodeInput(false);
+                              setCode('');
+                              
+                              // Give Clerk a moment to update the session state, then redirect
+                              setTimeout(() => {
+                                const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                                console.log('🔄 Redirecting after already verified signup:', finalRedirect);
+                                window.location.href = finalRedirect;
+                              }, 1000);
+                              return;
+                            }
+                          }
+                          console.error('Error resending code:', error);
+                          alert('Failed to resend code. Please try again.');
+                        }
+                      } else {
+                        // Re-send code for sign-in
+                        try {
+                          const signInAttempt = await signIn?.create({
+                            identifier: email,
+                          });
+                          const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
+                            (factor: any) => factor.strategy === 'email_code'
+                          ) as any;
+                          
+                          await signIn?.prepareFirstFactor({
+                            strategy: 'email_code',
+                            emailAddressId: emailCodeFactor.emailAddressId,
+                          });
+                          setCode('');
+                          alert('New code sent!');
+                        } catch (error) {
+                          // Check specifically for already verified error
+                          if (error && typeof error === 'object' && 'errors' in error) {
+                            const clerkError = (error as any).errors?.[0];
+                            if (clerkError && clerkError.code === 'verification_already_verified') {
+                              console.log('✅ Email was already verified, proceeding with redirect');
+                              
+                              // Force close the overlay and redirect since verification is already complete
+                              setIsOpen(false);
+                              setEmailSent(false);
+                              setShowCodeInput(false);
+                              setCode('');
+                              
+                              // Give Clerk a moment to update the session state, then redirect
+                              setTimeout(() => {
+                                const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                                console.log('🔄 Redirecting after already verified signin:', finalRedirect);
+                                window.location.href = finalRedirect;
+                              }, 1000);
+                              return;
+                            }
+                          }
+                          console.error('Error resending code:', error);
+                          alert('Failed to resend code. Please try again.');
+                        }
+                      }
+                    } catch (error) {
+                      console.error('❌ Code verification error:', error);
+                      
+                      // Check if it's a specific Clerk error
+                      if (error && typeof error === 'object' && 'errors' in error) {
+                        const clerkError = (error as any).errors?.[0];
+                        if (clerkError) {
+                          console.error('❌ Clerk error details:', clerkError);
+                          alert(`Verification failed: ${clerkError.longMessage || clerkError.message}`);
+                          return;
+                        }
+                      }
+                      
+                      const errorMsg = error instanceof Error ? error.message : 'Invalid code. Please try again.';
+                      
+                      // If the attempt was lost, suggest starting over
+                      if (errorMsg.includes('No sign up attempt') || errorMsg.includes('No signin attempt')) {
+                        alert(`${errorMsg} Please click "Use a different email" and start over.`);
+                      } else {
+                        alert(`Verification failed: ${errorMsg}`);
+                      }
+                    }
+                  }}
                 disabled={code.length !== 6}
                 style={{
                   width: '300px',
