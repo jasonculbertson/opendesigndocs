@@ -7,6 +7,13 @@ export interface ClerkConfig {
 export function getClerkConfig(): ClerkConfig {
   const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
   
+  // Debug logging for environment variable
+  console.log('🔧 Clerk config check:', {
+    hasPublishableKey: !!publishableKey,
+    keyLength: publishableKey?.length || 0,
+    env: import.meta.env.MODE
+  });
+  
   if (!publishableKey) {
     return {
       publishableKey: null,

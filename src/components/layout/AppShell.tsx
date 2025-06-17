@@ -87,10 +87,21 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
 
   const clerkConfig = getClerkConfig();
 
+  // Debug logging for Clerk configuration
+  console.log('🔧 AppShell Clerk config:', {
+    isConfigured: clerkConfig.isConfigured,
+    hasPublishableKey: !!clerkConfig.publishableKey,
+    error: clerkConfig.error,
+    currentPath,
+    isClient
+  });
+
   if (!clerkConfig.isConfigured) {
     logClerkError(clerkConfig.error!, 'AppShell');
     const isHomepage = currentPath === '/';
     const shouldShowSidebar = showSidebar && !isHomepage;
+    
+    console.log('🔧 AppShell falling back to basic render due to Clerk config issue');
     
     return (
       <>
