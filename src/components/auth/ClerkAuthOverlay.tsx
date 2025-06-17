@@ -52,9 +52,12 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
     const handleOpenAuth = (detail: AuthEventDetail) => {
       const view = detail.view || 'sign_in';
       const redirect = detail.redirectTo;
+      const finalRedirect = redirect || (typeof window !== 'undefined' ? window.location.pathname : '/');
 
+      console.log('🎯 Auth overlay opened:', { view, redirect, finalRedirect });
+      
       setInitialView(view);
-      setRedirectTo(redirect || (typeof window !== 'undefined' ? window.location.pathname : '/'));
+      setRedirectTo(finalRedirect);
       setAuthTitle(view === 'sign_up' ? 'Get unlimited free access' : 'Welcome back');
       setIsOpen(true);
     };
@@ -68,10 +71,16 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
     if (isSignedIn) {
+      console.log('✅ User signed in, closing overlay and redirecting to:', redirectTo);
       setIsOpen(false);
+      
       // Redirect if needed
       if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
-        window.location.href = redirectTo;
+        console.log('🔄 Redirecting from', window.location.pathname, 'to', redirectTo);
+        // Use setTimeout to ensure overlay closes first
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, 100);
       }
     }
   }, [isSignedIn, redirectTo]);
@@ -179,21 +188,45 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     try {
+                      const finalRedirectUrl = `${window.location.origin}${redirectTo}`;
+                      console.log('🔄 Starting OAuth with:', {
+                        initialView,
+                        redirectTo,
+                        finalRedirectUrl,
+                        windowLocation: window.location.href,
+                      });
                       if (initialView === 'sign_up') {
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}${redirectTo}`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
+                          redirectUrl: finalRedirectUrl,
+                          redirectUrlComplete: finalRedirectUrl,
                         });
                       } else {
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}${redirectTo}`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
+                          redirectUrl: finalRedirectUrl,
+                          redirectUrlComplete: finalRedirectUrl,
                         });
                       }
                     } catch (error) {
                       console.error('Google OAuth error:', error);
+                      
+                      // Handle session exists error
+                      if (error && typeof error === 'object' && 'errors' in error) {
+                        const errors = (error as any).errors;
+                        if (errors?.[0]?.code === 'session_exists') {
+                          console.log('Session already exists, attempting to use existing session');
+                          // If there's already a session, just close the overlay and redirect
+                          setIsOpen(false);
+                          if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
+                            setTimeout(() => {
+                              window.location.href = redirectTo;
+                            }, 100);
+                          }
+                          return;
+                        }
+                      }
+                      
                       alert(`Google authentication failed: ${error}`);
                     }
                   }}
