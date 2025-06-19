@@ -94,17 +94,25 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   useEffect(() => {
     if (isSignedIn && !isManualRedirect) {
       console.log('✅ User signed in, closing overlay and redirecting to:', redirectTo);
+      console.log('🔍 Current URL:', window.location.href);
+      console.log('🔍 Current pathname:', window.location.pathname);
+      console.log('🔍 IsManualRedirect:', isManualRedirect);
       setIsOpen(false);
       
       // Redirect if needed - skip homepage redirect
       if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
         const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-        console.log('🔄 Redirecting from', window.location.pathname, 'to', finalRedirect, '(original redirectTo:', redirectTo, ')');
+        console.log('🔄 AUTO-REDIRECT: Redirecting from', window.location.pathname, 'to', finalRedirect, '(original redirectTo:', redirectTo, ')');
         // Use setTimeout to ensure overlay closes first
         setTimeout(() => {
+          console.log('🔄 AUTO-REDIRECT: Executing redirect now...');
           window.location.href = finalRedirect;
         }, 100);
+      } else {
+        console.log('🔄 AUTO-REDIRECT: No redirect needed. redirectTo:', redirectTo, 'current path:', window.location.pathname);
       }
+    } else {
+      console.log('🔄 AUTO-REDIRECT: Skipped. isSignedIn:', isSignedIn, 'isManualRedirect:', isManualRedirect);
     }
   }, [isSignedIn, redirectTo, isManualRedirect]);
 

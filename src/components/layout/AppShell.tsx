@@ -116,7 +116,11 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
         logClerkError(`AppShell error: ${error.message}`, 'AppShell');
       }}
     >
-      <ClerkProvider publishableKey={clerkConfig.publishableKey!}>
+      <ClerkProvider 
+        publishableKey={clerkConfig.publishableKey!}
+        afterSignInUrl="/docs/levels/levels-titles"
+        afterSignUpUrl="/docs/levels/levels-titles"
+      >
         <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
       </ClerkProvider>
     </AuthErrorBoundary>
