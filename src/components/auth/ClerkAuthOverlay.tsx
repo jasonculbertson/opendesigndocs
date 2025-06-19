@@ -17,6 +17,7 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [isManualRedirect, setIsManualRedirect] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [isManualRedirect, setIsManualRedirect] = useState(false);
   const [code, setCode] = useState('');
   const [showCodeInput, setShowCodeInput] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -90,7 +92,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
 
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
-    if (isSignedIn) {
+    if (isSignedIn && !isManualRedirect) {
       console.log('✅ User signed in, closing overlay and redirecting to:', redirectTo);
       setIsOpen(false);
       
@@ -104,7 +106,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
         }, 100);
       }
     }
-  }, [isSignedIn, redirectTo]);
+  }, [isSignedIn, redirectTo, isManualRedirect]);
 
   useEffect(() => {
     if (!allowClose) {
@@ -460,7 +462,10 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         
                         if (result?.status === 'complete') {
                           console.log('✅ Email verified, signup complete');
-                          console.log('🔄 Should be signed in now, overlay will close automatically');
+                          console.log('🔄 Disabling automatic redirect and handling manually');
+                          
+                          // Set flag to prevent automatic redirect
+                          setIsManualRedirect(true);
                           
                           // Force close the overlay and redirect since verification is complete
                           setIsOpen(false);
@@ -475,7 +480,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                             const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                             console.log('🔄 Redirecting after signup:', finalRedirect);
                             window.location.href = finalRedirect;
-                          }, 1000); // Longer delay to ensure Clerk state sync
+                          }, 500); // Shorter delay since we're preventing the automatic redirect
                         } else if (result?.status === 'missing_requirements') {
                           console.log('⚠️ Missing requirements detected, attempting to complete signup...');
                           
@@ -526,6 +531,10 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                             
                             if (completeResult?.status === 'complete') {
                               console.log('✅ Signup completed after providing additional info');
+                              
+                              // Set flag to prevent automatic redirect
+                              setIsManualRedirect(true);
+                              
                               setIsOpen(false);
                               setEmailSent(false);
                               setShowCodeInput(false);
@@ -535,7 +544,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                                 const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                                 console.log('🔄 Redirecting after completion:', finalRedirect);
                                 window.location.href = finalRedirect;
-                              }, 1000);
+                              }, 500);
                             } else {
                               console.log('⚠️ Still missing requirements after all attempts');
                               console.log('📋 Final signup state:', {
@@ -589,7 +598,10 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         
                         if (result?.status === 'complete') {
                           console.log('✅ Sign-in complete');
-                          console.log('🔄 Should be signed in now, overlay will close automatically');
+                          console.log('🔄 Disabling automatic redirect and handling manually');
+                          
+                          // Set flag to prevent automatic redirect
+                          setIsManualRedirect(true);
                           
                           // Force close the overlay and redirect since verification is complete
                           setIsOpen(false);
@@ -604,7 +616,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                             const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                             console.log('🔄 Redirecting after signin:', finalRedirect);
                             window.location.href = finalRedirect;
-                          }, 1000); // Longer delay to ensure Clerk state sync
+                          }, 500); // Shorter delay since we're preventing the automatic redirect
                         } else {
                           console.log('⚠️ Verification incomplete, status:', result?.status);
                           alert('Verification incomplete. Please try again.');
