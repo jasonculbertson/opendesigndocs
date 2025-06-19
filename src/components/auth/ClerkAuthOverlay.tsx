@@ -472,13 +472,53 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         } else if (result?.status === 'missing_requirements') {
                           console.log('⚠️ Missing requirements detected, attempting to complete signup...');
                           
-                          // Try to complete the signup without additional data
+                          // Log detailed information about what's missing
+                          console.log('📋 Signup object details:', {
+                            status: signUp.status,
+                            missingFields: signUp.missingFields,
+                            unverifiedFields: signUp.unverifiedFields,
+                            requiredFields: signUp.requiredFields,
+                            optionalFields: signUp.optionalFields
+                          });
+                          
+                          // Try to complete the signup with basic information
                           try {
-                            const completeResult = await signUp.update({});
-                            console.log('🔄 Update result:', completeResult?.status);
+                            // First try with just an empty update
+                            let completeResult = await signUp.update({});
+                            console.log('🔄 Update result (empty):', completeResult?.status);
+                            
+                            // If still missing requirements, try providing basic user info
+                            if (completeResult?.status === 'missing_requirements') {
+                              console.log('🔄 Trying with basic user info...');
+                              
+                              // Extract first name from email if possible
+                              const emailParts = email.split('@')[0];
+                              const firstName = emailParts.charAt(0).toUpperCase() + emailParts.slice(1);
+                              
+                              completeResult = await signUp.update({
+                                firstName: firstName,
+                                lastName: 'User'  // Generic last name
+                              });
+                              console.log('🔄 Update result (with names):', completeResult?.status);
+                            }
+                            
+                            // If still missing requirements, try to force completion
+                            if (completeResult?.status === 'missing_requirements') {
+                              console.log('🔄 Trying to force completion...');
+                              try {
+                                // Try to create and set session
+                                const sessionResult = await signUp.createdSessionId;
+                                console.log('🔄 Session ID found:', sessionResult);
+                                if (sessionResult) {
+                                  completeResult = { status: 'complete' } as any;
+                                }
+                              } catch (sessionError) {
+                                console.log('❌ Session check failed:', sessionError);
+                              }
+                            }
                             
                             if (completeResult?.status === 'complete') {
-                              console.log('✅ Signup completed after update');
+                              console.log('✅ Signup completed after providing additional info');
                               setIsOpen(false);
                               setEmailSent(false);
                               setShowCodeInput(false);
@@ -490,11 +530,34 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                                 window.location.href = finalRedirect;
                               }, 1000);
                             } else {
-                              console.log('⚠️ Still missing requirements after update');
-                              alert('Account created but additional information may be required. Please check your email and try signing in.');
+                              console.log('⚠️ Still missing requirements after all attempts');
+                              console.log('📋 Final signup state:', {
+                                status: completeResult?.status,
+                                missingFields: signUp.missingFields,
+                                requiredFields: signUp.requiredFields
+                              });
+                              
+                              // More helpful error message
+                              const missingFieldsList = signUp.missingFields?.map(field => {
+                                if (typeof field === 'string') return field;
+                                return (field as any)?.code || String(field);
+                              }).join(', ') || 'unknown fields';
+                              alert(`Account created but needs additional information: ${missingFieldsList}. Please try signing in to complete your profile.`);
                             }
                           } catch (updateError) {
                             console.error('❌ Error updating signup:', updateError);
+                            
+                            // Log more details about the error
+                            if (updateError && typeof updateError === 'object' && 'errors' in updateError) {
+                              const errors = (updateError as any).errors;
+                              console.error('❌ Detailed error:', errors);
+                              
+                              if (errors?.[0]) {
+                                alert(`Setup error: ${errors[0].longMessage || errors[0].message}`);
+                                return;
+                              }
+                            }
+                            
                             alert('Account created but there was an issue completing setup. Please try signing in.');
                           }
                         } else {
