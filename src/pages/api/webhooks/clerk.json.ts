@@ -51,11 +51,7 @@ export async function POST({ request }: APIContext) {
         .insert([
           {
             email: email.toLowerCase(),
-            clerk_user_id: user.id,
-            first_name: user.first_name || null,
-            last_name: user.last_name || null,
             subscribed_at: new Date().toISOString(),
-            source: 'clerk_signup',
             marketing_opt_in: true // Default to true for Clerk signups
           }
         ])

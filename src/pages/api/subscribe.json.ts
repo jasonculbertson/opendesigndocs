@@ -38,7 +38,6 @@ export async function POST({ request }: APIContext) {
         {
           email: email.toLowerCase(),
           subscribed_at: new Date().toISOString(),
-          source: 'newsletter_signup',
           marketing_opt_in: marketingOptIn || false
         }
       ])
