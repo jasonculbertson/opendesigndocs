@@ -2,9 +2,6 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-// Add prerender directive to generate static HTML during build
-export const prerender = true;
-
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
   return docs.map(entry => ({
