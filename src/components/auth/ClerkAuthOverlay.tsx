@@ -162,6 +162,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       left: 0,
       zIndex: 9999
     }}>
+      {/* CAPTCHA container for Clerk bot protection */}
+      <div id="clerk-captcha" style={{ display: 'none' }} />
+      
       {/* Close button */}
       <button
         onClick={() => setIsOpen(false)}
@@ -387,176 +390,292 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 Continue with email
               </button>
             </>
-          ) : showCodeInput ? (
-            <div style={{ textAlign: 'center', padding: '20px 0' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '12px', color: '#1a1a1a' }}>
-                Enter verification code
-              </h2>
-              <p style={{ fontSize: '16px', color: '#666', marginBottom: '32px', lineHeight: '1.5' }}>
-                We sent a 6-digit code to <strong>{email}</strong>
-              </p>
-              
-              <div style={{ marginBottom: '24px' }}>
-                <input
-                  type="text"
-                  placeholder="Enter 6-digit code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  maxLength={6}
+          ) : (
+            emailSent && showCodeInput ? (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '12px', color: '#1a1a1a' }}>
+                  Enter verification code
+                </h2>
+                <p style={{ fontSize: '16px', color: '#666', marginBottom: '32px', lineHeight: '1.5' }}>
+                  We sent a 6-digit code to <strong>{email}</strong>
+                </p>
+                
+                <div style={{ marginBottom: '24px' }}>
+                  <input
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    maxLength={6}
+                    style={{
+                      width: '300px',
+                      padding: '14px 16px',
+                      backgroundColor: '#f8f8f8',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '18px',
+                      textAlign: 'center',
+                      letterSpacing: '4px',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.backgroundColor = '#ffffff';
+                      (e.target as HTMLInputElement).style.borderColor = '#1a1a1a';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.backgroundColor = '#f8f8f8';
+                      (e.target as HTMLInputElement).style.borderColor = '#e0e0e0';
+                    }}
+                  />
+                </div>
+
+                <button
+                  onClick={async () => {
+                    try {
+                      console.log('🔐 Attempting code verification:', { code, initialView });
+                      
+                      if (initialView === 'sign_up') {
+                        console.log('📝 Current signup state:', signUp?.status);
+                        
+                        if (!signUp) {
+                          throw new Error('No signup attempt found. Please start over.');
+                        }
+                        
+                        // Verify the email address with the code
+                        console.log('🔍 Attempting email verification...');
+                        const result = await signUp.attemptEmailAddressVerification({
+                          code: code,
+                        });
+                        
+                        console.log('✅ Verification result:', result?.status);
+                        
+                        if (result?.status === 'complete') {
+                          console.log('✅ Email verified, signup complete');
+                          console.log('🔄 Should be signed in now, overlay will close automatically');
+                          
+                          // Force close the overlay and redirect since verification is complete
+                          setIsOpen(false);
+                          setEmailSent(false);
+                          setShowCodeInput(false);
+                          setCode('');
+                          
+                          console.log('🔄 Manually closing overlay and redirecting...');
+                          
+                          // Give Clerk a moment to update the session state, then redirect
+                          setTimeout(() => {
+                            const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                            console.log('🔄 Redirecting after signup:', finalRedirect);
+                            window.location.href = finalRedirect;
+                          }, 1000); // Longer delay to ensure Clerk state sync
+                        } else if (result?.status === 'missing_requirements') {
+                          console.log('⚠️ Missing requirements detected, attempting to complete signup...');
+                          
+                          // Try to complete the signup without additional data
+                          try {
+                            const completeResult = await signUp.update({});
+                            console.log('🔄 Update result:', completeResult?.status);
+                            
+                            if (completeResult?.status === 'complete') {
+                              console.log('✅ Signup completed after update');
+                              setIsOpen(false);
+                              setEmailSent(false);
+                              setShowCodeInput(false);
+                              setCode('');
+                              
+                              setTimeout(() => {
+                                const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                                console.log('🔄 Redirecting after completion:', finalRedirect);
+                                window.location.href = finalRedirect;
+                              }, 1000);
+                            } else {
+                              console.log('⚠️ Still missing requirements after update');
+                              alert('Account created but additional information may be required. Please check your email and try signing in.');
+                            }
+                          } catch (updateError) {
+                            console.error('❌ Error updating signup:', updateError);
+                            alert('Account created but there was an issue completing setup. Please try signing in.');
+                          }
+                        } else {
+                          console.log('⚠️ Verification incomplete, status:', result?.status);
+                          alert('Verification incomplete. Please try again.');
+                        }
+                      } else {
+                        console.log('🔑 Current signin state:', signIn?.status);
+                        
+                        if (!signIn) {
+                          throw new Error('No signin attempt found. Please start over.');
+                        }
+                        
+                        // Verify the email code for sign-in
+                        console.log('🔍 Attempting first factor verification...');
+                        const result = await signIn.attemptFirstFactor({
+                          strategy: 'email_code',
+                          code: code,
+                        });
+                        
+                        console.log('✅ Verification result:', result?.status);
+                        
+                        if (result?.status === 'complete') {
+                          console.log('✅ Sign-in complete');
+                          console.log('🔄 Should be signed in now, overlay will close automatically');
+                          
+                          // Force close the overlay and redirect since verification is complete
+                          setIsOpen(false);
+                          setEmailSent(false);
+                          setShowCodeInput(false);
+                          setCode('');
+                          
+                          console.log('🔄 Manually closing overlay and redirecting...');
+                          
+                          // Give Clerk a moment to update the session state, then redirect
+                          setTimeout(() => {
+                            const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                            console.log('🔄 Redirecting after signin:', finalRedirect);
+                            window.location.href = finalRedirect;
+                          }, 1000); // Longer delay to ensure Clerk state sync
+                        } else {
+                          console.log('⚠️ Verification incomplete, status:', result?.status);
+                          alert('Verification incomplete. Please try again.');
+                        }
+                      }
+                    } catch (error) {
+                      console.error('❌ Code verification error:', error);
+                      
+                      // Check if it's a specific Clerk error
+                      if (error && typeof error === 'object' && 'errors' in error) {
+                        const clerkError = (error as any).errors?.[0];
+                        if (clerkError) {
+                          console.error('❌ Clerk error details:', clerkError);
+                          alert(`Verification failed: ${clerkError.longMessage || clerkError.message}`);
+                          return;
+                        }
+                      }
+                      
+                      const errorMsg = error instanceof Error ? error.message : 'Invalid code. Please try again.';
+                      
+                      // If the attempt was lost, suggest starting over
+                      if (errorMsg.includes('No sign up attempt') || errorMsg.includes('No signin attempt')) {
+                        alert(`${errorMsg} Please click "Use a different email" and start over.`);
+                      } else {
+                        alert(`Verification failed: ${errorMsg}`);
+                      }
+                    }
+                  }}
+                  disabled={code.length !== 6}
                   style={{
                     width: '300px',
-                    padding: '14px 16px',
-                    backgroundColor: '#f8f8f8',
-                    border: '1px solid #e0e0e0',
+                    padding: '14px 20px',
+                    backgroundColor: code.length === 6 ? '#1a1a1a' : '#ccc',
+                    color: 'white',
+                    border: 'none',
                     borderRadius: '6px',
-                    fontSize: '18px',
-                    textAlign: 'center',
-                    letterSpacing: '4px',
-                    outline: 'none',
-                    boxSizing: 'border-box',
-                    transition: 'all 0.2s ease'
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    cursor: code.length === 6 ? 'pointer' : 'not-allowed',
+                    transition: 'all 0.2s ease',
+                    marginBottom: '24px'
                   }}
-                  onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.backgroundColor = '#ffffff';
-                    (e.target as HTMLInputElement).style.borderColor = '#1a1a1a';
-                  }}
-                  onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.backgroundColor = '#f8f8f8';
-                    (e.target as HTMLInputElement).style.borderColor = '#e0e0e0';
-                  }}
-                />
+                >
+                  Verify Code
+                </button>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
+                  <button
+                    onClick={() => {
+                      setShowCodeInput(false);
+                      setEmailSent(false);
+                      setCode('');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#666',
+                      fontSize: '14px',
+                      textDecoration: 'underline',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Use a different email
+                  </button>
+                  
+                  <button
+                    onClick={async () => {
+                      try {
+                        if (initialView === 'sign_up') {
+                          await signUp?.prepareEmailAddressVerification({
+                            strategy: 'email_code',
+                          });
+                        } else {
+                          // Re-send code for sign-in
+                          const signInAttempt = await signIn?.create({
+                            identifier: email,
+                          });
+                          const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
+                            (factor: any) => factor.strategy === 'email_code'
+                          ) as any;
+                          
+                          await signIn?.prepareFirstFactor({
+                            strategy: 'email_code',
+                            emailAddressId: emailCodeFactor.emailAddressId,
+                          });
+                        }
+                        setCode('');
+                        alert('New code sent!');
+                      } catch (error) {
+                        console.error('Error resending code:', error);
+                        alert('Failed to resend code. Please try again.');
+                      }
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#666',
+                      fontSize: '14px',
+                      textDecoration: 'underline',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Resend code
+                  </button>
+                </div>
               </div>
-
-                             <button
-                 onClick={async () => {
-                   try {
-                     console.log('🔐 Attempting code verification:', { code, initialView });
-                     
-                     if (initialView === 'sign_up') {
-                       console.log('📝 Current signup state:', signUp?.status);
-                       
-                       if (!signUp) {
-                         throw new Error('No signup attempt found. Please start over.');
-                       }
-                       
-                       // Verify the email address with the code
-                       console.log('🔍 Attempting email verification...');
-                       const result = await signUp.attemptEmailAddressVerification({
-                         code: code,
-                       });
-                       
-                       console.log('✅ Verification result:', result?.status);
-                       
-                       if (result?.status === 'complete') {
-                         console.log('✅ Email verified, signup complete');
-                         console.log('🔄 Should be signed in now, overlay will close automatically');
-                         
-                         // Force close the overlay and redirect since verification is complete
-                         setIsOpen(false);
-                         setEmailSent(false);
-                         setShowCodeInput(false);
-                         setCode('');
-                         
-                         console.log('🔄 Manually closing overlay and redirecting...');
-                         
-                         // Give Clerk a moment to update the session state, then redirect
-                         setTimeout(() => {
-                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                           console.log('🔄 Redirecting after signup:', finalRedirect);
-                           window.location.href = finalRedirect;
-                         }, 1000); // Longer delay to ensure Clerk state sync
-                       } else {
-                         console.log('⚠️ Verification incomplete, status:', result?.status);
-                         alert('Verification incomplete. Please try again.');
-                       }
-                     } else {
-                       console.log('🔑 Current signin state:', signIn?.status);
-                       
-                       if (!signIn) {
-                         throw new Error('No signin attempt found. Please start over.');
-                       }
-                       
-                       // Verify the email code for sign-in
-                       console.log('🔍 Attempting first factor verification...');
-                       const result = await signIn.attemptFirstFactor({
-                         strategy: 'email_code',
-                         code: code,
-                       });
-                       
-                       console.log('✅ Verification result:', result?.status);
-                       
-                       if (result?.status === 'complete') {
-                         console.log('✅ Sign-in complete');
-                         console.log('🔄 Should be signed in now, overlay will close automatically');
-                         
-                         // Force close the overlay and redirect since verification is complete
-                         setIsOpen(false);
-                         setEmailSent(false);
-                         setShowCodeInput(false);
-                         setCode('');
-                         
-                         console.log('🔄 Manually closing overlay and redirecting...');
-                         
-                         // Give Clerk a moment to update the session state, then redirect
-                         setTimeout(() => {
-                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                           console.log('🔄 Redirecting after signin:', finalRedirect);
-                           window.location.href = finalRedirect;
-                         }, 1000); // Longer delay to ensure Clerk state sync
-                       } else {
-                         console.log('⚠️ Verification incomplete, status:', result?.status);
-                         alert('Verification incomplete. Please try again.');
-                       }
-                     }
-                   } catch (error) {
-                     console.error('❌ Code verification error:', error);
-                     
-                     // Check if it's a specific Clerk error
-                     if (error && typeof error === 'object' && 'errors' in error) {
-                       const clerkError = (error as any).errors?.[0];
-                       if (clerkError) {
-                         console.error('❌ Clerk error details:', clerkError);
-                         alert(`Verification failed: ${clerkError.longMessage || clerkError.message}`);
-                         return;
-                       }
-                     }
-                     
-                     const errorMsg = error instanceof Error ? error.message : 'Invalid code. Please try again.';
-                     
-                     // If the attempt was lost, suggest starting over
-                     if (errorMsg.includes('No sign up attempt') || errorMsg.includes('No signin attempt')) {
-                       alert(`${errorMsg} Please click "Use a different email" and start over.`);
-                     } else {
-                       alert(`Verification failed: ${errorMsg}`);
-                     }
-                   }
-                 }}
-                disabled={code.length !== 6}
-                style={{
-                  width: '300px',
-                  padding: '14px 20px',
-                  backgroundColor: code.length === 6 ? '#1a1a1a' : '#ccc',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '15px',
-                  fontWeight: 500,
-                  cursor: code.length === 6 ? 'pointer' : 'not-allowed',
-                  transition: 'all 0.2s ease',
-                  marginBottom: '24px'
-                }}
-              >
-                Verify Code
-              </button>
-
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                <div style={{ 
+                  width: '64px', 
+                  height: '64px', 
+                  backgroundColor: '#f0f0f0', 
+                  borderRadius: '50%', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  margin: '0 auto 24px' 
+                }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '12px', color: '#1a1a1a' }}>
+                  Check your email
+                </h2>
+                <p style={{ fontSize: '16px', color: '#666', marginBottom: '24px', lineHeight: '1.5' }}>
+                  A verification code has been sent to <strong>{email}</strong>
+                </p>
+                <p style={{ fontSize: '14px', color: '#999' }}>
+                  Enter the 6-digit code to continue
+                </p>
                 <button
                   onClick={() => {
-                    setShowCodeInput(false);
                     setEmailSent(false);
+                    setShowCodeInput(false);
+                    setEmail('');
                     setCode('');
                   }}
                   style={{
+                    marginTop: '32px',
                     background: 'none',
                     border: 'none',
                     color: '#666',
@@ -567,148 +686,14 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 >
                   Use a different email
                 </button>
-                
-                <button
-                  onClick={async () => {
-                    try {
-                      if (initialView === 'sign_up') {
-                        await signUp?.prepareEmailAddressVerification({
-                          strategy: 'email_code',
-                        });
-                      } else {
-                        // Re-send code for sign-in
-                        const signInAttempt = await signIn?.create({
-                          identifier: email,
-                        });
-                        const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
-                          (factor: any) => factor.strategy === 'email_code'
-                        ) as any;
-                        
-                        await signIn?.prepareFirstFactor({
-                          strategy: 'email_code',
-                          emailAddressId: emailCodeFactor.emailAddressId,
-                        });
-                      }
-                      setCode('');
-                      alert('New code sent!');
-                    } catch (error) {
-                      console.error('Error resending code:', error);
-                      alert('Failed to resend code. Please try again.');
-                    }
-                  }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#666',
-                    fontSize: '14px',
-                    textDecoration: 'underline',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Resend code
-                </button>
               </div>
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-              <div style={{ 
-                width: '64px', 
-                height: '64px', 
-                backgroundColor: '#f0f0f0', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                margin: '0 auto 24px' 
-              }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '12px', color: '#1a1a1a' }}>
-                Check your email
-              </h2>
-              <p style={{ fontSize: '16px', color: '#666', marginBottom: '24px', lineHeight: '1.5' }}>
-                A verification code has been sent to <strong>{email}</strong>
-              </p>
-              <p style={{ fontSize: '14px', color: '#999' }}>
-                Enter the 6-digit code to continue
-              </p>
-              <button
-                onClick={() => {
-                  setEmailSent(false);
-                  setShowCodeInput(false);
-                  setEmail('');
-                  setCode('');
-                }}
-                style={{
-                  marginTop: '32px',
-                  background: 'none',
-                  border: 'none',
-                  color: '#666',
-                  fontSize: '14px',
-                  textDecoration: 'underline',
-                  cursor: 'pointer'
-                }}
-              >
-                Use a different email
-              </button>
-            </div>
+            )
           )}
-
-          {!emailSent && (
-            <p style={{ 
-              fontSize: '14px', 
-              color: '#666', 
-              textAlign: 'center',
-              marginBottom: '24px'
-            }}>
-              {initialView === 'sign_up' ? (
-                <>
-                  Already have an account? <button 
-                    onClick={() => setInitialView('sign_in')} 
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      color: '#333', 
-                      textDecoration: 'underline', 
-                      cursor: 'pointer', 
-                      fontSize: '14px',
-                      padding: 0
-                    }}
-                  >
-                    Sign in
-                  </button>
-                </>
-              ) : (
-                <>
-                  Don't have an account? <button 
-                    onClick={() => setInitialView('sign_up')} 
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      color: '#333', 
-                      textDecoration: 'underline', 
-                      cursor: 'pointer', 
-                      fontSize: '14px',
-                      padding: 0
-                    }}
-                  >
-                    Sign up
-                  </button>
-                </>
-              )}
-            </p>
-          )}
-
-
       </div>
     </div>
   );
 }
 
-// Export the inner component directly since ClerkProvider is already in the layouts
 export default function ClerkAuthOverlay(props: ClerkAuthOverlayProps) {
   return <ClerkAuthOverlayInner {...props} />;
 } 
