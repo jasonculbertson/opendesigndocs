@@ -94,12 +94,13 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       console.log('✅ User signed in, closing overlay and redirecting to:', redirectTo);
       setIsOpen(false);
       
-      // Redirect if needed
+      // Redirect if needed - skip homepage redirect
       if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
-        console.log('🔄 Redirecting from', window.location.pathname, 'to', redirectTo);
+        const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+        console.log('🔄 Redirecting from', window.location.pathname, 'to', finalRedirect, '(original redirectTo:', redirectTo, ')');
         // Use setTimeout to ensure overlay closes first
         setTimeout(() => {
-          window.location.href = redirectTo;
+          window.location.href = finalRedirect;
         }, 100);
       }
     }
@@ -215,12 +216,14 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     try {
-                      const finalRedirectUrl = redirectTo === '/' 
-                        ? `${window.location.origin}/docs/levels/levels-titles`
-                        : `${window.location.origin}${redirectTo}`;
+                      // If redirectTo is homepage, use the default target page instead
+                      const finalRedirectTo = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                      const finalRedirectUrl = `${window.location.origin}${finalRedirectTo}`;
+                      
                       console.log('🔄 Starting OAuth with redirect:', {
                         initialView,
-                        redirectTo,
+                        originalRedirectTo: redirectTo,
+                        finalRedirectTo,
                         finalRedirectUrl,
                         windowLocation: window.location.href,
                       });
