@@ -187,17 +187,23 @@ export default function HomeHeaderAuth() {
   });
 
   const handleSignIn = () => {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const redirectTo = currentPath === '/' ? '/docs/levels/levels-titles' : currentPath;
+    
     dispatchAuthEvent({
       view: 'sign_in',
-      redirectTo: '/docs/levels/levels-titles',
+      redirectTo,
       context: 'manual',
     });
   };
 
   const handleSignUp = () => {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const redirectTo = currentPath === '/' ? '/docs/levels/levels-titles' : currentPath;
+    
     dispatchAuthEvent({
       view: 'sign_up',
-      redirectTo: '/docs/levels/levels-titles',
+      redirectTo,
       context: 'manual',
     });
   };

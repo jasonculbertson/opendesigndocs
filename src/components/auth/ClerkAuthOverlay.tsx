@@ -125,7 +125,21 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       console.log('🔍 IsManualRedirect:', isManualRedirect);
       setIsOpen(false);
       
-      // Determine appropriate redirect URL
+      // Check if this is an OAuth completion by looking for stored redirect URL
+      const storedOAuthRedirect = typeof window !== 'undefined' ? sessionStorage.getItem('oauth_redirect_url') : null;
+      if (storedOAuthRedirect) {
+        console.log('🔄 AUTO-REDIRECT (OAuth): Found stored redirect URL:', storedOAuthRedirect);
+        sessionStorage.removeItem('oauth_redirect_url');
+        
+        // Use setTimeout to ensure overlay closes first
+        setTimeout(() => {
+          console.log('🔄 AUTO-REDIRECT (OAuth): Executing redirect to stored URL...');
+          window.location.href = storedOAuthRedirect;
+        }, 100);
+        return;
+      }
+      
+      // Determine appropriate redirect URL for other cases
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
       let finalRedirect;
       
@@ -265,28 +279,33 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     try {
-                      // If redirectTo is homepage, use the default target page instead
+                      // Store the desired redirect URL in sessionStorage for OAuth completion
                       const finalRedirectTo = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                      const finalRedirectUrl = `${window.location.origin}${finalRedirectTo}`;
+                      sessionStorage.setItem('oauth_redirect_url', finalRedirectTo);
+                      console.log('💾 Stored OAuth redirect URL:', finalRedirectTo);
+                      
+                      // Always redirect to current page after OAuth, then our completion handler will redirect to the final destination
+                      const currentPageUrl = `${window.location.origin}${window.location.pathname}`;
                       
                       console.log('🔄 Starting OAuth with redirect:', {
                         initialView,
                         originalRedirectTo: redirectTo,
                         finalRedirectTo,
-                        finalRedirectUrl,
+                        currentPageUrl,
                         windowLocation: window.location.href,
                       });
+                      
                       if (initialView === 'sign_up') {
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: finalRedirectUrl,
-                          redirectUrlComplete: finalRedirectUrl,
+                          redirectUrl: currentPageUrl,
+                          redirectUrlComplete: currentPageUrl,
                         });
                       } else {
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: finalRedirectUrl,
-                          redirectUrlComplete: finalRedirectUrl,
+                          redirectUrl: currentPageUrl,
+                          redirectUrlComplete: currentPageUrl,
                         });
                       }
                     } catch (error) {
