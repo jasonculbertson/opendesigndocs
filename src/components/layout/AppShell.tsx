@@ -131,8 +131,6 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     >
       <ClerkProvider 
         publishableKey={clerkConfig.publishableKey!}
-        afterSignInUrl={redirectUrl}
-        afterSignUpUrl={redirectUrl}
       >
         <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
       </ClerkProvider>

@@ -125,17 +125,30 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       console.log('🔍 IsManualRedirect:', isManualRedirect);
       setIsOpen(false);
       
-      // Redirect if needed - skip homepage redirect
-      if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
-        const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-        console.log('🔄 AUTO-REDIRECT: Redirecting from', window.location.pathname, 'to', finalRedirect, '(original redirectTo:', redirectTo, ')');
+      // Determine appropriate redirect URL
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+      let finalRedirect;
+      
+      if (redirectTo && redirectTo !== currentPath) {
+        // Use the specified redirectTo if it's different from current path
+        finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+      } else if (currentPath === '/') {
+        // If we're on homepage and no specific redirect, go to levels
+        finalRedirect = '/docs/levels/levels-titles';
+      } else {
+        // Stay on current page
+        finalRedirect = null;
+      }
+      
+      if (finalRedirect) {
+        console.log('🔄 AUTO-REDIRECT: Redirecting from', currentPath, 'to', finalRedirect, '(original redirectTo:', redirectTo, ')');
         // Use setTimeout to ensure overlay closes first
         setTimeout(() => {
           console.log('🔄 AUTO-REDIRECT: Executing redirect now...');
           window.location.href = finalRedirect;
         }, 100);
       } else {
-        console.log('🔄 AUTO-REDIRECT: No redirect needed. redirectTo:', redirectTo, 'current path:', window.location.pathname);
+        console.log('🔄 AUTO-REDIRECT: No redirect needed. Staying on current path:', currentPath);
       }
     } else {
       console.log('🔄 AUTO-REDIRECT: Skipped. isSignedIn:', isSignedIn, 'isManualRedirect:', isManualRedirect);
