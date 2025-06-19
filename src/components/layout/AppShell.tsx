@@ -87,12 +87,25 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
 
   const clerkConfig = getClerkConfig();
 
+  // Determine the appropriate redirect URL based on current page
+  const getRedirectUrl = () => {
+    // If on homepage, redirect to levels page
+    if (currentPath === '/') {
+      return '/docs/levels/levels-titles';
+    }
+    // For all other pages, redirect back to the same page
+    return currentPath;
+  };
+
+  const redirectUrl = getRedirectUrl();
+
   // Debug logging for Clerk configuration
   console.log('🔧 AppShell Clerk config:', {
     isConfigured: clerkConfig.isConfigured,
     hasPublishableKey: !!clerkConfig.publishableKey,
     error: clerkConfig.error,
     currentPath,
+    redirectUrl,
     isClient
   });
 
@@ -118,8 +131,8 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     >
       <ClerkProvider 
         publishableKey={clerkConfig.publishableKey!}
-        afterSignInUrl="/docs/levels/levels-titles"
-        afterSignUpUrl="/docs/levels/levels-titles"
+        afterSignInUrl={redirectUrl}
+        afterSignUpUrl={redirectUrl}
       >
         <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
       </ClerkProvider>
