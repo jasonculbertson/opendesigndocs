@@ -167,7 +167,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       
       {/* Close button */}
       <button
-        onClick={() => setIsOpen(false)}
+        onClick={() => {
+          setIsOpen(false);
+          // Redirect to homepage when closing the signup wall
+          window.location.href = '/';
+        }}
         style={{
           position: 'absolute',
           top: '20px',
