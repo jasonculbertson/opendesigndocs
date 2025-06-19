@@ -41,7 +41,23 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const [isManualRedirect, setIsManualRedirect] = useState(false);
+  const [isManualRedirect, setIsManualRedirect] = useState(() => {
+    // Check if we recently completed a manual redirect
+    if (typeof window !== 'undefined') {
+      const recent = sessionStorage.getItem('clerk_manual_redirect');
+      if (recent) {
+        const timestamp = parseInt(recent);
+        const now = Date.now();
+        // Consider manual redirect active for 2 seconds after redirect
+        if (now - timestamp < 2000) {
+          return true;
+        } else {
+          sessionStorage.removeItem('clerk_manual_redirect');
+        }
+      }
+    }
+    return false;
+  });
   const [code, setCode] = useState('');
   const [showCodeInput, setShowCodeInput] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -50,6 +66,16 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const { isSignedIn } = useUser();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
+
+  // Helper function to set manual redirect flag with sessionStorage persistence
+  const setManualRedirectFlag = (value: boolean) => {
+    setIsManualRedirect(value);
+    if (value && typeof window !== 'undefined') {
+      sessionStorage.setItem('clerk_manual_redirect', Date.now().toString());
+    } else if (!value && typeof window !== 'undefined') {
+      sessionStorage.removeItem('clerk_manual_redirect');
+    }
+  };
 
   // Debug logging for state changes
   useEffect(() => {
@@ -473,7 +499,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                           console.log('🔄 Disabling automatic redirect and handling manually');
                           
                           // Set flag to prevent automatic redirect
-                          setIsManualRedirect(true);
+                          setManualRedirectFlag(true);
                           
                           // Force close the overlay and redirect since verification is complete
                           setIsOpen(false);
@@ -541,7 +567,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                               console.log('✅ Signup completed after providing additional info');
                               
                               // Set flag to prevent automatic redirect
-                              setIsManualRedirect(true);
+                              setManualRedirectFlag(true);
                               
                               setIsOpen(false);
                               setEmailSent(false);
@@ -609,7 +635,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                           console.log('🔄 Disabling automatic redirect and handling manually');
                           
                           // Set flag to prevent automatic redirect
-                          setIsManualRedirect(true);
+                          setManualRedirectFlag(true);
                           
                           // Force close the overlay and redirect since verification is complete
                           setIsOpen(false);
