@@ -58,7 +58,7 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       )}
 
       {/* Auth Guard for non-homepage routes - ENABLED FOR TESTING */}
-      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} />}
+      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} gracePeriodMs={1000} />}
       
       {/* Auth Overlay - responds to AutoAuthGuard events */}
       <ClerkAuthOverlay allowClose={true} />
