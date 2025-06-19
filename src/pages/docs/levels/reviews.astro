@@ -4,6 +4,7 @@ import Layout from '../../../layouts/Layout.astro';
 
 
 const entry = await getEntry('docs', 'levels/reviews');
+if (!entry) throw new Error('Reviews entry not found');
 const { Content } = await entry.render();
 
 const breadcrumbs: { text: string; href: string }[] = [];

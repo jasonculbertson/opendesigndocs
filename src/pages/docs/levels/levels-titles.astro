@@ -4,6 +4,7 @@ import Layout from '../../../layouts/Layout.astro';
 
 
 const entry = await getEntry('docs', 'levels/levels-titles');
+if (!entry) throw new Error('Levels titles entry not found');
 const { Content } = await entry.render();
 
 // Define the breadcrumb type structure

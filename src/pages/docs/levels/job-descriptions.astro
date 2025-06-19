@@ -4,9 +4,10 @@ import Layout from '../../../layouts/Layout.astro';
 import Card from '../../../components/ui/Card.astro';
 
 const entry = await getEntry('docs', 'levels/job-descriptions');
+if (!entry) throw new Error('Job descriptions entry not found');
 const { Content } = await entry.render();
 
-const breadcrumbs = [];
+const breadcrumbs: { href: string; text: string }[] = [];
 
 const productRoles = [
   {
