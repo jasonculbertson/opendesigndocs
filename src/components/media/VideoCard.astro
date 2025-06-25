@@ -20,11 +20,14 @@ const {
 } = Astro.props;
 
 // Import video utilities
-const { getYouTubeVideoId, videoStyles } = await import('../../utils/videoUtils');
+const { getYouTubeVideoId, getYouTubeEmbedUrl, videoStyles } = await import('../../utils/videoUtils');
 
 const videoId = getYouTubeVideoId(href);
+const embedUrl = videoId ? getYouTubeEmbedUrl(videoId, true) : null;
 
-// Component styling based on type
+// Use maxresdefault.jpg for better cropping
+const highResThumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : thumbnailUrl;
+
 const containerClass = youtube 
   ? 'group relative bg-white cursor-pointer' 
   : `group relative rounded-xl overflow-hidden bg-white border border-[#e5e7eb] hover:border-[#d1d5db] transition-colors ${compact ? 'max-w-sm' : ''}`;
@@ -52,50 +55,66 @@ const timestampClass = youtube
   class={containerClass}
   itemscope 
   itemtype="http://schema.org/VideoObject"
+  x-data="{ playing: false }"
+  x-init="playing = false"
 >
   <meta itemprop="uploadDate" content={timestamp} />
   <meta itemprop="duration" content={duration} />
-  <meta itemprop="thumbnailUrl" content={thumbnailUrl} />
+  <meta itemprop="thumbnailUrl" content={highResThumbnail} />
   <meta itemprop="description" content={description} />
   {href && videoId && <meta itemprop="embedUrl" content={`https://www.youtube.com/embed/${videoId}`} />}
 
   <div class={thumbnailClass}>
-    <div id={`thumbnail-${videoId}`} class="relative cursor-pointer">
-      <img 
-        src={thumbnailUrl} 
-        alt={`Thumbnail for ${title}`}
-        class={`w-full h-full object-cover ${videoStyles.hover}`}
-        itemprop="thumbnail"
-        loading="lazy"
-      />
-      {videoId && (
-        <button 
-          class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors"
-          onclick={`window.loadYouTubeVideo && window.loadYouTubeVideo('${videoId}', 'thumbnail-${videoId}', '${title.replace(/'/g, "\\'")}')`}
-          aria-label={`Play video: ${title}`}
-        >
-          <div class={`${playButtonSize} flex items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors`}>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              class={`${playIconSize} text-black`}
-              viewBox="0 0 24 24" 
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </button>
-      )}
-      <div class={videoStyles.duration} aria-label="Video duration">
-        {duration}
-      </div>
-      {isDraft && (
-        <div class="absolute top-3 right-3 px-3 py-1 bg-[#f97316] rounded-lg text-white text-[13px] font-medium" aria-label="New content">
-          New
+    <template x-if="!playing">
+      <div id={`thumbnail-${videoId}`} class="relative cursor-pointer">
+        <img 
+          src={highResThumbnail} 
+          alt={`Thumbnail for ${title}`}
+          class={`w-full h-full object-cover ${videoStyles.hover}`}
+          itemprop="thumbnail"
+          loading="lazy"
+        />
+        {videoId && (
+          <button 
+            class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors"
+            x-on:click="playing = true"
+            aria-label={`Play video: ${title}`}
+          >
+            <div class={`${playButtonSize} flex items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors`}>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                class={`${playIconSize} text-black`}
+                viewBox="0 0 24 24" 
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </button>
+        )}
+        <div class={videoStyles.duration} aria-label="Video duration">
+          {duration}
         </div>
-      )}
-    </div>
+        {isDraft && (
+          <div class="absolute top-3 right-3 px-3 py-1 bg-[#f97316] rounded-lg text-white text-[13px] font-medium" aria-label="New content">
+            New
+          </div>
+        )}
+      </div>
+    </template>
+    <template x-if="playing">
+      <div class="w-full h-full aspect-video rounded-xl overflow-hidden">
+        <iframe
+          x-bind:src="'https://www.youtube.com/embed/' + '${videoId}' + '?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&cc_load_policy=0'"
+          title={title}
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          class="w-full h-full"
+        ></iframe>
+      </div>
+    </template>
   </div>
 
   <div class={textContainerClass}>
@@ -123,11 +142,5 @@ const timestampClass = youtube
   }
 </style>
 
-<script is:inline>
-// Import and make video loading function available globally
-async function initVideoLoader() {
-  const { loadYouTubeVideo } = await import('/src/utils/videoUtils.js');
-  window.loadYouTubeVideo = loadYouTubeVideo;
-}
-initVideoLoader();
-</script>
+<!-- Alpine.js for client-side state -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
