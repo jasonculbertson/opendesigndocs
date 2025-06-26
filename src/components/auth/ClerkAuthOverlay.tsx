@@ -61,6 +61,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [code, setCode] = useState('');
   const [showCodeInput, setShowCodeInput] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [showAccountExistsMessage, setShowAccountExistsMessage] = useState(false);
 
   // Now safe to call hooks - only called on client
   const { isSignedIn } = useUser();
@@ -311,6 +312,16 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                     } catch (error) {
                       console.error('Google OAuth error:', error);
                       
+                      // Log detailed error information for debugging
+                      if (error && typeof error === 'object') {
+                        console.error('Error details:', {
+                          message: (error as any).message,
+                          stack: (error as any).stack,
+                          name: (error as any).name,
+                          fullError: error
+                        });
+                      }
+                      
                       // Handle session exists error
                       if (error && typeof error === 'object' && 'errors' in error) {
                         const errors = (error as any).errors;
@@ -326,7 +337,17 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         }
                       }
                       
-                      alert(`Google authentication failed: ${error}`);
+                      // More user-friendly error message
+                      let errorMessage = 'Google authentication failed';
+                      if (error instanceof Error) {
+                        if (error.message.includes('JSON')) {
+                          errorMessage = 'Authentication service temporarily unavailable. Please try again or use email sign-up.';
+                        } else {
+                          errorMessage = `Google authentication failed: ${error.message}`;
+                        }
+                      }
+                      
+                      alert(errorMessage);
                     }
                   }}
                   style={{
@@ -464,6 +485,43 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
               >
                 Continue with email
               </button>
+
+              {/* Sign in/Sign up toggle links */}
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                gap: '4px', 
+                marginTop: '16px',
+                fontSize: '14px',
+                color: '#666'
+              }}>
+                <span>
+                  {initialView === 'sign_up' ? 'Already have an account?' : "Don't have an account?"}
+                </span>
+                <button
+                  onClick={() => {
+                    setInitialView(initialView === 'sign_up' ? 'sign_in' : 'sign_up');
+                    setEmail('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#1a1a1a',
+                    fontSize: '14px',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontWeight: '500'
+                  }}
+                  onMouseOver={(e) => {
+                    (e.target as HTMLButtonElement).style.color = '#666';
+                  }}
+                  onMouseOut={(e) => {
+                    (e.target as HTMLButtonElement).style.color = '#1a1a1a';
+                  }}
+                >
+                  {initialView === 'sign_up' ? 'Sign in' : 'Sign up'}
+                </button>
+              </div>
             </>
           ) : (
             emailSent && showCodeInput ? (
