@@ -68,22 +68,18 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
 
 function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
   const [isClient, setIsClient] = useState(false);
+  const [clerkReady, setClerkReady] = useState(false);
   
   useEffect(() => {
     setIsClient(true);
-  }, []);
-
-  // During SSR, render without auth components
-  if (!isClient) {
-    const isHomepage = currentPath === '/';
-    const shouldShowSidebar = showSidebar && !isHomepage;
     
-    return (
-      <>
-        {shouldShowSidebar && <Sidebar currentPath={currentPath} />}
-      </>
-    );
-  }
+    // Small delay to ensure Clerk is properly initialized
+    const timer = setTimeout(() => {
+      setClerkReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const clerkConfig = getClerkConfig();
 
@@ -106,15 +102,19 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     error: clerkConfig.error,
     currentPath,
     redirectUrl,
-    isClient
+    isClient,
+    clerkReady
   });
 
-  if (!clerkConfig.isConfigured) {
-    logClerkError(clerkConfig.error!, 'AppShell');
+  // During SSR or if Clerk is not configured, render basic version
+  if (!isClient || !clerkConfig.isConfigured) {
     const isHomepage = currentPath === '/';
     const shouldShowSidebar = showSidebar && !isHomepage;
     
-    console.log('🔧 AppShell falling back to basic render due to Clerk config issue');
+    if (!clerkConfig.isConfigured) {
+      logClerkError(clerkConfig.error!, 'AppShell');
+      console.log('🔧 AppShell falling back to basic render due to Clerk config issue');
+    }
     
     return (
       <>
@@ -134,7 +134,17 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
         afterSignInUrl={redirectUrl}
         afterSignUpUrl={redirectUrl}
       >
-        <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
+        {clerkReady ? (
+          <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
+        ) : (
+          // Show basic layout while Clerk initializes
+          <>
+            {(() => {
+              const isHomepage = currentPath === '/';
+              return showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />;
+            })()}
+          </>
+        )}
       </ClerkProvider>
     </AuthErrorBoundary>
   );

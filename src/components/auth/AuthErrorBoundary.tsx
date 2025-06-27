@@ -37,6 +37,12 @@ export default class AuthErrorBoundary extends Component<
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const errorMessage = `${error.message}\n${errorInfo.componentStack}`;
     
+    // Check if this is a hydration-related error
+    const isHydrationError = error.message.includes('hydration') || 
+                            error.message.includes('Hydration') ||
+                            error.message.includes('Clerk') ||
+                            error.message.includes('authentication');
+    
     this.setState({
       errorInfo: errorMessage
     });
@@ -51,8 +57,18 @@ export default class AuthErrorBoundary extends Component<
       console.error('AuthErrorBoundary caught an error:', {
         error,
         errorInfo,
-        stack: error.stack
+        stack: error.stack,
+        isHydrationError
       });
+    }
+
+    // For hydration errors, try to auto-recover after a short delay
+    if (isHydrationError && typeof window !== 'undefined') {
+      console.log('🔄 AuthErrorBoundary: Detected hydration error, attempting auto-recovery...');
+      setTimeout(() => {
+        console.log('🔄 AuthErrorBoundary: Auto-recovering from hydration error...');
+        this.handleRetry();
+      }, 1000);
     }
   }
 
