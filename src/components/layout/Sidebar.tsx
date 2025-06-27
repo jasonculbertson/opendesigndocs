@@ -50,41 +50,21 @@ const links = [
     ]
   },
   {
-    header: 'Manager Docs',
+    header: 'LEADERSHIP DOCS',
     items: [
       {
-        name: 'Day 1',
-        href: '/docs/leadership/day-1',
+        name: 'Manager',
+        href: '/docs/manager',
         icon: Clock
       },
       {
-        name: 'Week 1-2',
-        href: '/docs/leadership/week-1-2',
-        icon: Users
-      },
-      {
-        name: 'Quarter 1',
-        href: '/docs/leadership/quarter-1',
-        icon: Target
-      },
-      {
-        name: 'Quarter 2',
-        href: '/docs/leadership/quarter-2',
-        icon: Rocket
-      }
-    ]
-  },
-  {
-    header: 'Team Docs',
-    items: [
-      {
-        name: 'Design',
-        href: '/docs/team/design',
+        name: 'Design Team',
+        href: '/docs/design-team',
         icon: Palette
       },
       {
-        name: 'Product',
-        href: '/docs/team/product',
+        name: 'Product Team',
+        href: '/docs/product-team',
         icon: Box
       }
     ]

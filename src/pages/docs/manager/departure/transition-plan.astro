@@ -1,0 +1,38 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+
+const entry = await getEntry('docs', 'manager/departure/transition-plan');
+if (!entry) throw new Error('Transition plan entry not found');
+const { Content } = await entry.render();
+
+const breadcrumbs = [
+  { text: 'Manager', href: '/docs/manager' },
+  { text: 'Departure', href: '/docs/manager/departure' }
+];
+
+---
+
+<Layout title={entry.data.title}>
+  <main class="relative min-h-screen">
+    <div class="py-8 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-[680px] mx-auto">
+        <nav class="flex mb-2" aria-label="Breadcrumb">
+          <ol class="flex items-center">
+            {breadcrumbs.map((crumb) => (
+              <li>
+                <a href={crumb.href} class="text-sm text-gray-600 hover:text-gray-900">
+                  {crumb.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        
+        <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -19,32 +19,32 @@ export function shouldShowSubstack(pathname: string): boolean {
     '/docs/videos/case-studies',
     
     // Team section
-    '/docs/team/design/t-shirt-sizing',
-    '/docs/team/design/design-sprint',
-    '/docs/team/product/one-pagers',
-    '/docs/team/product/product-spec',
-    '/docs/team/product/project-kickoff-meeting',
+    '/docs/design-team/t-shirt-sizing',
+    '/docs/design-team/design-sprint',
+    '/docs/product-team/one-pagers',
+    '/docs/product-team/product-spec',
+    '/docs/product-team/project-kickoff-meeting',
     '/docs/team/recruiting/interview-panels',
     
     // Leadership section
-    '/docs/leadership/day-1/leadership-blueprint',
-    '/docs/leadership/day-1/30-60-90-plan',
-    '/docs/leadership/week-1-2/getting-to-know-you',
-    '/docs/leadership/month-1/designer-levels-titles',
-    '/docs/leadership/month-1/level-competencies/researcher',
-    '/docs/leadership/month-1/level-competencies/photographer',
-    '/docs/leadership/month-1/level-competencies/ic1',
-    '/docs/leadership/month-1/level-competencies/content-designer',
-    '/docs/leadership/month-1/level-competencies/product-designer',
-    '/docs/leadership/month-1/level-competencies/manager',
-    '/docs/leadership/month-1/level-competencies/design-ops',
-    '/docs/leadership/month-1/level-competencies/copywriter',
-    '/docs/leadership/month-1/level-competencies/graphic-designer',
-    '/docs/leadership/quarter-1/self-evaluation',
-    '/docs/leadership/quarter-1/short-term-growth-exercise',
-    '/docs/leadership/quarter-2/individual-assessment',
-    '/docs/leadership/quarter-2/long-term-goals',
-    '/docs/leadership/departure/transition-plan',
+    '/docs/manager/day-1/leadership-blueprint',
+    '/docs/manager/day-1/30-60-90-plan',
+    '/docs/manager/week-1-2/getting-to-know-you',
+    '/docs/manager/month-1/designer-levels-titles',
+    '/docs/manager/month-1/level-competencies/researcher',
+    '/docs/manager/month-1/level-competencies/photographer',
+    '/docs/manager/month-1/level-competencies/ic1',
+    '/docs/manager/month-1/level-competencies/content-designer',
+    '/docs/manager/month-1/level-competencies/product-designer',
+    '/docs/manager/month-1/level-competencies/manager',
+    '/docs/manager/month-1/level-competencies/design-ops',
+    '/docs/manager/month-1/level-competencies/copywriter',
+    '/docs/manager/month-1/level-competencies/graphic-designer',
+    '/docs/manager/quarter-1/self-evaluation',
+    '/docs/manager/quarter-1/short-term-growth-exercise',
+    '/docs/manager/quarter-2/individual-assessment',
+    '/docs/manager/quarter-2/long-term-goals',
+    '/docs/manager/departure/transition-plan',
 
     // Job Descriptions - UX Writer
     '/docs/team/recruiting/job-descriptions-jds/ux-writer/writer-1',
@@ -89,5 +89,36 @@ export function shouldShowSubstack(pathname: string): boolean {
 
   return pagesWithSubstack.includes(normalizedPath);
 }
+
+// Leadership docs paths (now manager)
+export const leadershipPaths = [
+  '/docs/manager/day-1/leadership-blueprint',
+  '/docs/manager/day-1/30-60-90-plan',
+  '/docs/manager/week-1-2/getting-to-know-you',
+  '/docs/manager/month-1/designer-levels-titles',
+  '/docs/manager/month-1/level-competencies/researcher',
+  '/docs/manager/month-1/level-competencies/photographer',
+  '/docs/manager/month-1/level-competencies/ic1',
+  '/docs/manager/month-1/level-competencies/content-designer',
+  '/docs/manager/month-1/level-competencies/product-designer',
+  '/docs/manager/month-1/level-competencies/manager',
+  '/docs/manager/month-1/level-competencies/design-ops',
+  '/docs/manager/month-1/level-competencies/copywriter',
+  '/docs/manager/month-1/level-competencies/graphic-designer',
+  '/docs/manager/quarter-1/self-evaluation',
+  '/docs/manager/quarter-1/short-term-growth-exercise',
+  '/docs/manager/quarter-2/individual-assessment',
+  '/docs/manager/quarter-2/long-term-goals',
+  '/docs/manager/departure/transition-plan',
+];
+
+// Team docs paths (now design-team and product-team)
+export const teamPaths = [
+  '/docs/design-team/t-shirt-sizing',
+  '/docs/design-team/design-sprint',
+  '/docs/product-team/one-pagers',
+  '/docs/product-team/product-spec',
+  '/docs/product-team/project-kickoff-meeting',
+];
 
 

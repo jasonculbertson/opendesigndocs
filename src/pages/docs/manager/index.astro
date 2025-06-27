@@ -1,0 +1,106 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Card from '../../../components/ui/Card.astro';
+
+const title = "Manager";
+
+const managerSections = [
+  {
+    subtitle: "Day 1",
+    resources: [
+      {
+        title: 'Leadership Blueprint',
+        description: 'Define your leadership style and vision for your team',
+        href: '/docs/manager/leadership-blueprint',
+        image: '🎯'
+      },
+      {
+        title: '30/60/90 Day Plan',
+        description: 'Set clear, achievable goals for your first three months',
+        href: '/docs/manager/30-60-90-plan',
+        image: '📅'
+      }
+    ]
+  },
+  {
+    subtitle: "Week 1-2",
+    resources: [
+      {
+        title: 'Getting to Know You',
+        description: 'Build relationships and understand your team members',
+        href: '/docs/manager/getting-to-know-you',
+        image: '👋'
+      }
+    ]
+  },
+  {
+    subtitle: "Quarter 1",
+    resources: [
+      {
+        title: 'Self Evaluation',
+        description: 'Guide your team through self-assessment and growth planning',
+        href: '/docs/manager/self-evaluation',
+        image: '📝'
+      },
+      {
+        title: 'Short-term Growth Exercise',
+        description: 'Help team members identify and plan for immediate growth opportunities',
+        href: '/docs/manager/short-term-growth-exercise',
+        image: '🌱'
+      }
+    ]
+  },
+  {
+    subtitle: "Quarter 2",
+    resources: [
+      {
+        title: 'Individual Assessment',
+        description: 'Conduct comprehensive performance reviews and development planning',
+        href: '/docs/manager/individual-assessment',
+        image: '📋'
+      },
+      {
+        title: 'Long-term Goals',
+        description: 'Help team members set and work toward long-term career objectives',
+        href: '/docs/manager/long-term-goals',
+        image: '🎯'
+      }
+    ]
+  },
+  {
+    subtitle: "Departure",
+    resources: [
+      {
+        title: 'Transition Plan',
+        description: 'Create a smooth transition plan when team members leave',
+        href: '/docs/manager/transition-plan',
+        image: '👋'
+      }
+    ]
+  }
+];
+---
+
+<Layout title={title}>
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <article class="max-w-[680px] mx-auto">
+      <div class="mb-8">
+        <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
+        <p class="text-lg text-gray-600 mt-4">Essential resources for design leaders and managers</p>
+      </div>
+      
+      <div class="space-y-12">
+        {managerSections.map((section) => (
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">{section.subtitle}</h2>
+            <div class="grid grid-cols-1 gap-4">
+              {section.resources.map((resource) => (
+                <Card {...resource} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  </main>
+</Layout> 
