@@ -1,0 +1,124 @@
+---
+// Example usage of RecruiterCard component in Astro
+// This shows how to integrate the React component with sample recruiter data
+
+// Sample recruiter data - this would typically come from your CMS or API
+const sampleRecruiters = [
+  {
+    id: 1,
+    imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+    title: "Sarah Johnson",
+    subtitle: "Senior Design Recruiter at TechFlow",
+    description: "Specializing in connecting top-tier UX/UI designers with innovative startups and Fortune 500 companies. 8+ years of experience in design talent acquisition.",
+    tagSections: [
+      {
+        label: "Specialties",
+        tags: ["UX Design", "Product Design", "Visual Design"],
+        tagColorClass: "bg-blue-100 text-blue-800"
+      },
+      {
+        label: "Regions",
+        tags: ["North America", "Remote"],
+        tagColorClass: "bg-green-100 text-green-800"
+      },
+      {
+        label: "Company Size",
+        tags: ["Startup", "Mid-size", "Enterprise"],
+        tagColorClass: "bg-purple-100 text-purple-800"
+      }
+    ],
+    primaryButtonText: "Connect on LinkedIn",
+    primaryButtonUrl: "https://linkedin.com/in/sarahjohnson",
+    secondaryLinks: [
+      { text: "Website", url: "https://techflow.com/recruiters/sarah" },
+      { text: "Email", url: "mailto:sarah@techflow.com" }
+    ]
+  },
+  {
+    id: 2,
+    imageUrl: "", // Example with no image to show fallback
+    title: "Michael Chen",
+    subtitle: "Lead Talent Partner at DesignCorp",
+    description: "Focused on building diverse design teams for scale-ups and established companies. Expert in design leadership and senior IC placements across all design disciplines.",
+    tagSections: [
+      {
+        label: "Specialties",
+        tags: ["Design Leadership", "UX Research", "Service Design"],
+        tagColorClass: "bg-indigo-100 text-indigo-800"
+      },
+      {
+        label: "Regions",
+        tags: ["Europe", "APAC"],
+        tagColorClass: "bg-green-100 text-green-800"
+      },
+      {
+        label: "Company Size",
+        tags: ["Scale-up", "Enterprise"],
+        tagColorClass: "bg-pink-100 text-pink-800"
+      }
+    ],
+    primaryButtonText: "View Profile",
+    primaryButtonUrl: "/recruiters/michael-chen",
+    secondaryLinks: [
+      { text: "Schedule Call", url: "https://calendly.com/michael-chen" }
+    ]
+  },
+  {
+    id: 3,
+    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    title: "Alex Rivera",
+    subtitle: "Creative Talent Specialist at InnovateLabs",
+    description: "Passionate about connecting creative professionals with cutting-edge technology companies. Specializes in early-career to mid-level design placements.",
+    tagSections: [
+      {
+        label: "Specialties",
+        tags: ["UI Design", "Motion Design", "Brand Design"],
+        tagColorClass: "bg-yellow-100 text-yellow-800"
+      },
+      {
+        label: "Regions",
+        tags: ["Global", "Remote-first"],
+        tagColorClass: "bg-green-100 text-green-800"
+      },
+      {
+        label: "Company Size",
+        tags: ["Startup", "Tech Companies"],
+        tagColorClass: "bg-red-100 text-red-800"
+      }
+    ],
+    primaryButtonText: "Get in Touch",
+    primaryButtonUrl: "mailto:alex@innovatelabs.com",
+    secondaryLinks: [
+      { text: "Portfolio", url: "https://alexrivera.design" },
+      { text: "LinkedIn", url: "https://linkedin.com/in/alexrivera" }
+    ]
+  }
+];
+---
+
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-4xl font-bold text-gray-900 mb-2">Design Recruiters</h1>
+  <p class="text-lg text-gray-600 mb-8">Connect with top design talent recruiters</p>
+  
+  <!-- Grid layout for recruiter cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {sampleRecruiters.map((recruiter) => (
+      <RecruiterCard
+        key={recruiter.id}
+        imageUrl={recruiter.imageUrl}
+        title={recruiter.title}
+        subtitle={recruiter.subtitle}
+        description={recruiter.description}
+        tagSections={recruiter.tagSections}
+        primaryButtonText={recruiter.primaryButtonText}
+        primaryButtonUrl={recruiter.primaryButtonUrl}
+        secondaryLinks={recruiter.secondaryLinks}
+        client:load
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  import RecruiterCard from './RecruiterCard.tsx';
+</script>

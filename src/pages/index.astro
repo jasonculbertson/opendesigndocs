@@ -83,7 +83,7 @@ const featuredResources = [
     <div class="pt-8 pb-8 sm:pt-8 sm:pb-12">
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Featured Resources</h2>
-        <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {featuredResources.map((resource, index) => (
             <a 
               href={resource.href}
@@ -116,9 +116,15 @@ const featuredResources = [
                       <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
                   )}
+                  {resource.icon === 'Search' && (
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                  )}
                   <h3 class="text-xl font-semibold text-gray-900">
-                    {resource.title}
-                  </h3>
+                  {resource.title}
+                </h3>
                 </div>
                 <p class="text-gray-600 text-base">{resource.description}</p>
               </div>

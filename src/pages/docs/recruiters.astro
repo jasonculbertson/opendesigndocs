@@ -1,6 +1,7 @@
 ---
 import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
+import RecruiterCard from '../../components/RecruiterCard.tsx';
 
 const title = "Design Recruiters Directory";
 const description = "Find specialized design recruiters to help build your team";
@@ -128,7 +129,6 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     
     .filter-pill.open {
       border-color: #111;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
       z-index: 1000;
     }
     
@@ -140,7 +140,7 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     }
     
     .filter-pill .arrow { 
-      margin-left: 0.75rem; 
+      margin-left: 0.2rem; 
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
       display: flex; 
       align-items: center; 
@@ -153,9 +153,10 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     }
     
     .filter-count-badge { 
-      margin-left: 0.5rem; 
-      background: #6b7280; 
-      color: #fff; 
+      margin-left: 0.2rem; 
+      margin-right: 0rem;
+      background: #000 !important; 
+      color: #fff !important; 
       border-radius: 9999px; 
       font-size: 0.75rem; 
       min-width: 1.25rem; 
@@ -169,7 +170,7 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     }
     
     .filter-pill.active .filter-count-badge {
-      background: #1d4ed8;
+      background: #000000;
     }
     
     .filter-dropdown { 
@@ -206,8 +207,8 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     }
     
     .filter-dropdown-option.selected {
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: #f3f4f6;
+      color: #374151;
       font-weight: 600;
     }
     
@@ -232,8 +233,8 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
     }
     
     .filter-dropdown-option.selected .filter-dropdown-count {
-      background: #dbeafe;
-      color: #1d4ed8;
+      background: #e5e7eb;
+      color: #374151;
     }
     
     .filter-reset { 
@@ -378,21 +379,7 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
           </span>
           <span class="arrow"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></span>
           <div class="filter-dropdown">
-            <div class="filter-dropdown-option">
-              <input type="checkbox" class="filter-checkbox" value="UX Design" data-filter="specialty" onchange="onFilterCheckboxChange(event)">
-              <span class="filter-dropdown-option-label">UX Design</span>
-              <span class="filter-dropdown-count">3</span>
-            </div>
-            <div class="filter-dropdown-option">
-              <input type="checkbox" class="filter-checkbox" value="Product Design" data-filter="specialty" onchange="onFilterCheckboxChange(event)">
-              <span class="filter-dropdown-option-label">Product Design</span>
-              <span class="filter-dropdown-count">2</span>
-            </div>
-            <div class="filter-dropdown-option">
-              <input type="checkbox" class="filter-checkbox" value="Visual Design" data-filter="specialty" onchange="onFilterCheckboxChange(event)">
-              <span class="filter-dropdown-option-label">Visual Design</span>
-              <span class="filter-dropdown-count">1</span>
-            </div>
+            {uniqueSpecialties.map(s => <label class="filter-dropdown-option"><input type="checkbox" class="filter-checkbox" value={s} data-filter="specialty" onchange="onFilterCheckboxChange(event)"><span class="filter-dropdown-option-label">{s}</span><span class="filter-dropdown-count" id={`count-specialty-${s.replace(/\W/g,'_')}`}>0</span></label>)}
           </div>
         </div>
         <div class="filter-pill" tabindex="0" data-filter="level">
@@ -431,78 +418,64 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
 
     <!-- Recruiters Grid -->
     <div id="recruiters-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-      {recruiters.map(recruiter => (
-        <div class="recruiter-card bg-white rounded-2xl border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1"
-          data-specialties={JSON.stringify(recruiter.specialties)}
-          data-levels={JSON.stringify(recruiter.designerLevels)}
-          data-regions={JSON.stringify(recruiter.regions)}
-          data-company-size={JSON.stringify(recruiter.companySize)}
-        >
-          <div class="flex items-start gap-4 mb-4">
-            <img src={recruiter.image} alt={recruiter.name} class="w-16 h-16 rounded-full object-cover">
-            <div class="flex-1">
-              <h3 class="font-semibold text-lg text-gray-900">{recruiter.name}</h3>
-              <p class="text-gray-600 text-sm">{recruiter.agency}</p>
-            </div>
+      {recruiters.map(recruiter => {
+        // Prepare tag sections for the RecruiterCard component
+        const tagSections = [
+          {
+            label: "Specialties",
+            tags: recruiter.specialties,
+            tagColorClass: "bg-blue-100 text-blue-800"
+          },
+          {
+            label: "Regions",
+            tags: recruiter.regions,
+            tagColorClass: "bg-green-100 text-green-800"
+          },
+          {
+            label: "Company Size",
+            tags: recruiter.companySize,
+            tagColorClass: "bg-purple-100 text-purple-800"
+          }
+        ];
+        
+        // Add Designer Levels if they exist
+        if (recruiter.designerLevels && recruiter.designerLevels.length > 0) {
+          tagSections.push({
+            label: "Designer Levels",
+            tags: recruiter.designerLevels,
+            tagColorClass: "bg-indigo-100 text-indigo-800"
+          });
+        }
+        
+        // Prepare secondary links
+        const secondaryLinks = [];
+        if (recruiter.website) {
+          secondaryLinks.push({ text: "Website", url: recruiter.website });
+        }
+        if (recruiter.email) {
+          secondaryLinks.push({ text: "Email", url: `mailto:${recruiter.email}` });
+        }
+        
+        return (
+          <div class="recruiter-card"
+            data-specialties={JSON.stringify(recruiter.specialties)}
+            data-levels={JSON.stringify(recruiter.designerLevels)}
+            data-regions={JSON.stringify(recruiter.regions)}
+            data-company-size={JSON.stringify(recruiter.companySize)}
+          >
+            <RecruiterCard
+              imageUrl={recruiter.image}
+              title={recruiter.name}
+              subtitle={recruiter.agency}
+              description={recruiter.description}
+              tagSections={tagSections}
+              primaryButtonText="Connect on LinkedIn"
+              primaryButtonUrl={recruiter.linkedin || '#'}
+              secondaryLinks={secondaryLinks}
+            />
           </div>
-          
-          <p class="text-gray-700 text-sm mb-4">{recruiter.description}</p>
-          
-          <div class="mb-4">
-            <h4 class="font-medium text-sm text-gray-900 mb-2">Specialties</h4>
-            <div class="flex flex-wrap gap-1">
-              {recruiter.specialties.map(specialty => (
-                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">{specialty}</span>
-              ))}
-            </div>
-          </div>
-          
-          <div class="mb-4">
-            <h4 class="font-medium text-sm text-gray-900 mb-2">Regions</h4>
-            <div class="flex flex-wrap gap-1">
-              {recruiter.regions.map(region => (
-                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">{region}</span>
-              ))}
-            </div>
-          </div>
-          
-          <div class="mb-4">
-            <h4 class="font-medium text-sm text-gray-900 mb-2">Company Size</h4>
-            <div class="flex flex-wrap gap-1">
-              {recruiter.companySize.map(size => (
-                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">{size}</span>
-              ))}
-            </div>
-          </div>
-          
-          <div class="mb-4">
-            <h4 class="font-medium text-sm text-gray-900 mb-2">Designer Levels</h4>
-            <div class="flex flex-wrap gap-1">
-              {recruiter.designerLevels?.map(level => (
-                <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">{level}</span>
-              ))}
-            </div>
-          </div>
-          
-          <div class="flex gap-2 pt-4 border-t border-gray-200">
-            {recruiter.linkedin && (
-              <a href={recruiter.linkedin} target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                LinkedIn
-              </a>
-            )}
-            {recruiter.website && (
-              <a href={recruiter.website} target="_blank" class="flex-1 bg-gray-800 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-900 transition-colors">
-                Website
-              </a>
-            )}
-            {recruiter.email && (
-              <a href={`mailto:${recruiter.email}`} class="flex-1 bg-green-600 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
-                Email
-              </a>
-            )}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- Move Submit Your Agency button to the bottom -->
@@ -521,6 +494,13 @@ const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
 </WideLayout>
 
 <script is:inline define:vars={{ recruiters, uniqueSpecialties, uniqueLevels, uniqueRegions, uniqueCompanySizes }}>
+// Make data globally available
+window.recruitersData = recruiters;
+window.uniqueSpecialtiesData = uniqueSpecialties;
+window.uniqueLevelsData = uniqueLevels;
+window.uniqueRegionsData = uniqueRegions;
+window.uniqueCompanySizesData = uniqueCompanySizes;
+
 const filterState = { specialty: [], level: [], region: [], companySize: [] };
 let openDropdown = null;
 
@@ -555,7 +535,7 @@ function updatePillLabelsAndBadges() {
     const pill = document.querySelector(`[data-filter="${filterType}"]`);
     
     if (count > 0) {
-      label.textContent = `${filterLabels[filterType]} (${count})`;
+      label.textContent = filterLabels[filterType];
       badge.textContent = count;
       badge.style.display = 'flex';
       pill.classList.add('active');
@@ -570,7 +550,7 @@ function updatePillLabelsAndBadges() {
 }
 
 function getFilteredRecruiters() {
-  return recruiters.filter(r => {
+  return window.recruitersData.filter(r => {
     if (filterState.specialty.length && !filterState.specialty.some(s => r.specialties.includes(s))) return false;
     if (filterState.level.length && !filterState.level.some(l => (r.designerLevels||[]).includes(l))) return false;
     if (filterState.region.length && !filterState.region.some(reg => r.regions.includes(reg))) return false;
@@ -581,25 +561,25 @@ function getFilteredRecruiters() {
 
 function updateDropdownCounts() {
   const filtered = getFilteredRecruiters();
-  uniqueSpecialties.forEach((value, i) => {
+  window.uniqueSpecialtiesData.forEach((value, i) => {
     const id = `count-specialty-${value.replace(/\W/g,'_')}`;
     const count = filtered.filter(r => r.specialties.includes(value)).length;
     const el = document.getElementById(id);
     if (el) el.textContent = count.toString();
   });
-  uniqueLevels.forEach((value, i) => {
+  window.uniqueLevelsData.forEach((value, i) => {
     const id = `count-level-${value.replace(/\W/g,'_')}`;
     const count = filtered.filter(r => (r.designerLevels||[]).includes(value)).length;
     const el = document.getElementById(id);
     if (el) el.textContent = count.toString();
   });
-  uniqueRegions.forEach((value, i) => {
+  window.uniqueRegionsData.forEach((value, i) => {
     const id = `count-region-${value.replace(/\W/g,'_')}`;
     const count = filtered.filter(r => r.regions.includes(value)).length;
     const el = document.getElementById(id);
     if (el) el.textContent = count.toString();
   });
-  uniqueCompanySizes.forEach((value, i) => {
+  window.uniqueCompanySizesData.forEach((value, i) => {
     const id = `count-companySize-${value.replace(/\W/g,'_')}`;
     const count = filtered.filter(r => r.companySize.includes(value)).length;
     const el = document.getElementById(id);
@@ -636,7 +616,8 @@ function updateDropdownSelectedStates() {
   });
 }
 
-function onFilterCheckboxChange(e) {
+// Make this function globally available
+window.onFilterCheckboxChange = function(e) {
   e.stopPropagation();
   const filter = e.target.getAttribute('data-filter');
   const value = e.target.value;
@@ -650,7 +631,7 @@ function onFilterCheckboxChange(e) {
   // Update visual states
   updateDropdownSelectedStates();
   filterRecruiters();
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Filter pills initialized');

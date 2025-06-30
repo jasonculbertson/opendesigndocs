@@ -10,7 +10,8 @@ import {
   FileText,
   Layers,
   Mic,
-  FileVideo
+  FileVideo,
+  Search
 } from 'lucide-react';
 
 interface Props {
@@ -66,6 +67,16 @@ const links = [
         name: 'Product Team',
         href: '/docs/product-team',
         icon: Box
+      }
+    ]
+  },
+  {
+    header: 'Resources',
+    items: [
+      {
+        name: 'Recruiters',
+        href: '/docs/recruiters',
+        icon: Search
       }
     ]
   },
