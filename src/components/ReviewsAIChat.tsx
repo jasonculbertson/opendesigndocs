@@ -76,13 +76,13 @@ const SUGGESTIONS = [
   },
   {
     icon: <span className="text-2xl mr-2">💬</span>,
-    title: 'Ongoing performance conversations',
+    title: 'Performance conversations',
     desc: 'Structure ongoing development conversations using level competencies',
     value: 'Help me plan a 1:1 performance conversation with a team member.'
   },
   {
     icon: <span className="text-2xl mr-2">🎯</span>,
-    title: 'Plan an employee\'s career path',
+    title: 'Career path planning',
     desc: 'Create development roadmap using level competencies',
     value: 'Help me plan a career path for a team member using the levels framework.'
   },
@@ -783,129 +783,187 @@ const ReviewsAIChat: React.FC = () => {
 
   // Normal chat mode after first user input
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <main className="flex-1 pt-20 px-4 sm:px-6 lg:px-8">
-        <article className="max-w-[680px] mx-auto">
-          {showWelcome ? (
-            // Welcome content
-            <div>
-              <div className="mb-2">
-                <h1 className="text-[32px] font-normal text-[#1a1f36] tracking-[-0.4px] text-center font-fraunces" style={{ fontFamily: 'Fraunces, serif' }}>
+    <div className="flex flex-col h-screen bg-white relative">
+      {showWelcome ? (
+        // Welcome content - mobile-optimized layout
+        <>
+          {/* Main content area - scrollable */}
+          <main className="flex-1 overflow-y-auto pt-16 pb-32 px-4 sm:px-6 lg:px-8">
+            <article className="max-w-[680px] mx-auto">
+              <div className="text-center mb-6 sm:mb-8">
+                <h1 className="text-[28px] sm:text-[32px] font-normal text-[#1a1f36] tracking-[-0.4px] font-fraunces mb-3" style={{ fontFamily: 'Fraunces, serif' }}>
                   How can I help you today?
                 </h1>
+                <div className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  ReviewsAI can help you write, improve, and analyze reviews for your team.
+                </div>
               </div>
 
-              <div className="text-center text-sm text-gray-500 mb-8" style={{ fontFamily: 'Inter, sans-serif' }}>
-                ReviewsAI can help you write, improve, and analyze reviews for your team.
+              {/* Suggestion cards - grouped together */}
+              <div className="relative bg-white/60 backdrop-blur-[2px] rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] ring-1 ring-black/[0.02] overflow-hidden mb-8" style={{
+                background: 'white',
+                position: 'relative'
+              }}>
+                <div className="absolute inset-0 rounded-xl" style={{
+                  background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(219, 39, 119, 0.15), rgba(147, 51, 234, 0.15))',
+                  padding: '1px',
+                  mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  maskComposite: 'exclude',
+                  WebkitMaskComposite: 'xor',
+                  opacity: 0.5
+                }}></div>
+                {SUGGESTIONS.map((s, i) => (
+                  <button
+                    key={i}
+                    className={`relative block w-full group no-underline hover:no-underline text-left focus:outline-none px-4 py-4 sm:px-6 sm:py-6 hover:bg-[#f9f9f9] transition-colors ${
+                      i < SUGGESTIONS.length - 1 ? 'border-b border-gray-200' : ''
+                    }`}
+                    onClick={() => handleSuggestion(s.value)}
+                    type="button"
+                    style={{ fontFamily: 'Inter, sans-serif' }}
+                  >
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 text-2xl mr-3 sm:mr-4 text-gray-700">
+                        {s.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-[15px] font-semibold text-[#1a1f36] leading-none mb-1.5">
+                          {s.title}
+                        </h3>
+                        <p className="text-[13px] text-[#3c4257] leading-none">{s.desc}</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
+                    </div>
+                  </button>
+                ))}
               </div>
 
-              <div>
-                <section className="mb-8">
-                  <div className="relative bg-white/60 backdrop-blur-[2px] rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] ring-1 ring-black/[0.02] overflow-hidden" style={{
-                    background: 'white',
-                    position: 'relative'
-                  }}>
-                    <div className="absolute inset-0 rounded-xl" style={{
-                      background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(219, 39, 119, 0.15), rgba(147, 51, 234, 0.15))',
-                      padding: '1px',
-                      mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                      WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                      maskComposite: 'exclude',
-                      WebkitMaskComposite: 'xor',
-                      opacity: 0.5
-                    }}></div>
-                    {SUGGESTIONS.map((s, i) => (
-                      <button
-                        key={i}
-                        className={`relative block w-full group no-underline hover:no-underline text-left focus:outline-none px-6 py-6 hover:bg-[#f9f9f9] transition-colors ${
-                          i < SUGGESTIONS.length - 1 ? 'border-b border-gray-200' : ''
-                        }`}
-                        onClick={() => handleSuggestion(s.value)}
-                        type="button"
-                        style={{ fontFamily: 'Inter, sans-serif' }}
+              {/* Desktop: Original inline input field */}
+              <div className="hidden sm:block pt-20 sm:pt-40">
+                <div className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
+                  <div className="flex items-center pl-4 pr-2">
+                    <div className="relative group">
+                      <button 
+                        type="button" 
+                        onClick={handleFileUpload}
+                        className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                       >
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 text-2xl mr-3 sm:mr-4 text-gray-700">
-                            {s.icon}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="text-[15px] font-semibold text-[#1a1f36] leading-none mb-1.5">
-                              {s.title}
-                            </h3>
-                            <p className="text-[13px] text-[#3c4257] leading-none">{s.desc}</p>
-                          </div>
-                          <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
-                        </div>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
                       </button>
-                    ))}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        Upload files (images, PDFs, Word docs, text files)
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                      onChange={handleFileChange}
+                    />
                   </div>
-                                 </section>
+                  <input
+                    id="reviewsai-input"
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Ask me anything about reviews"
+                    className="flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base"
+                    disabled={isLoading}
+                    autoFocus
+                    style={{ fontFamily: 'Inter, sans-serif' }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit(e as any);
+                      }
+                    }}
+                  />
+                  <div className="flex items-center pr-4">
+                    {inputValue.trim() && (
+                      <button
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                        className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mr-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </main>
 
-                 {/* Chat input field */}
-                 <div className="pt-20 sm:pt-40">
-                   <div className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
-                     <div className="flex items-center pl-4 pr-2">
-                       <div className="relative group">
-                         <button 
-                           type="button" 
-                           onClick={handleFileUpload}
-                           className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                         >
-                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                           </svg>
-                         </button>
-                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                           Upload files (images, PDFs, Word docs, text files)
-                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                         </div>
-                       </div>
-                       <input
-                         ref={fileInputRef}
-                         type="file"
-                         className="hidden"
-                         accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
-                         onChange={handleFileChange}
-                       />
-                     </div>
-                     <input
-                       id="reviewsai-input"
-                       type="text"
-                       value={inputValue}
-                       onChange={(e) => setInputValue(e.target.value)}
-                       placeholder="Ask me anything about reviews"
-                       className="flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base"
-                       disabled={isLoading}
-                       autoFocus
-                       style={{ fontFamily: 'Inter, sans-serif' }}
-                       onKeyDown={(e) => {
-                         if (e.key === 'Enter' && !e.shiftKey) {
-                           e.preventDefault();
-                           handleSubmit(e as any);
-                         }
-                       }}
-                     />
-                     <div className="flex items-center pr-4">
-                       {inputValue.trim() && (
-                         <button
-                           onClick={handleSubmit}
-                           disabled={isLoading}
-                           className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mr-2"
-                         >
-                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                           </svg>
-                         </button>
-                       )}
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           ) : (
-            // Chat messages
-            <div>
-              <div ref={chatContainerRef} className="h-[400px] sm:h-[600px] overflow-y-auto mb-6 p-4">
+          {/* Mobile: Fixed bottom ChatGPT style */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom block sm:hidden">
+            <div className="flex items-center px-4 py-3" style={{ minHeight: '60px' }}>
+              <div className="relative group mr-3">
+                <button 
+                  type="button" 
+                  onClick={handleFileUpload}
+                  className="p-2 text-gray-500 hover:text-gray-700 transition-colors rounded-full hover:bg-gray-100"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  Upload files (images, PDFs, Word docs, text files)
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                onChange={handleFileChange}
+              />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask anything"
+                className="flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400"
+                disabled={isLoading}
+                style={{ fontFamily: 'Inter, sans-serif' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+              />
+              <div className="flex items-center ml-3">
+                {inputValue.trim() && (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        // Chat mode - original desktop layout with mobile ChatGPT style
+        <>
+          <main className="flex-1 pt-20 px-4 sm:px-6 lg:px-8 pb-32 sm:pb-0">
+            <article className="max-w-[680px] mx-auto">
+              {/* Chat messages */}
+              <div ref={chatContainerRef} className="h-[400px] sm:h-[600px] overflow-y-auto mb-6 p-4 sm:p-0 sm:mb-6">
                 <div className="space-y-6">
                   {messages.map(renderMessage)}
                   {isLoading && (
@@ -926,8 +984,8 @@ const ReviewsAIChat: React.FC = () => {
                 </div>
               </div>
 
-              {/* Chat input field - same position as welcome screen */}
-              <div className="pt-2">
+              {/* Desktop: Original inline input field */}
+              <div className="hidden sm:block pt-2">
                 <div className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
                   <div className="flex items-center pl-4 pr-2">
                     <div className="relative group">
@@ -1017,12 +1075,102 @@ const ReviewsAIChat: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </article>
-      </main>
+            </article>
+          </main>
 
-                   {/* "Start New Review" button when complete */}
+          {/* Mobile: Fixed bottom ChatGPT style */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom block sm:hidden">
+            <div className="flex items-center px-4 py-3" style={{ minHeight: '60px' }}>
+              <div className="relative group mr-3">
+                <button 
+                  type="button" 
+                  onClick={handleFileUpload}
+                  className="p-2 text-gray-500 hover:text-gray-700 transition-colors rounded-full hover:bg-gray-100"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  Upload files (images, PDFs, Word docs, text files)
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                onChange={handleFileChange}
+              />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder={
+                  showWelcome ? "Ask anything about reviews" :
+                  currentStep === 'self-name' ? "Enter your name..." :
+                  currentStep === 'self-title' ? "Enter your job title..." :
+                  currentStep === 'self-content' ? "Paste your self-review content..." :
+                  currentStep === 'self-additional' ? "Any additional details or 'none'..." :
+                  currentStep === 'self-upload-questions' ? "Paste your company's review questions..." :
+                  currentStep === 'emp-name' ? "Enter the employee's name..." :
+                  currentStep === 'emp-title' ? "Enter their job title..." :
+                  currentStep === 'emp-self-review' ? "Paste their self-review content..." :
+                  currentStep === 'emp-peer-review' ? "Paste peer review feedback..." :
+                  currentStep === 'emp-additional' ? "Any additional details or 'none'..." :
+                  currentStep === 'emp-upload-questions' ? "Paste your company's review questions..." :
+                  currentStep === 'oneonone-person' ? "Enter their name and role/level..." :
+                  currentStep === 'oneonone-competency' ? "Enter competency area (e.g., 'Design Skills', 'Communication')..." :
+                  currentStep === 'oneonone-examples' ? "Describe recent examples or situations..." :
+                  currentStep === 'oneonone-strengths' ? "Describe what's going well..." :
+                  currentStep === 'oneonone-improvements' ? "Describe areas for growth..." :
+                  currentStep === 'oneonone-support' ? "Describe support or resources needed..." :
+                  currentStep === 'oneonone-goals' ? "Describe next steps or goals..." :
+                  currentStep === 'career-person' ? "Enter their name and current role/level..." :
+                  currentStep === 'career-target' ? "Enter target role (e.g., 'Senior Product Designer')..." :
+                  currentStep === 'career-strengths' ? "Describe their current strengths..." :
+                  currentStep === 'career-gaps' ? "Describe competencies they need to develop..." :
+                  currentStep === 'career-experiences' ? "Describe experiences or opportunities needed..." :
+                  currentStep === 'career-support' ? "Describe support you can provide..." :
+                  currentStep === 'career-milestones' ? "Describe progress indicators..." :
+                  currentStep === 'name-title' ? "Enter name and title (e.g., 'John Smith, Senior Product Designer')" :
+                  currentStep === 'self-review' ? "Paste the self-review content..." :
+                  currentStep === 'peer-reviews' ? "Paste the peer review feedback..." :
+                  currentStep === 'review-questions' ? "Paste the review questions..." :
+                  currentStep === 'additional-details' ? "Any additional context or 'none'..." :
+                  currentStep === 'additional-notes' ? "Any final notes or 'ready to finalize'..." :
+                  "Ask me anything about reviews"
+                }
+                className="flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400"
+                disabled={isLoading}
+                style={{ fontFamily: 'Inter, sans-serif' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+              />
+              <div className="flex items-center ml-3">
+                {inputValue.trim() && (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* "Start New Review" button when complete */}
       {currentStep === 'complete' && (
         <div className="fixed bottom-0 left-0 right-0 bg-white p-4 z-10">
           <div className="max-w-[680px] mx-auto text-center">
@@ -1051,7 +1199,7 @@ const ReviewsAIChat: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+         </div>
   );
 };
 
