@@ -220,17 +220,24 @@ const ReviewsAIChat: React.FC = () => {
       try {
         let fileContent = '';
         
-        // Handle different file types
-        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-          fileContent = await readTextFile(file);
-        } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-          fileContent = await readPDFFile(file);
-        } else if (file.type.includes('word') || file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
-          fileContent = await readWordFile(file);
-        } else {
-          // Try to read as text for other file types
-          fileContent = await readTextFile(file);
-        }
+                 // Hybrid approach: client-side for simple files, OpenAI for complex files
+         if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+           // Simple text files - process client-side
+           fileContent = await readTextFile(file);
+         } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf') || 
+                   file.type.includes('word') || file.name.endsWith('.docx') || file.name.endsWith('.doc') ||
+                   file.type.startsWith('image/')) {
+           // Complex files - send to OpenAI for processing
+           fileContent = await processFileWithOpenAI(file);
+         } else {
+           // Unknown file types - try client-side text reading first
+           try {
+             fileContent = await readTextFile(file);
+           } catch (error) {
+             // If client-side fails, try OpenAI
+             fileContent = await processFileWithOpenAI(file);
+           }
+         }
         
                  if (fileContent.trim()) {
            // Show the uploaded file in chat
@@ -271,51 +278,35 @@ const ReviewsAIChat: React.FC = () => {
     });
   };
 
-  // Helper function to read PDF files
-  const readPDFFile = async (file: File): Promise<string> => {
-    try {
-      // Dynamic import to avoid SSR issues
-      const pdfjsLib = await import('pdfjs-dist');
-      
-      // Set worker source
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-      
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      
-      let fullText = '';
-      
-      // Extract text from each page
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items
-          .map((item: any) => item.str)
-          .join(' ');
-        fullText += pageText + '\n';
-      }
-      
-      return fullText.trim();
-    } catch (error) {
-      console.error('Error reading PDF:', error);
-      addMessage("I had trouble reading this PDF file. Please try copying and pasting the text content instead.", 'assistant');
-      return '';
-    }
-  };
 
-  // Helper function to read Word files
-  const readWordFile = async (file: File): Promise<string> => {
+
+  // Helper function to process files with OpenAI
+  const processFileWithOpenAI = async (file: File): Promise<string> => {
     try {
-      // Dynamic import to avoid SSR issues
-      const mammoth = await import('mammoth');
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('action', 'extract-text');
       
-      const arrayBuffer = await file.arrayBuffer();
-      const result = await mammoth.extractRawText({ arrayBuffer });
-      
-      return result.value.trim();
+      const response = await fetch('/api/process-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error?.includes('OpenAI API key')) {
+          addMessage("I'm sorry, but the AI service is not currently configured. Please copy and paste the text content instead.", 'assistant');
+        } else {
+          throw new Error(errorData.error || 'Failed to process file');
+        }
+        return '';
+      }
+
+      const data = await response.json();
+      return data.extractedText || '';
     } catch (error) {
-      console.error('Error reading Word document:', error);
-      addMessage("I had trouble reading this Word document. Please try copying and pasting the text content instead.", 'assistant');
+      console.error('Error processing file with OpenAI:', error);
+      addMessage("I had trouble processing this file. Please try copying and pasting the text content instead.", 'assistant');
       return '';
     }
   };
@@ -865,7 +856,7 @@ const ReviewsAIChat: React.FC = () => {
                            </svg>
                          </button>
                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                           Upload files (PDF, Word docs, text files)
+                           Upload files (images, PDFs, Word docs, text files)
                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                          </div>
                        </div>
@@ -873,7 +864,7 @@ const ReviewsAIChat: React.FC = () => {
                          ref={fileInputRef}
                          type="file"
                          className="hidden"
-                         accept=".txt,.pdf,.doc,.docx,.md,.rtf,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                         accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
                          onChange={handleFileChange}
                        />
                      </div>
@@ -950,7 +941,7 @@ const ReviewsAIChat: React.FC = () => {
                         </svg>
                       </button>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                        Upload files (PDF, Word docs, text files)
+                        Upload files (images, PDFs, Word docs, text files)
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                       </div>
                     </div>
@@ -958,7 +949,7 @@ const ReviewsAIChat: React.FC = () => {
                       ref={fileInputRef}
                       type="file"
                       className="hidden"
-                      accept=".txt,.pdf,.doc,.docx,.md,.rtf,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      accept=".txt,.pdf,.doc,.docx,.md,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
                       onChange={handleFileChange}
                     />
                   </div>
