@@ -3,7 +3,20 @@ import { useUser } from '@clerk/clerk-react';
 import MobileUserProfile from '../auth/MobileUserProfile';
 
 export default function MobileHeader() {
-  const { isSignedIn, isLoaded } = useUser();
+  // Use try-catch to handle cases where Clerk context isn't available yet
+  let isSignedIn = false;
+  let isLoaded = false;
+  
+  try {
+    const user = useUser();
+    isSignedIn = user.isSignedIn || false;
+    isLoaded = user.isLoaded || false;
+  } catch (error) {
+    // Clerk context not available yet, use defaults
+    isSignedIn = false;
+    isLoaded = false;
+  }
+
   const [isMenuOpen, setIsMenuOpen] = useState(() => {
     // Initialize state based on actual DOM state if available
     if (typeof window !== 'undefined') {
@@ -125,7 +138,7 @@ export default function MobileHeader() {
       </a>
 
       <div className="ml-auto flex items-center gap-3">
-        {/* Mobile User Profile */}
+        {/* Mobile User Profile - only show when Clerk is loaded and user is signed in */}
         {isLoaded && isSignedIn && (
           <MobileUserProfile />
         )}

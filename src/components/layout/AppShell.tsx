@@ -74,10 +74,10 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
   useEffect(() => {
     setIsClient(true);
     
-    // Small delay to ensure Clerk is properly initialized
+    // Minimal delay to ensure Clerk is properly initialized
     const timer = setTimeout(() => {
       setClerkReady(true);
-    }, 100);
+    }, 50);
     
     return () => clearTimeout(timer);
   }, []);
@@ -138,11 +138,16 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
         {clerkReady ? (
           <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
         ) : (
-          // Show basic layout while Clerk initializes
+          // Show basic layout while Clerk initializes - include MobileHeader immediately
           <>
             {(() => {
               const isHomepage = currentPath === '/';
-              return showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />;
+              return (
+                <>
+                  {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
+                  {!isHomepage && <MobileHeader />}
+                </>
+              );
             })()}
           </>
         )}
