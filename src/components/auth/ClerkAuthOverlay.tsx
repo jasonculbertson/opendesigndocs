@@ -62,9 +62,10 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [showAccountExistsMessage, setShowAccountExistsMessage] = useState(false);
+  const [isRetryingOAuth, setIsRetryingOAuth] = useState(false);
 
   // Now safe to call hooks - only called on client
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
 
@@ -77,6 +78,27 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       sessionStorage.removeItem('clerk_manual_redirect');
     }
   };
+
+  // Proactive session check on component load
+  useEffect(() => {
+    const checkForExistingSession = async () => {
+      if (!isLoaded || isSignedIn || typeof window === 'undefined') return;
+      
+      try {
+        const clerk = (window as any).Clerk;
+        if (clerk && clerk.session && !clerk.user) {
+          console.log('🔍 Found orphaned session, attempting to restore...');
+          await clerk.setActive({ session: clerk.session });
+        }
+      } catch (error) {
+        console.log('🔍 No session to restore');
+      }
+    };
+
+    // Small delay to ensure Clerk is fully loaded
+    const timer = setTimeout(checkForExistingSession, 1000);
+    return () => clearTimeout(timer);
+  }, [isLoaded, isSignedIn]);
 
   // Debug logging for state changes
   useEffect(() => {
@@ -91,7 +113,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
 
   // Set up event listener using the standardized auth event system
   useEffect(() => {
-    const handleOpenAuth = (detail: AuthEventDetail) => {
+    const handleOpenAuth = async (detail: AuthEventDetail) => {
       const view = detail.view || 'sign_in';
       const redirect = detail.redirectTo;
       const finalRedirect = redirect || (typeof window !== 'undefined' ? window.location.pathname : '/');
@@ -102,9 +124,51 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
         finalRedirect,
         context: detail.context,
         timestamp: detail.timestamp,
-        currentPath: typeof window !== 'undefined' ? window.location.pathname : 'unknown'
+        currentPath: typeof window !== 'undefined' ? window.location.pathname : 'unknown',
+        isLoaded,
+        isSignedIn
       });
-      
+
+      // Check if user is already signed in
+      if (isLoaded && isSignedIn) {
+        console.log('✅ User already signed in, redirecting immediately');
+        const redirectUrl = finalRedirect === '/' ? '/docs/levels/levels-titles' : finalRedirect;
+        window.location.href = redirectUrl;
+        return;
+      }
+
+      // Check for existing Clerk session before showing overlay
+      if (isLoaded && !isSignedIn && typeof window !== 'undefined' && (window as any).Clerk) {
+        try {
+          console.log('🔍 Checking for existing Clerk session...');
+          const clerk = (window as any).Clerk;
+          
+          // Try to restore session silently
+          if (clerk.session) {
+            console.log('✅ Found existing Clerk session, attempting silent sign-in');
+            // Session exists, user should be signed in automatically
+            // Wait a moment for the session to be processed
+            setTimeout(() => {
+              if (isSignedIn) {
+                const redirectUrl = finalRedirect === '/' ? '/docs/levels/levels-titles' : finalRedirect;
+                window.location.href = redirectUrl;
+              } else {
+                // If still not signed in after session check, show overlay
+                showAuthOverlay(view, finalRedirect);
+              }
+            }, 500);
+            return;
+          }
+        } catch (error) {
+          console.log('🔍 No existing session found, showing auth overlay');
+        }
+      }
+
+      // Show auth overlay if no existing session
+      showAuthOverlay(view, finalRedirect);
+    };
+
+    const showAuthOverlay = (view: 'sign_in' | 'sign_up', finalRedirect: string) => {
       setInitialView(view);
       setRedirectTo(finalRedirect);
       setAuthTitle(view === 'sign_up' ? 'Get unlimited free access' : 'Welcome back');
@@ -115,7 +179,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
     const cleanup = addAuthEventListener('ClerkAuthOverlay', handleOpenAuth);
     
     return cleanup;
-  }, []); // No dependencies - set up once and keep
+  }, [isLoaded, isSignedIn]); // No dependencies - set up once and keep
 
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
@@ -280,6 +344,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     try {
+                      setIsRetryingOAuth(true);
+                      
                       // Store the desired redirect URL in sessionStorage for OAuth completion
                       const finalRedirectTo = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                       sessionStorage.setItem('oauth_redirect_url', finalRedirectTo);
@@ -322,17 +388,47 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         });
                       }
                       
-                      // Handle session exists error
+                      // Handle session exists error - use Clerk's session management
                       if (error && typeof error === 'object' && 'errors' in error) {
                         const errors = (error as any).errors;
                         if (errors?.[0]?.code === 'session_exists') {
                           console.log('Session already exists, attempting to use existing session');
-                          // If there's already a session, just close the overlay and redirect
-                          setIsOpen(false);
-                          const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
-                          setTimeout(() => {
-                            window.location.href = finalRedirect;
-                          }, 100);
+                          
+                          // Show loading state
+                          setIsRetryingOAuth(true);
+                          
+                          try {
+                            // Check if we can access the existing session
+                            const clerk = (window as any).Clerk;
+                            if (clerk && clerk.session) {
+                              console.log('✅ Found active Clerk session, signing in user');
+                              // Force Clerk to recognize the session
+                              await clerk.setActive({ session: clerk.session });
+                              
+                              // Close overlay and redirect
+                              setIsOpen(false);
+                              const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+                              setTimeout(() => {
+                                window.location.href = finalRedirect;
+                              }, 100);
+                              return;
+                            } else {
+                              // No session found, switch to sign-in mode
+                              console.log('🔄 No active session found, switching to sign-in mode');
+                              setInitialView('sign_in');
+                              setAuthTitle('Welcome back!');
+                              setIsRetryingOAuth(false);
+                              
+                              // Show helpful message
+                              alert('You have a Google account connected. Please try signing in instead.');
+                            }
+                          } catch (sessionError) {
+                            console.error('Failed to use existing session:', sessionError);
+                            setIsRetryingOAuth(false);
+                            setInitialView('sign_in');
+                            setAuthTitle('Welcome back!');
+                            alert('You already have a Google account connected. Please try signing in instead.');
+                          }
                           return;
                         }
                       }
