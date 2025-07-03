@@ -2,6 +2,17 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 
+// --- BEGIN: Service Account Key Base64 Decoding for Vercel ---
+if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64) {
+  const keyPath = '/tmp/google-service-account.json';
+  fs.writeFileSync(
+    keyPath,
+    Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf-8')
+  );
+  process.env.GOOGLE_SERVICE_ACCOUNT_KEY_FILE = keyPath;
+}
+// --- END: Service Account Key Base64 Decoding for Vercel ---
+
 // Types for our competency data structure
 interface CompetencyArea {
   name: string;
@@ -21,7 +32,10 @@ interface RoleCompetencies {
 // Google Docs API setup
 const auth = new google.auth.GoogleAuth({
   keyFile: process.env.GOOGLE_SERVICE_ACCOUNT_KEY_FILE || './google-service-account.json',
-  scopes: ['https://www.googleapis.com/auth/documents']
+  scopes: [
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/drive'
+  ]
 });
 
 const docs = google.docs('v1');
@@ -324,8 +338,7 @@ const createDocumentRequests = (competencies: RoleCompetencies) => {
       insertTable: {
         location: { index: currentIndex },
         rows: tableRows,
-        columns: tableColumns,
-        endOfSegmentLocation: { segmentId: '' }
+        columns: tableColumns
       }
     });
 
@@ -494,6 +507,257 @@ export const testTextFileGeneration = async () => {
     const filepath = await generateProductDesignerTextFile();
     console.log('✅ Test completed successfully!');
     return filepath;
+  } catch (error) {
+    console.error('❌ Test failed:', error);
+    throw error;
+  }
+};
+
+// Data for Design Team Levels & Titles
+const levelsTitlesData = [
+  {
+    role: "Product Designer",
+    levels: [
+      { level: "L1", title: "Designer I" },
+      { level: "L2", title: "Designer II" },
+      { level: "L3", title: "Sr. Designer" },
+      { level: "L4", title: "Lead Designer" },
+      { level: "L5", title: "Staff Designer" },
+      { level: "L6", title: "Principal Designer" },
+      { level: "M5", title: "Design Manager" },
+      { level: "M6", title: "Sr. Design Manager" },
+      { level: "M7", title: "Group Design Manager" },
+      { level: "M8", title: "Design Director" },
+      { level: "M9", title: "Sr. Design Director" },
+    ]
+  },
+  {
+    role: "Content Designer",
+    levels: [
+      { level: "L1", title: "Content Designer I" },
+      { level: "L2", title: "Content Designer II" },
+      { level: "L3", title: "Sr. Content Designer" },
+      { level: "L4", title: "Lead Content Director" },
+      { level: "L5", title: "Staff Content Designer" },
+      { level: "L6", title: "Principal Content Designer" },
+      { level: "M5", title: "Content Design Manager" },
+      { level: "M6", title: "Sr. Content Design Manager" },
+      { level: "M7", title: "Group Content Design Manager" },
+      { level: "M8", title: "Content Design Director" },
+      { level: "M9", title: "Sr. Content Design Director" },
+    ]
+  },
+  {
+    role: "User Researcher",
+    levels: [
+      { level: "L1", title: "User Researcher I" },
+      { level: "L2", title: "User Researcher II" },
+      { level: "L3", title: "Sr. User Researcher" },
+      { level: "L4", title: "Lead User Researcher" },
+      { level: "L5", title: "Staff User Researcher" },
+      { level: "L6", title: "Principal User Researcher" },
+      { level: "M5", title: "User Research Manager" },
+      { level: "M6", title: "Sr. User Research Manager" },
+      { level: "M7", title: "Group User Research Manager" },
+      { level: "M8", title: "User Research Director" },
+      { level: "M9", title: "Sr. User Research Director" },
+    ]
+  },
+  {
+    role: "Design Ops",
+    levels: [
+      { level: "L1", title: "Design Ops Manager I" },
+      { level: "L2", title: "Design Ops Manager II" },
+      { level: "L3", title: "Sr. Design Ops Manager" },
+      { level: "L4", title: "Lead Design Ops Manager" },
+      { level: "L5", title: "Staff Design Ops Manager" },
+      { level: "L6", title: "Principal Design Ops Manager" },
+      { level: "M5", title: "Design Ops Manager" },
+      { level: "M6", title: "Sr. Design Ops Manager" },
+      { level: "M7", title: "Group Design Ops Manager" },
+      { level: "M8", title: "Design Ops Director" },
+      { level: "M9", title: "Sr. Design Ops Director" },
+    ]
+  },
+  {
+    role: "Graphic Designer",
+    levels: [
+      { level: "L1", title: "Jr. Designer" },
+      { level: "L2", title: "Designer" },
+      { level: "L3", title: "Sr. Designer" },
+      { level: "L4", title: "Art Director" },
+      { level: "L5", title: "Sr. Art Director" },
+      { level: "L6", title: "Associate Creative Director" },
+      { level: "M6", title: "Creative Director" },
+      { level: "M7", title: "Sr. Creative Director" },
+      { level: "M8", title: "Group Creative Director" },
+      { level: "M9", title: "Executive Creative Director" },
+    ]
+  },
+  {
+    role: "Copywriter",
+    levels: [
+      { level: "L1", title: "Jr. Copywriter" },
+      { level: "L2", title: "Copywriter" },
+      { level: "L3", title: "Sr. Copywriter" },
+      { level: "L4", title: "Copy Director" },
+      { level: "L5", title: "Sr. Copy Director" },
+      { level: "L6", title: "Associate Creative Director" },
+      { level: "M6", title: "Creative Director" },
+      { level: "M7", title: "Sr. Creative Director" },
+      { level: "M8", title: "Group Creative Director" },
+      { level: "M9", title: "Executive Creative Director" },
+    ]
+  },
+];
+
+// Set your email here to receive access to generated docs
+const SHARE_WITH_EMAIL = 'jculbertson@gmail.com'; // <-- CHANGE THIS
+
+// Function to generate a nicely formatted Google Doc for Levels & Titles
+export const generateLevelsTitlesGoogleDoc = async (): Promise<string> => {
+  try {
+    // Create the document
+    const document = await docs.documents.create({
+      auth,
+      requestBody: {
+        title: `Design Team Levels & Titles - ${new Date().toISOString().split('T')[0]}`
+      }
+    });
+    const documentId = document.data.documentId;
+    if (!documentId) throw new Error('Failed to create document');
+
+    let requests: any[] = [];
+    let currentIndex = 1;
+
+    // Main Title
+    const mainTitle = 'Design Team Levels & Titles\n';
+    requests.push({
+      insertText: {
+        location: { index: currentIndex },
+        text: mainTitle
+      }
+    });
+    requests.push({
+      updateParagraphStyle: {
+        range: { startIndex: currentIndex, endIndex: currentIndex + mainTitle.length },
+        paragraphStyle: { namedStyleType: 'TITLE' },
+        fields: 'namedStyleType'
+      }
+    });
+    currentIndex += mainTitle.length;
+
+    // Intro paragraph
+    const intro = 'This guide outlines the levels and corresponding titles across different design disciplines. Use this to understand how roles align across the organization.\n\n';
+    requests.push({
+      insertText: {
+        location: { index: currentIndex },
+        text: intro
+      }
+    });
+    currentIndex += intro.length;
+
+    // For each role, add heading and bulleted list
+    for (const roleData of levelsTitlesData) {
+      // Heading
+      const heading = `\n${roleData.role}\n`;
+      requests.push({
+        insertText: {
+          location: { index: currentIndex },
+          text: heading
+        }
+      });
+      requests.push({
+        updateParagraphStyle: {
+          range: { startIndex: currentIndex + 1, endIndex: currentIndex + heading.length },
+          paragraphStyle: { namedStyleType: 'HEADING_1' },
+          fields: 'namedStyleType'
+        }
+      });
+      currentIndex += heading.length;
+      // Bulleted list
+      for (const level of roleData.levels) {
+        const bulletText = `• ${level.level}: ${level.title}\n`;
+        requests.push({
+          insertText: {
+            location: { index: currentIndex },
+            text: bulletText
+          }
+        });
+        // Bold the level code
+        requests.push({
+          updateTextStyle: {
+            range: {
+              startIndex: currentIndex + 2, // after bullet and space
+              endIndex: currentIndex + 2 + level.level.length
+            },
+            textStyle: { bold: true },
+            fields: 'bold'
+          }
+        });
+        // Make it a bullet
+        requests.push({
+          createParagraphBullets: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + bulletText.length
+            },
+            bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
+          }
+        });
+        currentIndex += bulletText.length;
+      }
+      // Add spacing after each role
+      requests.push({
+        insertText: {
+          location: { index: currentIndex },
+          text: '\n'
+        }
+      });
+      currentIndex += 1;
+    }
+
+    // Apply formatting
+    await docs.documents.batchUpdate({
+      auth,
+      documentId,
+      requestBody: { requests }
+    });
+
+    // --- Share the doc with your email ---
+    if (SHARE_WITH_EMAIL && SHARE_WITH_EMAIL.includes('@')) {
+      const drive = google.drive({ version: 'v3', auth });
+      await drive.permissions.create({
+        fileId: documentId,
+        requestBody: {
+          type: 'user',
+          role: 'writer',
+          emailAddress: SHARE_WITH_EMAIL
+        },
+        fields: 'id',
+      });
+      console.log(`🔗 Shared the doc with ${SHARE_WITH_EMAIL}`);
+    }
+    // --- End share ---
+
+    // Return the document URL
+    const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
+    console.log(`✅ Google Doc created successfully!`);
+    console.log(`📄 Document URL: ${documentUrl}`);
+    return documentUrl;
+  } catch (error) {
+    console.error('❌ Error generating Levels & Titles Google Doc:', error);
+    throw error;
+  }
+};
+
+// Test function for Levels & Titles doc
+export const testLevelsTitlesGoogleDoc = async () => {
+  try {
+    console.log('🚀 Starting Levels & Titles Google Doc generation test...');
+    const documentUrl = await generateLevelsTitlesGoogleDoc();
+    console.log('✅ Test completed successfully!');
+    return documentUrl;
   } catch (error) {
     console.error('❌ Test failed:', error);
     throw error;

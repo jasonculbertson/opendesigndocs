@@ -25,3 +25,5 @@ pnpm-debug.log*
 .vercel
 .env
 .env
+
+google-service-account.json

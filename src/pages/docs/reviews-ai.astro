@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ReviewsAIChat from '../../components/ReviewsAIChat.tsx';
+
+const title = "ReviewsAI - Annual Review Assistant";
+const description = "AI-powered assistant for creating comprehensive annual performance reviews";
+---
+
+<Layout title={title}>
+  <ReviewsAIChat client:load />
+</Layout>
+
+<style>
+  .chat-container {
+    height: calc(100vh - 200px);
+    min-height: 600px;
+  }
+</style> 

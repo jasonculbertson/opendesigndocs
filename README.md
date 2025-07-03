@@ -1,16 +1,40 @@
-# Astro Starter Kit: Basics
+# Open Design Docs
 
-```sh
-npm create astro@latest -- --template basics
+A comprehensive resource for design leadership and management, featuring AI-powered performance review assistance.
+
+## 🚀 Features
+
+- **Level Competencies**: Comprehensive frameworks for design roles
+- **ReviewsAI**: AI-powered assistant for annual performance reviews
+- **Job Descriptions**: Detailed role specifications
+- **Interview Panels**: Structured interview processes
+- **Leadership Resources**: Management and career development guides
+
+## 🤖 ReviewsAI Setup
+
+The ReviewsAI chatbot uses OpenAI GPT-4 to generate comprehensive performance reviews. To enable this feature:
+
+### 1. Get OpenAI API Key
+- Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+- Create a new API key
+- Copy the key for the next step
+
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory:
+
+```bash
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+### 3. Restart Development Server
+After adding the environment variable, restart your development server:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+```bash
+npm run dev
+```
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+The ReviewsAI will now use GPT-4 to generate structured, competency-aligned performance reviews.
 
 ## 🚀 Project Structure
 

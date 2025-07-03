@@ -11,7 +11,9 @@ import {
   Layers,
   Mic,
   FileVideo,
-  Search
+  Search,
+  User,
+  Bot
 } from 'lucide-react';
 
 interface Props {
@@ -56,7 +58,7 @@ const links = [
       {
         name: 'Manager',
         href: '/docs/manager',
-        icon: Clock
+        icon: User
       },
       {
         name: 'Design Team',
@@ -77,6 +79,11 @@ const links = [
         name: 'Recruiters',
         href: '/docs/recruiters',
         icon: Search
+      },
+      {
+        name: 'ReviewsAI',
+        href: '/docs/reviews-ai',
+        icon: Bot
       }
     ]
   },
