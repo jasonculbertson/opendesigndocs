@@ -77,11 +77,17 @@ const showSidebar = path.startsWith('/docs');
             <span class="text-[15px] font-medium text-gray-900 leading-none">Open Design Docs</span>
           </a>
 
-          <button
-            id="mobile-menu-button"
-            class="ml-auto p-2 text-gray-700 -mr-2"
-            aria-label="Toggle menu"
-          >
+          <div class="ml-auto flex items-center gap-2">
+            <!-- Mobile User Profile -->
+            <div id="mobile-user-profile" class="hidden">
+              <!-- This will be populated by React component -->
+            </div>
+            
+            <button
+              id="mobile-menu-button"
+              class="p-2 text-gray-700 -mr-2"
+              aria-label="Toggle menu"
+            >
             <div class="relative w-6 h-6">
               <!-- Close icon (X) -->
               <svg 
@@ -112,6 +118,7 @@ const showSidebar = path.startsWith('/docs');
               </svg>
             </div>
           </button>
+          </div>
         </div>
 
         <!-- Mobile overlay backdrop -->

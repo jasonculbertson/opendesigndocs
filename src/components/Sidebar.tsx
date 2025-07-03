@@ -174,10 +174,7 @@ export default function Sidebar({ currentPath = '/' }: Props) {
           ))}
         </div>
         
-        {/* User Profile Section - Mobile only */}
-        <div className="lg:hidden">
-          <UserProfileSidebar />
-        </div>
+        {/* User Profile Section - Mobile only - Removed, now in top nav */}
       </nav>
     </aside>
   );

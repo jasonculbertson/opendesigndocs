@@ -3,6 +3,7 @@ import { ClerkProvider, useUser } from '@clerk/clerk-react';
 import Sidebar from './Sidebar';
 import UserProfileButton from '../auth/UserProfileButton';
 import UserProfileSidebar from '../auth/UserProfileSidebar';
+import MobileUserProfile from '../auth/MobileUserProfile';
 import AutoAuthGuard from '../auth/AutoAuthGuard';
 import AuthErrorBoundary from '../auth/AuthErrorBoundary';
 import ClerkAuthOverlay from '../auth/ClerkAuthOverlay';
@@ -12,6 +13,8 @@ interface AppShellProps {
   currentPath: string;
   showSidebar?: boolean;
 }
+
+
 
 function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
   const [actualPath, setActualPath] = useState(currentPath);
@@ -50,10 +53,10 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       
       {shouldShowSidebar && <Sidebar currentPath={actualPath} />}
       
-      {/* Mobile User Profile */}
+      {/* Mobile User Profile - positioned in top nav via portal */}
       {!isHomepage && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] bg-[#f9f9f9] border-t border-[#e5e5e5]">
-          <UserProfileSidebar />
+        <div className="lg:hidden fixed top-3 right-16 z-[60]">
+          <MobileUserProfile />
         </div>
       )}
 
