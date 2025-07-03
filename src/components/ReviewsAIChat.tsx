@@ -834,7 +834,7 @@ const ReviewsAIChat: React.FC = () => {
                             </h3>
                             <p className="text-[13px] text-[#3c4257] leading-none">{s.desc}</p>
                           </div>
-                          <ArrowRight className="w-4 h-4 text-gray-400" />
+                          <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
                         </div>
                       </button>
                     ))}
@@ -842,7 +842,7 @@ const ReviewsAIChat: React.FC = () => {
                                  </section>
 
                  {/* Chat input field */}
-                 <div className="pt-40">
+                 <div className="pt-20 sm:pt-40">
                    <div className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
                      <div className="flex items-center pl-4 pr-2">
                        <div className="relative group">
@@ -905,7 +905,7 @@ const ReviewsAIChat: React.FC = () => {
            ) : (
             // Chat messages
             <div>
-              <div ref={chatContainerRef} className="h-[600px] overflow-y-auto mb-6 p-4">
+              <div ref={chatContainerRef} className="h-[400px] sm:h-[600px] overflow-y-auto mb-6 p-4">
                 <div className="space-y-6">
                   {messages.map(renderMessage)}
                   {isLoading && (
