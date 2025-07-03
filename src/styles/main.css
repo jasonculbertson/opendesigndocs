@@ -6,6 +6,11 @@
 @import '@fontsource/inter/600.css';
 @import '@fontsource/inter/700.css';
 
+/* Safe area utilities for mobile devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* Layout */
 body {
   @apply bg-white text-[#425466] antialiased;

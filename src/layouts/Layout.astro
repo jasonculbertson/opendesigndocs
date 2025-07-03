@@ -65,61 +65,14 @@ const showSidebar = path.startsWith('/docs');
     <!-- Persistent App Shell with auth and sidebar only -->
     <AppShell client:idle currentPath={path} showSidebar={showSidebar} transition:persist />
     
-    <!-- Main content that updates on navigation -->
-    <div class="min-h-screen bg-white">
-        <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center px-4">
-          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="9" x2="21" y2="9"></line>
-              <line x1="9" y1="21" x2="9" y2="9"></line>
-            </svg>
-            <span class="text-[15px] font-medium text-gray-900 leading-none">Open Design Docs</span>
-          </a>
-
-          <div class="ml-auto flex items-center gap-3">
-            <button
-              id="mobile-menu-button"
-              class="p-2 text-gray-700"
-              aria-label="Toggle menu"
-            >
-            <div class="relative w-6 h-6">
-              <!-- Close icon (X) -->
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                class="absolute inset-0 w-6 h-6 opacity-0 transform rotate-0 transition-all duration-300" 
-                id="close-icon"
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-              <!-- Menu icon (hamburger) -->
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                class="absolute inset-0 w-6 h-6 opacity-100 transform rotate-0 transition-all duration-300" 
-                id="menu-icon"
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </div>
-          </button>
-          </div>
-        </div>
+          <!-- Main content that updates on navigation -->
+      <div class="min-h-screen bg-white">
+        <!-- Mobile header is now handled by React MobileHeader component -->
 
         <!-- Mobile overlay backdrop -->
         <div 
           id="mobile-overlay" 
-          class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden opacity-0 transition-opacity duration-300"
+          class="fixed inset-0 bg-black bg-opacity-50 z-[65] lg:hidden hidden opacity-0 transition-opacity duration-300"
         ></div>
 
         <div class="flex">
@@ -139,134 +92,6 @@ const showSidebar = path.startsWith('/docs');
       </div>
     {/* <Analytics /> */}
 
-    <script is:inline>
-      // Enhanced mobile menu with overlay
-      document.addEventListener('astro:page-load', () => {
-        const handleMobileMenu = () => {
-          const mobileMenuButton = document.getElementById('mobile-menu-button');
-          const sidebar = document.getElementById('sidebar');
-          const overlay = document.getElementById('mobile-overlay');
-          const menuIcon = document.getElementById('menu-icon');
-          const closeIcon = document.getElementById('close-icon');
-          
-          if (!mobileMenuButton || !sidebar || !overlay || !menuIcon || !closeIcon) return;
-          
-          const toggleMenu = () => {
-            const isOpen = !sidebar.classList.contains('-translate-x-full');
-            
-            if (isOpen) {
-              // Close menu
-              sidebar.classList.add('-translate-x-full');
-              overlay.classList.add('hidden', 'opacity-0');
-              overlay.classList.remove('opacity-50');
-              document.body.style.overflow = '';
-              menuIcon.classList.remove('opacity-0', 'rotate-180');
-              menuIcon.classList.add('opacity-100', 'rotate-0');
-              closeIcon.classList.remove('opacity-100', 'rotate-0');
-              closeIcon.classList.add('opacity-0', '-rotate-180');
-            } else {
-              // Open menu
-              sidebar.classList.remove('-translate-x-full');
-              overlay.classList.remove('hidden', 'opacity-0');
-              overlay.classList.add('opacity-50');
-              document.body.style.overflow = 'hidden';
-              menuIcon.classList.remove('opacity-100', 'rotate-0');
-              menuIcon.classList.add('opacity-0', 'rotate-180');
-              closeIcon.classList.remove('opacity-0', '-rotate-180');
-              closeIcon.classList.add('opacity-100', 'rotate-0');
-            }
-          };
-
-          // Direct click handler
-          mobileMenuButton.onclick = (e) => {
-            e.stopPropagation();
-            toggleMenu();
-          };
-
-          // Handle overlay clicks
-          overlay.onclick = () => {
-            if (!sidebar.classList.contains('-translate-x-full')) {
-              toggleMenu();
-            }
-          };
-
-          // Handle clicks outside the sidebar (backup)
-          document.addEventListener('click', (e) => {
-            if (window.innerWidth > 1024) return;
-            
-            const isClickInsideSidebar = sidebar.contains(e.target);
-            const isClickOnMenuButton = mobileMenuButton.contains(e.target);
-            const isClickOnOverlay = overlay.contains(e.target);
-            
-            if (!isClickInsideSidebar && !isClickOnMenuButton && !isClickOnOverlay && !sidebar.classList.contains('-translate-x-full')) {
-              toggleMenu();
-            }
-          });
-
-          // Handle window resize
-          window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) {
-              document.body.style.overflow = '';
-              overlay.classList.add('hidden', 'opacity-0');
-              overlay.classList.remove('opacity-50');
-            }
-          });
-        };
-
-        // Run immediately
-        handleMobileMenu();
-        
-        // Also run after a small delay to ensure all elements are ready
-        setTimeout(handleMobileMenu, 100);
-      });
-      
-      // Initial setup before Astro transitions
-      document.addEventListener('DOMContentLoaded', () => {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        if (mobileMenuButton) {
-          // Add a temporary click handler for the first page load
-          mobileMenuButton.onclick = (e) => {
-            e.stopPropagation();
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            const menuIcon = document.getElementById('menu-icon');
-            const closeIcon = document.getElementById('close-icon');
-            
-            if (sidebar && overlay) {
-              const isClosing = !sidebar.classList.contains('-translate-x-full');
-              
-              sidebar.classList.toggle('-translate-x-full');
-              
-              if (isClosing) {
-                // Closing
-                overlay.classList.add('hidden', 'opacity-0');
-                overlay.classList.remove('opacity-50');
-                document.body.style.overflow = '';
-              } else {
-                // Opening
-                overlay.classList.remove('hidden', 'opacity-0');
-                overlay.classList.add('opacity-50');
-                document.body.style.overflow = 'hidden';
-              }
-              
-              if (menuIcon && closeIcon) {
-                if (sidebar.classList.contains('-translate-x-full')) {
-                  menuIcon.classList.remove('opacity-0', 'rotate-180');
-                  menuIcon.classList.add('opacity-100', 'rotate-0');
-                  closeIcon.classList.remove('opacity-100', 'rotate-0');
-                  closeIcon.classList.add('opacity-0', '-rotate-180');
-                } else {
-                  menuIcon.classList.remove('opacity-100', 'rotate-0');
-                  menuIcon.classList.add('opacity-0', 'rotate-180');
-                  closeIcon.classList.remove('opacity-0', '-rotate-180');
-                  closeIcon.classList.add('opacity-100', 'rotate-0');
-                }
-              }
-            }
-          };
-        }
-      });
-
-    </script>
+    <!-- Mobile menu functionality is now handled by React MobileHeader component -->
   </body>
 </html>

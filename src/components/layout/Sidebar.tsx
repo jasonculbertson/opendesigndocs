@@ -105,15 +105,32 @@ const links = [
 ];
 
 const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only handle mobile menu closing on mobile devices
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      e.preventDefault(); // Prevent immediate navigation
+      
+      // Close mobile menu with animation
+      if ((window as any).closeMobileMenu) {
+        (window as any).closeMobileMenu();
+      }
+      
+      // Navigate after animation completes (300ms transition duration)
+      setTimeout(() => {
+        window.location.href = href;
+      }, 300);
+    }
+  };
+
   return (
     <aside
       id="sidebar"
-      className="fixed top-0 left-0 bottom-0 z-[60] w-[280px] lg:w-[250px] bg-[#f9f9f9] backdrop-blur-md overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-[#e5e5e5] lg:border-r lg:border-[#e5e5e5] shadow-[0px_0px_20px_rgba(0,0,0,0.1)] lg:shadow-none"
+      className="fixed top-0 left-0 bottom-0 z-[68] w-[280px] lg:w-[250px] bg-[#f9f9f9] backdrop-blur-md overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-[#e5e5e5] lg:border-r lg:border-[#e5e5e5] shadow-[0px_0px_20px_rgba(0,0,0,0.1)] lg:shadow-none"
     >
       <nav className="p-4 h-full flex flex-col min-h-screen">
         {/* Mobile logo */}
         <div className="flex lg:hidden items-center mb-8 pt-4 pl-2">
-          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center">
+          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center" onClick={(e) => handleLinkClick(e, "https://www.opendesigndocs.com/docs/levels/levels-titles")}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="3" y1="9" x2="21" y2="9"></line>
@@ -147,6 +164,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
                     <li key={item.href}>
                       <a
                         href={item.href}
+                        onClick={(e) => handleLinkClick(e, item.href)}
                         className={`flex items-center gap-2 px-2 py-2 text-[14px] rounded-lg transition-colors duration-150 ${
                           isActive
                             ? 'bg-indigo-50 text-indigo-600 font-medium'

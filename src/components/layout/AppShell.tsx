@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 import UserProfileButton from '../auth/UserProfileButton';
 import UserProfileSidebar from '../auth/UserProfileSidebar';
 import MobileUserProfile from '../auth/MobileUserProfile';
+import MobileUserProfilePortal from '../auth/MobileUserProfilePortal';
+import MobileHeader from './MobileHeader';
 import AutoAuthGuard from '../auth/AutoAuthGuard';
 import AuthErrorBoundary from '../auth/AuthErrorBoundary';
 import ClerkAuthOverlay from '../auth/ClerkAuthOverlay';
@@ -53,12 +55,8 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       
       {shouldShowSidebar && <Sidebar currentPath={actualPath} />}
       
-      {/* Mobile User Profile - positioned in top nav via portal */}
-      {!isHomepage && (
-        <div className="lg:hidden fixed top-3 right-16 z-[60]">
-          <MobileUserProfile />
-        </div>
-      )}
+      {/* Mobile Header with integrated profile and hamburger menu */}
+      {!isHomepage && <MobileHeader />}
 
       {/* Auth Guard for non-homepage routes - ENABLED FOR TESTING */}
       {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} gracePeriodMs={1000} />}
