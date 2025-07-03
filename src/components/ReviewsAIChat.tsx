@@ -65,7 +65,7 @@ const SUGGESTIONS = [
   {
     icon: <span className="text-2xl mr-2">✍️</span>,
     title: 'Write self-review',
-    desc: 'Create a structured self-assessment using our level competencies',
+    desc: 'Create a structured self-assessment using level competencies',
     value: 'Help me write a self-review using the level competencies framework.'
   },
   {
