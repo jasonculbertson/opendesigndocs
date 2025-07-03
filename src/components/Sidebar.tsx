@@ -20,9 +20,10 @@ import {
   Layers,
   ImagePlus,
   Mic,
-  FileVideo
+  FileVideo,
+  Bot
 } from 'lucide-react';
-import UserProfileSidebar from './UserProfileSidebar';
+import UserProfileSidebar from './auth/UserProfileSidebar';
 
 interface Props {
   currentPath?: string;
@@ -77,6 +78,21 @@ const links = [
         name: 'Product Team',
         href: '/docs/product-team',
         icon: Box
+      }
+    ]
+  },
+  {
+    header: 'Resources',
+    items: [
+      // {
+      //   name: 'Recruiters',
+      //   href: '/docs/recruiters',
+      //   icon: Search
+      // },
+      {
+        name: 'ReviewsAI',
+        href: '/docs/reviews-ai',
+        icon: Bot
       }
     ]
   },

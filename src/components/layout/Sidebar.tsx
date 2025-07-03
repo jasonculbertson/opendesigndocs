@@ -75,11 +75,11 @@ const links = [
   {
     header: 'Resources',
     items: [
-      {
-        name: 'Recruiters',
-        href: '/docs/recruiters',
-        icon: Search
-      },
+      // {
+      //   name: 'Recruiters',
+      //   href: '/docs/recruiters',
+      //   icon: Search
+      // },
       {
         name: 'ReviewsAI',
         href: '/docs/reviews-ai',
