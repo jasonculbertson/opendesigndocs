@@ -12,14 +12,20 @@ import ClerkAuthOverlay from '../auth/ClerkAuthOverlay';
 import { getClerkConfig, logClerkError } from '../../utils/clerkConfig';
 
 interface AppShellProps {
-  currentPath: string;
+  currentPath?: string;
   showSidebar?: boolean;
 }
 
 
 
 function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
-  const [actualPath, setActualPath] = useState(currentPath);
+  const [actualPath, setActualPath] = useState(() => {
+    // Initialize with current path or window location
+    if (typeof window !== 'undefined') {
+      return window.location.pathname;
+    }
+    return currentPath || '/';
+  });
   const { isSignedIn, isLoaded } = useUser();
 
   // Listen for Astro page changes
@@ -67,9 +73,16 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
   );
 }
 
-function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
+function AppShell({ currentPath, showSidebar }: AppShellProps) {
   const [isClient, setIsClient] = useState(false);
   const [clerkReady, setClerkReady] = useState(false);
+  
+  // Get current path from window if not provided
+  const actualCurrentPath = currentPath || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  
+  // Auto-detect showSidebar if not provided
+  const shouldShowSidebarByDefault = actualCurrentPath.startsWith('/docs');
+  const finalShowSidebar = showSidebar !== undefined ? showSidebar : shouldShowSidebarByDefault;
   
   useEffect(() => {
     setIsClient(true);
@@ -92,7 +105,7 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     isConfigured: clerkConfig.isConfigured,
     hasPublishableKey: !!clerkConfig.publishableKey,
     error: clerkConfig.error,
-    currentPath,
+    currentPath: actualCurrentPath,
     redirectUrl,
     isClient,
     clerkReady
@@ -100,8 +113,8 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
 
   // During SSR or if Clerk is not configured, render basic version
   if (!isClient || !clerkConfig.isConfigured) {
-    const isHomepage = currentPath === '/';
-    const shouldShowSidebar = showSidebar && !isHomepage;
+    const isHomepage = actualCurrentPath === '/';
+    const shouldShowSidebar = finalShowSidebar && !isHomepage;
     
     if (!clerkConfig.isConfigured) {
       logClerkError(clerkConfig.error!, 'AppShell');
@@ -110,7 +123,7 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
     
     return (
       <>
-        {shouldShowSidebar && <Sidebar currentPath={currentPath} />}
+        {shouldShowSidebar && <Sidebar currentPath={actualCurrentPath} />}
       </>
     );
   }
@@ -127,15 +140,15 @@ function AppShell({ currentPath, showSidebar = true }: AppShellProps) {
         afterSignUpUrl={redirectUrl}
       >
         {clerkReady ? (
-          <AppShellInner currentPath={currentPath} showSidebar={showSidebar} />
+          <AppShellInner currentPath={actualCurrentPath} showSidebar={finalShowSidebar} />
         ) : (
           // Show basic layout while Clerk initializes - include MobileHeader immediately
           <>
             {(() => {
-              const isHomepage = currentPath === '/';
+              const isHomepage = actualCurrentPath === '/';
               return (
                 <>
-                  {showSidebar && !isHomepage && <Sidebar currentPath={currentPath} />}
+                  {finalShowSidebar && !isHomepage && <Sidebar currentPath={actualCurrentPath} />}
                   {!isHomepage && <MobileHeader />}
                 </>
               );
