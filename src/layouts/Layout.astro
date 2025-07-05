@@ -62,8 +62,8 @@ const showSidebar = path.startsWith('/docs');
     <ViewTransitions />
   </head>
   <body>
-    <!-- Persistent App Shell with auth and sidebar only -->
-    <AppShell client:idle transition:persist />
+    <!-- App Shell with proper state management -->
+    <AppShell client:load currentPath={path} showSidebar={showSidebar} />
     
           <!-- Main content that updates on navigation -->
       <div class="min-h-screen bg-white">

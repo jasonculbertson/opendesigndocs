@@ -19,40 +19,24 @@ interface AppShellProps {
 
 
 function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
-  const [actualPath, setActualPath] = useState(() => {
-    // Initialize with current path or window location
-    if (typeof window !== 'undefined') {
-      return window.location.pathname;
-    }
-    return currentPath || '/';
-  });
   const { isSignedIn, isLoaded } = useUser();
-
-  // Listen for Astro page changes
-  useEffect(() => {
-    const handlePageLoad = () => {
-      const newPath = window.location.pathname;
-      setActualPath(newPath);
-      
-      // Path updated silently
-    };
-
-    // Listen for Astro's page load events
-    document.addEventListener('astro:page-load', handlePageLoad);
-    
-    return () => {
-      document.removeEventListener('astro:page-load', handlePageLoad);
-    };
-  }, []);
-
+  
+  // Use the passed currentPath directly
+  const actualPath = currentPath || '/';
   const isHomepage = actualPath === '/';
   const shouldShowSidebar = showSidebar && !isHomepage;
 
-  // AppShell rendering (debug logging removed)
+  // Debug logging for path detection
+  console.log('🔧 AppShellInner path debug:', {
+    currentPathProp: currentPath,
+    actualPath,
+    isHomepage,
+    shouldShowSidebar
+  });
 
   return (
     <>
-      {/* Persistent Sidebar Components */}
+      {/* Desktop Profile Button - only show on docs pages */}
       {!isHomepage && (
         <div className="hidden lg:block">
           <UserProfileButton />
@@ -65,7 +49,7 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       {!isHomepage && <MobileHeader />}
 
       {/* Auth Guard for non-homepage routes - ENABLED FOR TESTING */}
-      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} gracePeriodMs={1000} />}
+      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} gracePeriodMs={500} />}
       
       {/* Auth Overlay - responds to AutoAuthGuard events */}
       <ClerkAuthOverlay allowClose={true} />
@@ -76,9 +60,10 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
 function AppShell({ currentPath, showSidebar }: AppShellProps) {
   const [isClient, setIsClient] = useState(false);
   const [clerkReady, setClerkReady] = useState(false);
+  const [mountTime] = useState(() => Date.now());
   
-  // Get current path from window if not provided
-  const actualCurrentPath = currentPath || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  // Use the passed currentPath prop as the source of truth
+  const actualCurrentPath = currentPath || '/';
   
   // Auto-detect showSidebar if not provided
   const shouldShowSidebarByDefault = actualCurrentPath.startsWith('/docs');
@@ -100,6 +85,14 @@ function AppShell({ currentPath, showSidebar }: AppShellProps) {
   // Use a stable redirect URL to prevent ClerkProvider re-renders
   const redirectUrl = '/docs/levels/levels-titles';
 
+  // Debug logging for path detection
+  console.log('🔧 AppShell path debug:', {
+    currentPathProp: currentPath,
+    actualCurrentPath,
+    isClient,
+    clerkReady
+  });
+
   // Debug logging for Clerk configuration
   console.log('🔧 AppShell Clerk config:', {
     isConfigured: clerkConfig.isConfigured,
@@ -108,13 +101,19 @@ function AppShell({ currentPath, showSidebar }: AppShellProps) {
     currentPath: actualCurrentPath,
     redirectUrl,
     isClient,
-    clerkReady
+    clerkReady,
+    mountTime,
+    age: Date.now() - mountTime
   });
 
   // During SSR or if Clerk is not configured, render basic version
   if (!isClient || !clerkConfig.isConfigured) {
     const isHomepage = actualCurrentPath === '/';
     const shouldShowSidebar = finalShowSidebar && !isHomepage;
+    
+    // For mobile header, be more aggressive - show it unless we're definitely on homepage
+    const shouldShowMobileHeader = actualCurrentPath !== '/' || 
+      (typeof window !== 'undefined' && window.location.pathname !== '/');
     
     if (!clerkConfig.isConfigured) {
       logClerkError(clerkConfig.error!, 'AppShell');
@@ -124,6 +123,8 @@ function AppShell({ currentPath, showSidebar }: AppShellProps) {
     return (
       <>
         {shouldShowSidebar && <Sidebar currentPath={actualCurrentPath} />}
+        {/* Show mobile header unless definitely on homepage */}
+        {shouldShowMobileHeader && <MobileHeader />}
       </>
     );
   }
@@ -146,10 +147,12 @@ function AppShell({ currentPath, showSidebar }: AppShellProps) {
           <>
             {(() => {
               const isHomepage = actualCurrentPath === '/';
+              const shouldShowMobileHeader = actualCurrentPath !== '/' || 
+                (typeof window !== 'undefined' && window.location.pathname !== '/');
               return (
                 <>
                   {finalShowSidebar && !isHomepage && <Sidebar currentPath={actualCurrentPath} />}
-                  {!isHomepage && <MobileHeader />}
+                  {shouldShowMobileHeader && <MobileHeader />}
                 </>
               );
             })()}
