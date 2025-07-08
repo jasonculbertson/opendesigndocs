@@ -143,6 +143,12 @@ const ReviewsAIChat: React.FC = () => {
   // Function to process user input from the input field
   const processUserInput = async (userInput: string) => {
     if (!userInput.trim() || isLoading) return;
+    
+    // Set hasStarted to true if this is the first message
+    if (!hasStarted) {
+      setHasStarted(true);
+    }
+    
     addMessage(userInput, 'user');
     setInputValue('');
     setIsLoading(true);
