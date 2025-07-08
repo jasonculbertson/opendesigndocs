@@ -1019,7 +1019,7 @@ const ReviewsAIChat: React.FC = () => {
 
               {/* Desktop: Original inline input field */}
               <div className="hidden sm:block pt-2">
-                <div className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
+                <form onSubmit={handleSubmit} className="flex items-center bg-white border-2 border-gray-300 rounded-full shadow-sm focus-within:!border-black transition-colors">
                   <div className="flex items-center pl-4 pr-2">
                     <div className="relative group">
                       <button 
@@ -1086,17 +1086,11 @@ const ReviewsAIChat: React.FC = () => {
                     className="flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base"
                     disabled={isLoading}
                     style={{ fontFamily: 'Inter, sans-serif' }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSubmit(e as any);
-                      }
-                    }}
                   />
                   <div className="flex items-center pr-4">
                     {inputValue.trim() && (
                       <button
-                        onClick={handleSubmit}
+                        type="submit"
                         disabled={isLoading}
                         className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mr-2"
                       >
@@ -1106,14 +1100,14 @@ const ReviewsAIChat: React.FC = () => {
                       </button>
                     )}
                   </div>
-                </div>
+                </form>
               </div>
             </article>
           </main>
 
           {/* Mobile: Fixed bottom ChatGPT style */}
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom block sm:hidden">
-            <div className="flex items-center px-4 py-3" style={{ minHeight: '60px' }}>
+            <form onSubmit={handleSubmit} className="flex items-center px-4 py-3" style={{ minHeight: '60px' }}>
               <div className="relative group mr-3">
                 <button 
                   type="button" 
@@ -1178,17 +1172,11 @@ const ReviewsAIChat: React.FC = () => {
                 className="flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400"
                 disabled={isLoading}
                 style={{ fontFamily: 'Inter, sans-serif' }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e as any);
-                  }
-                }}
               />
               <div className="flex items-center ml-3">
                 {inputValue.trim() && (
                   <button
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={isLoading}
                     className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
@@ -1198,7 +1186,7 @@ const ReviewsAIChat: React.FC = () => {
                   </button>
                 )}
               </div>
-            </div>
+            </form>
           </div>
         </>
       )}
