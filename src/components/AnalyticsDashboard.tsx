@@ -23,18 +23,35 @@ export default function AnalyticsDashboard({ userId }: AnalyticsDashboardProps) 
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  console.log('🔍 AnalyticsDashboard: Received userId:', userId);
+
+  // Ensure component is mounted before making API calls
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!isMounted || !userId) {
+      console.log('🔍 AnalyticsDashboard: Not ready for API call', { isMounted, userId });
+      return;
+    }
+
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
+        console.log('🔍 AnalyticsDashboard: Making API call with userId:', userId);
         const response = await fetch(`/api/analytics?user_id=${userId}`);
+        
+        console.log('🔍 AnalyticsDashboard: API response status:', response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const result = await response.json();
+        console.log('🔍 AnalyticsDashboard: API response:', result);
         
         if (result.success) {
           setData(result.data);
@@ -42,6 +59,7 @@ export default function AnalyticsDashboard({ userId }: AnalyticsDashboardProps) 
           setError(result.error || 'Failed to fetch analytics data');
         }
       } catch (err) {
+        console.error('🔍 AnalyticsDashboard: API error:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
@@ -49,9 +67,9 @@ export default function AnalyticsDashboard({ userId }: AnalyticsDashboardProps) 
     };
 
     fetchAnalytics();
-  }, [userId]);
+  }, [userId, isMounted]);
 
-  if (loading) {
+  if (!isMounted || !userId) {
     return (
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="animate-pulse">

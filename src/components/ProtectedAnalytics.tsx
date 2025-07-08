@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import AnalyticsDashboard from './AnalyticsDashboard';
 
 // Authorized user IDs for both development and production environments
@@ -8,13 +7,91 @@ const AUTHORIZED_USER_IDS = [
   'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
 ];
 
+interface ClerkUser {
+  id: string;
+  emailAddresses: Array<{ emailAddress: string }>;
+  firstName?: string;
+  lastName?: string;
+}
+
 const ProtectedAnalytics: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
+  const [clerkState, setClerkState] = useState<{
+    isLoaded: boolean;
+    isSignedIn: boolean;
+    user: ClerkUser | null;
+  }>({
+    isLoaded: false,
+    isSignedIn: false,
+    user: null
+  });
   
-  // Ensure we're on the client side before using Clerk hooks
+  // Ensure we're on the client side
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Monitor Clerk state changes
+  useEffect(() => {
+    if (!isClient) return;
+
+    const checkClerkState = () => {
+      if (typeof window !== 'undefined' && (window as any).Clerk) {
+        const clerk = (window as any).Clerk;
+        const isLoaded = clerk.loaded || !!clerk.user;
+        const user = clerk.user;
+        const isSignedIn = !!user;
+
+        console.log('🔍 Protected Analytics: Clerk state check:', {
+          isLoaded,
+          isSignedIn,
+          userId: user?.id,
+          clerkLoaded: clerk.loaded,
+          hasUser: !!user
+        });
+
+        setClerkState({
+          isLoaded,
+          isSignedIn,
+          user: user ? {
+            id: user.id,
+            emailAddresses: user.emailAddresses || [],
+            firstName: user.firstName,
+            lastName: user.lastName
+          } : null
+        });
+      }
+    };
+
+    // Initial check
+    checkClerkState();
+
+    // Set up polling to check for Clerk state changes
+    const interval = setInterval(checkClerkState, 1000);
+
+    // Listen for Clerk events if available
+    if (typeof window !== 'undefined' && (window as any).Clerk) {
+      // Try to listen for Clerk events
+      const handleUserChange = () => {
+        console.log('🔍 Protected Analytics: Clerk user changed');
+        checkClerkState();
+      };
+
+      // Some Clerk instances have event listeners
+      try {
+        if ((window as any).Clerk.session) {
+          // Clerk is ready, check immediately
+          checkClerkState();
+        }
+      } catch (e) {
+        console.log('🔍 Protected Analytics: Clerk event listener not available');
+      }
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isClient]);
   
   // Show loading state on server side and initial client render
   if (!isClient) {
@@ -27,72 +104,17 @@ const ProtectedAnalytics: React.FC = () => {
       </div>
     );
   }
-  
-  // Now we can safely use the hook on client side
-  return <ProtectedAnalyticsClient authorizedUserIds={AUTHORIZED_USER_IDS} />;
-};
 
-interface ProtectedAnalyticsClientProps {
-  authorizedUserIds: string[];
-}
-
-function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClientProps) {
-  const [forceUpdate, setForceUpdate] = useState(0);
-  
-  console.log('🔍 Protected Analytics: Component rendering...');
-  
-  // Check if window.Clerk is available
-  if (typeof window !== 'undefined' && (window as any).Clerk?.user) {
-    console.log('🔍 Protected Analytics: Window Clerk user:', (window as any).Clerk.user);
-  }
-  
-  // Try to use the hook, but catch any errors
-  let user: any = null;
-  let isSignedIn: boolean = false;
-  let isLoaded: boolean = false;
-  let error: Error | null = null;
-  
-  try {
-    const result = useUser();
-    user = result.user;
-    isSignedIn = result.isSignedIn || false;
-    isLoaded = result.isLoaded || false;
-  } catch (err) {
-    console.log('🔍 Protected Analytics: Clerk context not available yet, using defaults. Error:', err);
-    error = err as Error;
-    
-    // Fallback to window.Clerk if available
-    if (typeof window !== 'undefined' && (window as any).Clerk?.user) {
-      console.log('🔍 Protected Analytics: Using window.Clerk as fallback');
-      user = (window as any).Clerk.user;
-      isSignedIn = true;
-      isLoaded = true;
-    }
-  }
-  
-  // Force re-render periodically if not loaded
-  useEffect(() => {
-    if (!isLoaded) {
-      console.log('🔍 Protected Analytics: Forcing re-render to check Clerk status...');
-      const timer = setTimeout(() => {
-        setForceUpdate(prev => prev + 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoaded, forceUpdate]);
-  
   console.log('🔍 Protected Analytics Debug:', {
-    isLoaded,
-    isSignedIn,
-    userId: user?.id,
-    authorizedUserIds: authorizedUserIds,
-    userMatch: user?.id === authorizedUserIds[0], // Assuming first authorized user for now
-    windowClerkAvailable: typeof window !== 'undefined' && !!(window as any).Clerk?.user,
-    error: error?.message
+    isLoaded: clerkState.isLoaded,
+    isSignedIn: clerkState.isSignedIn,
+    userId: clerkState.user?.id,
+    authorizedUserIds: AUTHORIZED_USER_IDS,
+    isAuthorized: clerkState.user?.id && AUTHORIZED_USER_IDS.includes(clerkState.user.id)
   });
   
   // Show loading state while Clerk is loading
-  if (!isLoaded) {
+  if (!clerkState.isLoaded) {
     console.log('🔍 Protected Analytics: Still loading...');
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -105,7 +127,7 @@ function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClien
   }
   
   // Show access denied if user is not signed in
-  if (!isSignedIn || !user) {
+  if (!clerkState.isSignedIn || !clerkState.user) {
     console.log('🔍 Protected Analytics: User not signed in');
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -118,7 +140,7 @@ function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClien
   }
   
   // Check if current user is authorized
-  const isAuthorized = isLoaded && isSignedIn && user && authorizedUserIds.includes(user.id);
+  const isAuthorized = clerkState.user && AUTHORIZED_USER_IDS.includes(clerkState.user.id);
 
   // Show access denied if user is not authorized
   if (!isAuthorized) {
@@ -128,6 +150,7 @@ function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClien
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
           <p className="text-gray-600">You don't have permission to view this page.</p>
+          <p className="text-sm text-gray-500 mt-2">User ID: {clerkState.user?.id}</p>
         </div>
       </div>
     );
@@ -136,7 +159,22 @@ function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClien
   console.log('🔍 Protected Analytics: User is authorized, showing dashboard');
   
   // Show analytics dashboard for authorized user
-  return <AnalyticsDashboard />;
-}
+  console.log('🔍 Protected Analytics: Passing userId to dashboard:', clerkState.user.id);
+  
+  // Ensure we have a valid user ID before rendering the dashboard
+  if (!clerkState.user.id) {
+    console.error('🔍 Protected Analytics: User ID is missing!');
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
+          <p className="text-gray-600">User ID is missing.</p>
+        </div>
+      </div>
+    );
+  }
+  
+  return <AnalyticsDashboard userId={clerkState.user.id} />;
+};
 
 export default ProtectedAnalytics; 
