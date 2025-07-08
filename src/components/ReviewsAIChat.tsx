@@ -341,6 +341,39 @@ const ReviewsAIChat: React.FC = () => {
     }
     
     switch (currentStep) {
+      // Welcome state - allow free-form conversation
+      case 'welcome':
+        // Send the user's message to the AI for a general response
+        try {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              message: userInput,
+              step: 'welcome-conversation',
+              reviewType: 'general'
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            if (errorData.error?.includes('OpenAI API key')) {
+              addMessage("I'm sorry, but the AI service is not currently configured. Please try one of the guided review options above.", 'assistant');
+            } else {
+              throw new Error(errorData.error || 'Failed to get response');
+            }
+            return;
+          }
+
+          const data = await response.json();
+          addMessage(data.response, 'assistant');
+        } catch (error) {
+          console.error('Error in welcome conversation:', error);
+          addMessage("I'm sorry, I encountered an error. Please try one of the guided review options above or try again.", 'assistant');
+        }
+        break;
       // Self-review flow
       case 'self-name':
         setReviewData(prev => ({ ...prev, name: userInput }));
