@@ -156,10 +156,81 @@ Format as a complete, submission-ready document.`;
   }
 }
 
+// Helper function to validate if a message is related to performance/career topics
+async function validateTopic(message: string): Promise<boolean> {
+  const validationPrompt = `You are a topic validator for a performance review AI assistant. 
+
+Your job is to determine if a user's message is related to performance reviews, career development, or professional growth.
+
+APPROVED TOPICS:
+- Performance reviews and evaluations
+- Career development and advancement  
+- Feedback and coaching conversations
+- Professional growth and skill development
+- Team management and leadership
+- Employee development and mentoring
+- Performance improvement and goal setting
+- Level competencies and role expectations
+- 1:1 conversations and performance discussions
+- Career path planning and progression
+- Work-related professional development
+
+REJECTED TOPICS:
+- Personal life advice
+- General conversation
+- Non-work topics
+- Entertainment, sports, politics
+- Technical support for other tools
+- Personal relationships
+- Health advice
+- Financial advice (unless career-related)
+
+User message: "${message}"
+
+Respond with ONLY "APPROVED" or "REJECTED".`;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: validationPrompt },
+        { role: "user", content: message }
+      ],
+      temperature: 0.1,
+      max_tokens: 10,
+    });
+
+    const response = completion.choices[0]?.message?.content?.trim().toUpperCase();
+    return response === 'APPROVED';
+  } catch (error) {
+    console.error('Topic validation error:', error);
+    // If validation fails, default to approved to avoid blocking legitimate requests
+    return true;
+  }
+}
+
 export async function generateGeneralResponse(
   message: string,
   competenciesText: string
 ): Promise<string> {
+  // First, validate the topic
+  const isTopicValid = await validateTopic(message);
+  
+  if (!isTopicValid) {
+    return `I'm ReviewsAI, specialized in performance reviews and career development. I can help you with:
+
+• Writing performance reviews and evaluations
+• Career development and advancement planning
+• Feedback and coaching conversations
+• Professional growth strategies
+• Team management and leadership development
+• Employee development and mentoring
+• Performance improvement and goal setting
+• Level competencies and role expectations
+
+Please ask me about any of these topics, or try one of the guided review options above!`;
+  }
+
   const systemPrompt = `You are ReviewsAI, an AI assistant specialized in performance reviews and career development. You have access to comprehensive level competencies from Open Design Docs that you use to provide accurate, relevant guidance.
 
 Your expertise includes:

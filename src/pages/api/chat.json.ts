@@ -64,6 +64,11 @@ export const POST: APIRoute = async ({ request }) => {
         );
         break;
       
+      case 'welcome-conversation':
+        // For welcome conversation, validate the topic first
+        response = await generateGeneralResponse(message, competenciesText);
+        break;
+      
       default:
         response = await generateGeneralResponse(message, competenciesText);
     }
