@@ -1,9 +1,14 @@
 import OpenAI from 'openai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-load OpenAI client to ensure environment variables are available
+function getOpenAIClient() {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.');
+  }
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 export interface ReviewData {
   name: string;
@@ -83,6 +88,7 @@ Please structure the review with:
 Make sure the review speaks directly to ${name} and is ready for submission.`;
 
   try {
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -139,6 +145,7 @@ Please create a final review that:
 Format as a complete, submission-ready document.`;
 
   try {
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -190,6 +197,7 @@ User message: "${message}"
 Respond with ONLY "APPROVED" or "REJECTED".`;
 
   try {
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -251,6 +259,7 @@ Guidelines:
 - Use specific examples when possible`;
 
   try {
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [

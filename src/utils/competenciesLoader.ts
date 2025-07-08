@@ -22,10 +22,10 @@ export async function loadAllCompetencies(): Promise<RoleCompetencies[]> {
 
     for (const doc of competenciesCollection) {
       const role = doc.id.split('/').pop()?.replace('.mdx', '') || '';
-      const content = await doc.render();
       
-      // Extract competencies from the rendered content
-      const levels = extractCompetenciesFromContent(content.Content || '');
+      // For now, let's use the doc.body as a fallback since we can't easily render React components to HTML
+      // This is a simplified approach that works with the MDX content
+      const levels = extractCompetenciesFromMarkdown(doc.body || '');
       
       allCompetencies.push({
         role: formatRoleName(role),
@@ -40,39 +40,36 @@ export async function loadAllCompetencies(): Promise<RoleCompetencies[]> {
   }
 }
 
-function extractCompetenciesFromContent(html: string): CompetencyLevel[] {
+function extractCompetenciesFromMarkdown(markdown: string): CompetencyLevel[] {
   const levels: CompetencyLevel[] = [];
   
-  // Split content by level headers (h2 tags)
-  const levelSections = html.split(/<h2[^>]*>/);
+  // Split content by level headers (## Level Name)
+  const levelSections = markdown.split(/^## /m);
   
   for (const section of levelSections) {
     if (!section.trim()) continue;
     
-    // Extract level name
-    const levelMatch = section.match(/^([^<]+)/);
-    if (!levelMatch) continue;
+    // Extract level name (first line)
+    const lines = section.split('\n');
+    const levelName = lines[0]?.trim() || '';
+    if (!levelName) continue;
     
-    const levelName = levelMatch[1]?.trim() || '';
+    // Look for table content
+    const tableStart = section.indexOf('|');
+    if (tableStart === -1) continue;
     
-    // Extract table content
-    const tableMatch = section.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
-    if (!tableMatch) continue;
-    
-    const tableContent = tableMatch[1];
-    
-    // Extract rows
-    const rows = tableContent.match(/<tr[^>]*>([\s\S]*?)<\/tr>/g) || [];
+    const tableContent = section.substring(tableStart);
+    const tableLines = tableContent.split('\n').filter(line => line.includes('|'));
     
     let skill = '';
     let influence = '';
     let thinking = '';
     
-    for (const row of rows) {
-      const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || [];
+    for (const line of tableLines) {
+      const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
       if (cells.length >= 2) {
-        const areaCell = cells[0]?.replace(/<[^>]*>/g, '').trim() || '';
-        const competenciesCell = cells[1]?.replace(/<[^>]*>/g, '').trim() || '';
+        const areaCell = cells[0] || '';
+        const competenciesCell = cells[1] || '';
         
         if (areaCell.includes('Skill')) {
           skill = competenciesCell;
