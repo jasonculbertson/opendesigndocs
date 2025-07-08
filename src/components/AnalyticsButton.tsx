@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 
+// Authorized user IDs for both development and production environments
+const AUTHORIZED_USER_IDS = [
+  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
+];
+
 const AnalyticsButton: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  
-  // Your specific UUID - updated to match your actual user ID
-  const AUTHORIZED_USER_ID = 'user_2ycNsYsOHZUfRlxgP2ysOCztGkt';
   
   // Ensure we're on the client side
   useEffect(() => {
@@ -18,10 +21,14 @@ const AnalyticsButton: React.FC = () => {
   }
   
   // Now we can safely use the hook on client side
-  return <AnalyticsButtonClient authorizedUserId={AUTHORIZED_USER_ID} />;
+  return <AnalyticsButtonClient authorizedUserIds={AUTHORIZED_USER_IDS} />;
 };
 
-const AnalyticsButtonClient: React.FC<{ authorizedUserId: string }> = ({ authorizedUserId }) => {
+interface AnalyticsButtonClientProps {
+  authorizedUserIds: string[];
+}
+
+function AnalyticsButtonClient({ authorizedUserIds }: AnalyticsButtonClientProps) {
   const [forceUpdate, setForceUpdate] = useState(0);
   
   console.log('🔍 Analytics Button: AnalyticsButtonClient component rendering...');
@@ -70,8 +77,8 @@ const AnalyticsButtonClient: React.FC<{ authorizedUserId: string }> = ({ authori
     isLoaded,
     isSignedIn,
     userId: user?.id,
-    authorizedUserId: authorizedUserId,
-    userMatch: user?.id === authorizedUserId,
+    authorizedUserIds: authorizedUserIds,
+    userMatch: user?.id === authorizedUserIds[0], // Assuming first authorized user is the primary one for now
     windowClerkAvailable: typeof window !== 'undefined' && !!(window as any).Clerk?.user,
     error: error?.message
   });
@@ -88,10 +95,13 @@ const AnalyticsButtonClient: React.FC<{ authorizedUserId: string }> = ({ authori
     return null;
   }
   
+  // Check if current user is authorized
+  const isAuthorized = isLoaded && isSignedIn && user && authorizedUserIds.includes(user.id);
+
   // Check if user is authorized
-  if (user.id !== authorizedUserId) {
+  if (!isAuthorized) {
     console.log('🔍 Analytics Button: User ID does not match authorized ID');
-    console.log('🔍 Expected:', authorizedUserId);
+    console.log('🔍 Expected:', authorizedUserIds);
     console.log('🔍 Actual:', user.id);
     return null;
   }
@@ -111,6 +121,6 @@ const AnalyticsButtonClient: React.FC<{ authorizedUserId: string }> = ({ authori
       Analytics
     </a>
   );
-};
+}
 
 export default AnalyticsButton; 

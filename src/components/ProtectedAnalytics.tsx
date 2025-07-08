@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import AnalyticsDashboard from './AnalyticsDashboard';
 
+// Authorized user IDs for both development and production environments
+const AUTHORIZED_USER_IDS = [
+  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
+];
+
 const ProtectedAnalytics: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  
-  // Your specific UUID - updated to match your actual user ID
-  const AUTHORIZED_USER_ID = 'user_2ycNsYsOHZUfRlxgP2ysOCztGkt';
   
   // Ensure we're on the client side before using Clerk hooks
   useEffect(() => {
@@ -26,10 +29,14 @@ const ProtectedAnalytics: React.FC = () => {
   }
   
   // Now we can safely use the hook on client side
-  return <ProtectedAnalyticsClient authorizedUserId={AUTHORIZED_USER_ID} />;
+  return <ProtectedAnalyticsClient authorizedUserIds={AUTHORIZED_USER_IDS} />;
 };
 
-const ProtectedAnalyticsClient: React.FC<{ authorizedUserId: string }> = ({ authorizedUserId }) => {
+interface ProtectedAnalyticsClientProps {
+  authorizedUserIds: string[];
+}
+
+function ProtectedAnalyticsClient({ authorizedUserIds }: ProtectedAnalyticsClientProps) {
   const [forceUpdate, setForceUpdate] = useState(0);
   
   console.log('🔍 Protected Analytics: Component rendering...');
@@ -78,8 +85,8 @@ const ProtectedAnalyticsClient: React.FC<{ authorizedUserId: string }> = ({ auth
     isLoaded,
     isSignedIn,
     userId: user?.id,
-    authorizedUserId: authorizedUserId,
-    userMatch: user?.id === authorizedUserId,
+    authorizedUserIds: authorizedUserIds,
+    userMatch: user?.id === authorizedUserIds[0], // Assuming first authorized user for now
     windowClerkAvailable: typeof window !== 'undefined' && !!(window as any).Clerk?.user,
     error: error?.message
   });
@@ -110,11 +117,12 @@ const ProtectedAnalyticsClient: React.FC<{ authorizedUserId: string }> = ({ auth
     );
   }
   
+  // Check if current user is authorized
+  const isAuthorized = isLoaded && isSignedIn && user && authorizedUserIds.includes(user.id);
+
   // Show access denied if user is not authorized
-  if (user.id !== authorizedUserId) {
-    console.log('🔍 Protected Analytics: User ID does not match authorized ID');
-    console.log('🔍 Expected:', authorizedUserId);
-    console.log('🔍 Actual:', user.id);
+  if (!isAuthorized) {
+    console.log('🔍 Protected Analytics: User not authorized');
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -129,6 +137,6 @@ const ProtectedAnalyticsClient: React.FC<{ authorizedUserId: string }> = ({ auth
   
   // Show analytics dashboard for authorized user
   return <AnalyticsDashboard />;
-};
+}
 
 export default ProtectedAnalytics; 

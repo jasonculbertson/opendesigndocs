@@ -22,8 +22,11 @@ interface Props {
   id?: string;
 }
 
-// Your specific UUID for showing recruiters menu
-const AUTHORIZED_USER_ID = 'user_2ycNsYsOHZUfRlxgP2ysOCztGkt';
+// Authorized user IDs for both development and production environments
+const AUTHORIZED_USER_IDS = [
+  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
+];
 
 const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
   const [showRecruiters, setShowRecruiters] = useState(false);
@@ -58,9 +61,12 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
     }
   }, [isLoaded, forceUpdate]);
 
+  // Check if user is authorized for special menu items
+  const isAuthorized = isLoaded && isSignedIn && user && AUTHORIZED_USER_IDS.includes(user.id);
+
   // Check if user should see recruiters menu
   useEffect(() => {
-    if (isLoaded && isSignedIn && user?.id === AUTHORIZED_USER_ID) {
+    if (isLoaded && isSignedIn && user?.id === AUTHORIZED_USER_IDS[0]) { // Assuming the first authorized ID is the primary one for recruiters
       setShowRecruiters(true);
     } else {
       setShowRecruiters(false);
@@ -122,13 +128,13 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
       header: 'TOOLS',
       items: [
         // Conditionally add My Team menu item
-        ...(showRecruiters ? [{
+        ...(isAuthorized ? [{
           name: 'My Team',
           href: '/docs/team',
           icon: Users
         }] : []),
         // Conditionally add Recruiters menu item
-        ...(showRecruiters ? [{
+        ...(isAuthorized ? [{
           name: 'Recruiters',
           href: '/docs/recruiters',
           icon: Search
