@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, Sparkles, Play, FileText, Users, Target, CheckCircle, ArrowRight, ThumbsUp, MessageSquare, Lightbulb, BookOpen } from 'lucide-react';
+import { trackReviewsAI } from '../utils/analytics';
 
 interface Message {
   id: string;
@@ -157,10 +158,24 @@ const ReviewsAIChat: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Track input submission
+    if (inputValue.trim()) {
+      trackReviewsAI.buttonClick('input-submit', 'User Input Submit');
+    }
+    
     await processUserInput(inputValue);
   };
 
   const handleSuggestion = (value: string) => {
+    // Track the button click
+    const buttonType = value.includes('self-review') ? 'self-review' :
+                      value.includes('performance review for an employee') ? 'employee-review' :
+                      value.includes('1:1 performance conversation') ? 'oneonone-conversation' :
+                      value.includes('career path') ? 'career-path' : 'general';
+    
+    trackReviewsAI.buttonClick(buttonType, value);
+    
     // Reset everything for a fresh start
     setMessages([]);
     setCurrentStep('welcome');
@@ -175,23 +190,28 @@ const ReviewsAIChat: React.FC = () => {
       setReviewType('self');
       setCurrentStep('self-name');
       addMessage("Let's help you write your self-review! First, what's your name?", 'assistant');
+      trackReviewsAI.flowStart('self-review');
     } else if (value.includes('performance review for an employee')) {
       setReviewType('employee');
       setCurrentStep('emp-name');
       addMessage("Let's help you write a performance review for an employee! First, what's the employee's name?", 'assistant');
+      trackReviewsAI.flowStart('employee-review');
     } else if (value.includes('1:1 performance conversation')) {
       setReviewType('feedback');
       setCurrentStep('oneonone-person');
       addMessage("Let's plan a productive 1:1 performance conversation! Who is this conversation for? Please provide their name and current role/level.", 'assistant');
+      trackReviewsAI.flowStart('oneonone-conversation');
     } else if (value.includes('career path')) {
       setReviewType('career');
       setCurrentStep('career-person');
       addMessage("Let's create a career development plan for your team member! Who are you planning a career path for? Please provide their name and current role/level.", 'assistant');
+      trackReviewsAI.flowStart('career-path');
     } else {
       // Default to employee review flow
       setReviewType('employee');
       setCurrentStep('name-title');
       addMessage("Let's begin! First, I need the name and title of the individual being reviewed.\n\nPlease provide their full name and current job title.", 'assistant');
+      trackReviewsAI.flowStart('employee-review');
     }
     
     setIsLoading(false);
@@ -205,6 +225,9 @@ const ReviewsAIChat: React.FC = () => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const file = files[0];
+      
+      // Track file upload
+      trackReviewsAI.fileUpload(file.type || 'unknown', file.size);
       
       // Check file size (limit to 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB in bytes
@@ -312,6 +335,11 @@ const ReviewsAIChat: React.FC = () => {
   };
 
   const processStep = async (userInput: string) => {
+    // Track step progression
+    if (reviewType) {
+      trackReviewsAI.step(currentStep, reviewType);
+    }
+    
     switch (currentStep) {
       // Self-review flow
       case 'self-name':
@@ -741,6 +769,11 @@ const ReviewsAIChat: React.FC = () => {
           addMessage(data.response, 'assistant', 'final-review');
           addMessage("The review is now complete! You can copy the text above and use it for your submission.\n\nWould you like to start a new review for someone else?", 'assistant');
           setCurrentStep('complete');
+          
+          // Track flow completion
+          if (reviewType) {
+            trackReviewsAI.flowComplete(reviewType);
+          }
         } catch (error) {
           console.error('Error generating final review:', error);
           addMessage("I'm sorry, I encountered an error while finalizing the review. Please try again.", 'assistant');
@@ -795,7 +828,7 @@ const ReviewsAIChat: React.FC = () => {
                   How can I help you today?
                 </h1>
                 <div className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  ReviewsAI can help you write, improve, and analyze reviews for your team.
+                  Reviews AI uses OpenDesignDoc's levels competencies to help you write, improve, and analyze reviews for your team.
                 </div>
               </div>
 
@@ -1176,6 +1209,9 @@ const ReviewsAIChat: React.FC = () => {
           <div className="max-w-[680px] mx-auto text-center">
             <button
               onClick={() => {
+                // Track new review start
+                trackReviewsAI.buttonClick('start-new-review', 'Start New Review');
+                
                 setCurrentStep('welcome');
                 setMessages([]);
                 setReviewType(null);

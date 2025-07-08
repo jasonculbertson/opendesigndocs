@@ -1,13 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ReviewsAIChat from '../../components/ReviewsAIChat.tsx';
+import AnalyticsButton from '../../components/AnalyticsButton.tsx';
 
 const title = "ReviewsAI - Annual Review Assistant";
 const description = "AI-powered assistant for creating comprehensive annual performance reviews";
 ---
 
 <Layout title={title}>
-  <ReviewsAIChat client:load />
+  <div class="relative">
+    <!-- Analytics Link - Only visible to specific user -->
+    <div class="absolute top-4 right-4 z-10">
+      <AnalyticsButton client:load />
+    </div>
+    
+    <ReviewsAIChat client:load />
+  </div>
 </Layout>
 
 <style>

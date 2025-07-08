@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AnalyticsDashboard from '../../components/AnalyticsDashboard.tsx';
+import ProtectedAnalytics from '../../components/ProtectedAnalytics.tsx';
+
+const title = "Reviews AI Analytics";
+const description = "Analytics dashboard for tracking Reviews AI user interactions and engagement";
+---
+
+<Layout title={title}>
+  <ProtectedAnalytics client:load />
+</Layout> 

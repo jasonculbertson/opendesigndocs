@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import {
   Clock,
   Users,
@@ -21,90 +22,141 @@ interface Props {
   id?: string;
 }
 
-const links = [
-  {
-    header: 'Levels Framework',
-    items: [
-      {
-        name: 'Levels and Titles',
-        href: '/docs/levels/levels-titles',
-        icon: Layers
-      },
-      {
-        name: 'Level Competencies',
-        href: '/docs/levels/level-competencies',
-        icon: Target
-      },
-      {
-        name: 'Job Descriptions',
-        href: '/docs/levels/job-descriptions',
-        icon: FileText
-      },
-      {
-        name: 'Interview Panels',
-        href: '/docs/levels/interview-panels',
-        icon: Users
-      },
-      {
-        name: 'Reviews',
-        href: '/docs/levels/reviews',
-        icon: FileText
-      }
-    ]
-  },
-  {
-    header: 'LEADERSHIP DOCS',
-    items: [
-      {
-        name: 'Manager',
-        href: '/docs/manager',
-        icon: User
-      },
-      {
-        name: 'Design Team',
-        href: '/docs/design-team',
-        icon: Palette
-      },
-      {
-        name: 'Product Team',
-        href: '/docs/product-team',
-        icon: Box
-      }
-    ]
-  },
-  {
-    header: 'Resources',
-    items: [
-      // {
-      //   name: 'Recruiters',
-      //   href: '/docs/recruiters',
-      //   icon: Search
-      // },
-      {
-        name: 'ReviewsAI',
-        href: '/docs/reviews-ai',
-        icon: Bot
-      }
-    ]
-  },
-  {
-    header: 'Videos',
-    items: [
-      {
-        name: 'Interviews',
-        href: '/docs/videos/interviews',
-        icon: Mic
-      },
-      {
-        name: 'Case Studies',
-        href: '/docs/videos/case-studies',
-        icon: FileVideo
-      }
-    ]
-  }
-];
+// Your specific UUID for showing recruiters menu
+const AUTHORIZED_USER_ID = 'user_2ycNsYsOHZUfRlxgP2ysOCztGkt';
 
 const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
+  const [showRecruiters, setShowRecruiters] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Try to get user info with fallback
+  let user: any = null;
+  let isSignedIn: boolean = false;
+  let isLoaded: boolean = false;
+
+  try {
+    const result = useUser();
+    user = result.user;
+    isSignedIn = result.isSignedIn || false;
+    isLoaded = result.isLoaded || false;
+  } catch (err) {
+    // Fallback to window.Clerk if available
+    if (typeof window !== 'undefined' && (window as any).Clerk?.user) {
+      user = (window as any).Clerk.user;
+      isSignedIn = true;
+      isLoaded = true;
+    }
+  }
+
+  // Force re-render periodically if not loaded
+  useEffect(() => {
+    if (!isLoaded) {
+      const timer = setTimeout(() => {
+        setForceUpdate(prev => prev + 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded, forceUpdate]);
+
+  // Check if user should see recruiters menu
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user?.id === AUTHORIZED_USER_ID) {
+      setShowRecruiters(true);
+    } else {
+      setShowRecruiters(false);
+    }
+  }, [isLoaded, isSignedIn, user?.id]);
+
+  const links = [
+    {
+      header: 'Levels Framework',
+      items: [
+        {
+          name: 'Levels and Titles',
+          href: '/docs/levels/levels-titles',
+          icon: Layers
+        },
+        {
+          name: 'Level Competencies',
+          href: '/docs/levels/level-competencies',
+          icon: Target
+        },
+        {
+          name: 'Job Descriptions',
+          href: '/docs/levels/job-descriptions',
+          icon: FileText
+        },
+        {
+          name: 'Interview Panels',
+          href: '/docs/levels/interview-panels',
+          icon: Users
+        },
+        {
+          name: 'Reviews',
+          href: '/docs/levels/reviews',
+          icon: FileText
+        }
+      ]
+    },
+    {
+      header: 'LEADERSHIP DOCS',
+      items: [
+        {
+          name: 'Manager',
+          href: '/docs/manager',
+          icon: User
+        },
+        {
+          name: 'Design Team',
+          href: '/docs/design-team',
+          icon: Palette
+        },
+        {
+          name: 'Product Team',
+          href: '/docs/product-team',
+          icon: Box
+        }
+      ]
+    },
+    {
+      header: 'TOOLS',
+      items: [
+        // Conditionally add My Team menu item
+        ...(showRecruiters ? [{
+          name: 'My Team',
+          href: '/docs/team',
+          icon: Users
+        }] : []),
+        // Conditionally add Recruiters menu item
+        ...(showRecruiters ? [{
+          name: 'Recruiters',
+          href: '/docs/recruiters',
+          icon: Search
+        }] : []),
+        {
+          name: 'Reviews AI',
+          href: '/docs/reviews-ai',
+          icon: Bot
+        }
+      ]
+    },
+    {
+      header: 'Videos',
+      items: [
+        {
+          name: 'Interviews',
+          href: '/docs/videos/interviews',
+          icon: Mic
+        },
+        {
+          name: 'Case Studies',
+          href: '/docs/videos/case-studies',
+          icon: FileVideo
+        }
+      ]
+    }
+  ];
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Only handle mobile menu closing on mobile devices
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
