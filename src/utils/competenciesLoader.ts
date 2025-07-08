@@ -12,30 +12,103 @@ export interface RoleCompetencies {
   levels: CompetencyLevel[];
 }
 
-export async function loadAllCompetencies(): Promise<RoleCompetencies[]> {
+// In-memory cache for competencies
+const competencyCache = new Map<string, RoleCompetencies>();
+let allRolesCache: string[] | null = null;
+
+// Get all available role names without loading content
+export async function getAllRoleNames(): Promise<string[]> {
+  if (allRolesCache) {
+    return allRolesCache;
+  }
+
   try {
     const competenciesCollection = await getCollection('docs', ({ id }) => 
       id.startsWith('levels/level-competencies/')
     );
 
+    allRolesCache = competenciesCollection.map(doc => {
+      const role = doc.id.split('/').pop()?.replace('.mdx', '') || '';
+      return formatRoleName(role);
+    });
+
+    return allRolesCache;
+  } catch (error) {
+    console.error('Error loading role names:', error);
+    return [];
+  }
+}
+
+// Load competencies for a specific role
+export async function loadRoleCompetencies(roleName: string): Promise<RoleCompetencies | null> {
+  // Check cache first
+  if (competencyCache.has(roleName)) {
+    return competencyCache.get(roleName)!;
+  }
+
+  try {
+    const competenciesCollection = await getCollection('docs', ({ id }) => 
+      id.startsWith('levels/level-competencies/')
+    );
+
+    // Find the specific role document
+    const roleDoc = competenciesCollection.find(doc => {
+      const role = doc.id.split('/').pop()?.replace('.mdx', '') || '';
+      return formatRoleName(role) === roleName;
+    });
+
+    if (!roleDoc) {
+      return null;
+    }
+
+    // Extract competencies from the raw body content
+    const levels = extractCompetenciesFromMarkdown(roleDoc.body || '');
+    
+    const roleCompetencies: RoleCompetencies = {
+      role: roleName,
+      levels
+    };
+
+    // Cache the result
+    competencyCache.set(roleName, roleCompetencies);
+    
+    return roleCompetencies;
+  } catch (error) {
+    console.error(`Error loading competencies for role ${roleName}:`, error);
+    return null;
+  }
+}
+
+// Load competencies for multiple specific roles
+export async function loadSpecificCompetencies(roleNames: string[]): Promise<RoleCompetencies[]> {
+  const results: RoleCompetencies[] = [];
+  
+  for (const roleName of roleNames) {
+    const roleCompetencies = await loadRoleCompetencies(roleName);
+    if (roleCompetencies) {
+      results.push(roleCompetencies);
+    }
+  }
+  
+  return results;
+}
+
+export async function loadAllCompetencies(): Promise<RoleCompetencies[]> {
+  try {
+    const roleNames = await getAllRoleNames();
     const allCompetencies: RoleCompetencies[] = [];
 
-    for (const doc of competenciesCollection) {
-      const role = doc.id.split('/').pop()?.replace('.mdx', '') || '';
-      
-      // For now, let's use the doc.body as a fallback since we can't easily render React components to HTML
-      // This is a simplified approach that works with the MDX content
-      const levels = extractCompetenciesFromMarkdown(doc.body || '');
-      
-      allCompetencies.push({
-        role: formatRoleName(role),
-        levels
-      });
+    // Load each role's competencies (will use cache if available)
+    for (const roleName of roleNames) {
+      const roleCompetencies = await loadRoleCompetencies(roleName);
+      if (roleCompetencies) {
+        allCompetencies.push(roleCompetencies);
+      }
     }
 
     return allCompetencies;
   } catch (error) {
-    console.error('Error loading competencies:', error);
+    console.error('Error loading all competencies:', error);
     return [];
   }
 }
