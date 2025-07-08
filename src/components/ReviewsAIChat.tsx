@@ -110,8 +110,16 @@ const ReviewsAIChat: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  // Session and usage tracking
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const [serverUsage, setServerUsage] = useState<{
+    currentUsage: number;
+    dailyLimit: number;
+    remainingWords: number;
+  } | null>(null);
+
   // Word limit configuration
-  const WORD_LIMIT = 3000;
+  const WORD_LIMIT = serverUsage?.dailyLimit || 3000;
   
   // Calculate total word count from all messages
   const calculateWordCount = () => {
@@ -124,7 +132,7 @@ const ReviewsAIChat: React.FC = () => {
   };
   
   const currentWordCount = calculateWordCount();
-  const remainingWords = Math.max(0, WORD_LIMIT - currentWordCount);
+  const remainingWords = serverUsage ? serverUsage.remainingWords : Math.max(0, WORD_LIMIT - currentWordCount);
   const isNearLimit = remainingWords <= 300;
   const isAtLimit = remainingWords <= 0;
 
@@ -133,6 +141,46 @@ const ReviewsAIChat: React.FC = () => {
       chatContainerRef.current.scrollTo({
         top: chatContainerRef.current.scrollHeight,
         behavior: 'smooth'
+      });
+    }
+  };
+
+  // Fetch usage data from server
+  const fetchUsageData = async () => {
+    try {
+      const response = await fetch('/api/usage', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-session-id': sessionId,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setServerUsage({
+          currentUsage: data.currentUsage,
+          dailyLimit: data.dailyLimit,
+          remainingWords: data.remainingWords,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching usage data:', error);
+    }
+  };
+
+  // Fetch usage data on component mount
+  useEffect(() => {
+    fetchUsageData();
+  }, []);
+
+  // Update usage data after API calls
+  const updateUsageFromResponse = (responseData: any) => {
+    if (responseData.usage) {
+      setServerUsage({
+        currentUsage: responseData.usage.currentUsage,
+        dailyLimit: responseData.usage.dailyLimit,
+        remainingWords: responseData.usage.remainingWords,
       });
     }
   };
@@ -373,13 +421,24 @@ const ReviewsAIChat: React.FC = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-session-id': sessionId,
             },
             body: JSON.stringify({ 
               message: userInput,
+              messages: messages,
               step: 'welcome-conversation',
               reviewType: 'general'
             }),
           });
+
+          if (response.status === 429) {
+            const errorData = await response.json();
+            addMessage(`I'm sorry, but you've reached your daily word limit of ${errorData.usage?.dailyLimit || 3000} words. Please try again tomorrow or upgrade to a premium plan for unlimited usage.`, 'assistant');
+            if (errorData.usage) {
+              updateUsageFromResponse(errorData);
+            }
+            return;
+          }
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -393,6 +452,7 @@ const ReviewsAIChat: React.FC = () => {
 
           const data = await response.json();
           addMessage(data.response, 'assistant');
+          updateUsageFromResponse(data);
         } catch (error) {
           console.error('Error in welcome conversation:', error);
           addMessage("I'm sorry, I encountered an error. Please try one of the guided review options above or try again.", 'assistant');
@@ -434,9 +494,11 @@ const ReviewsAIChat: React.FC = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-session-id': sessionId,
             },
             body: JSON.stringify({ 
               message: 'Generate self-review',
+              messages: messages,
               step: 'self-review-analyzing',
               reviewData: {
                 ...reviewData,
@@ -445,6 +507,16 @@ const ReviewsAIChat: React.FC = () => {
               reviewType: 'self'
             }),
           });
+
+          if (response.status === 429) {
+            const errorData = await response.json();
+            addMessage(`I'm sorry, but you've reached your daily word limit of ${errorData.usage?.dailyLimit || 3000} words. Please try again tomorrow or upgrade to a premium plan for unlimited usage.`, 'assistant');
+            if (errorData.usage) {
+              updateUsageFromResponse(errorData);
+            }
+            setCurrentStep('self-upload-questions');
+            return;
+          }
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -462,6 +534,7 @@ const ReviewsAIChat: React.FC = () => {
           addMessage(data.response, 'assistant', 'review-data');
           addMessage("I've drafted your self-review based on the information you provided. The answers are written in your voice and aligned with the level competencies for your role.\n\nWould you like to make any changes or refinements before finalizing?", 'assistant');
           setCurrentStep('additional-notes');
+          updateUsageFromResponse(data);
         } catch (error) {
           console.error('Error generating self-review:', error);
           addMessage("I'm sorry, I encountered an error while generating your self-review. Please try again.", 'assistant');
@@ -511,9 +584,11 @@ const ReviewsAIChat: React.FC = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-session-id': sessionId,
             },
             body: JSON.stringify({ 
               message: 'Generate employee review',
+              messages: messages,
               step: 'employee-review-analyzing',
               reviewData: {
                 ...reviewData,
@@ -522,6 +597,16 @@ const ReviewsAIChat: React.FC = () => {
               reviewType: 'employee'
             }),
           });
+
+          if (response.status === 429) {
+            const errorData = await response.json();
+            addMessage(`I'm sorry, but you've reached your daily word limit of ${errorData.usage?.dailyLimit || 3000} words. Please try again tomorrow or upgrade to a premium plan for unlimited usage.`, 'assistant');
+            if (errorData.usage) {
+              updateUsageFromResponse(errorData);
+            }
+            setCurrentStep('emp-upload-questions');
+            return;
+          }
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -539,6 +624,7 @@ const ReviewsAIChat: React.FC = () => {
           addMessage(data.response, 'assistant', 'review-data');
           addMessage(`I've drafted the performance review for ${reviewData.name} based on all the information you provided. The review speaks directly to them with clarity, respect, and constructiveness, and is aligned with the level competencies for their role.\n\nWould you like to make any changes or refinements before finalizing?`, 'assistant');
           setCurrentStep('additional-notes');
+          updateUsageFromResponse(data);
         } catch (error) {
           console.error('Error generating employee review:', error);
           addMessage("I'm sorry, I encountered an error while generating the employee review. Please try again.", 'assistant');
