@@ -7,7 +7,7 @@ interface Message {
   content: string;
   role: 'user' | 'assistant';
   timestamp: Date;
-  type?: 'text' | 'review-data' | 'final-review';
+  type?: 'text' | 'review-data' | 'final-review' | 'button-click';
 }
 
 interface ReviewData {
@@ -121,11 +121,14 @@ const ReviewsAIChat: React.FC = () => {
   // Word limit configuration
   const WORD_LIMIT = serverUsage?.dailyLimit || 3000;
   
-  // Calculate total word count from all messages
+  // Calculate total word count from all messages (excluding current input and button clicks)
   const calculateWordCount = () => {
     const allText = messages
+      .filter(msg => msg.type !== 'button-click') // Exclude button click messages
       .map(msg => msg.content)
-      .join(' ') + ' ' + inputValue;
+      .join(' ');
+    
+    if (!allText.trim()) return 0;
     
     const words = allText.trim().split(/\s+/).filter(word => word.length > 0);
     return words.length;
@@ -189,7 +192,7 @@ const ReviewsAIChat: React.FC = () => {
     if (hasStarted) scrollToBottom();
   }, [messages, hasStarted]);
 
-  const addMessage = (content: string, role: 'user' | 'assistant', type: 'text' | 'review-data' | 'final-review' = 'text') => {
+  const addMessage = (content: string, role: 'user' | 'assistant', type: 'text' | 'review-data' | 'final-review' | 'button-click' = 'text') => {
     const message: Message = {
       id: Date.now().toString(),
       content,
@@ -253,8 +256,8 @@ const ReviewsAIChat: React.FC = () => {
     setCurrentStep('welcome');
     setHasStarted(true);
     
-    // Add user message and immediately start the flow
-    addMessage(value, 'user');
+    // Add user message and immediately start the flow (mark as button-click to exclude from word count)
+    addMessage(value, 'user', 'button-click');
     setIsLoading(true);
     
     // Determine which flow based on the suggestion value
@@ -1264,7 +1267,7 @@ const ReviewsAIChat: React.FC = () => {
                       }`}>
                         {remainingWords.toLocaleString()} words left
                       </span>
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50"> 
                         {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
                       </div>
