@@ -7,10 +7,18 @@ const supabase = createClient(
   import.meta.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Log environment variables for debugging (remove in production)
+console.log('Analytics API Environment Check:', {
+  supabaseUrl: import.meta.env.SUPABASE_URL ? 'Present' : 'Missing',
+  serviceRoleKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing'
+});
+
 // Authorized user IDs who can access analytics data
 const AUTHORIZED_USER_IDS = [
   'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ', // Development
+  'admin', // Development admin access
+  'dev'    // Development access
 ];
 
 export const POST: APIRoute = async ({ request }) => {
@@ -94,10 +102,17 @@ export const GET: APIRoute = async ({ request, url }) => {
     // Get user ID from query params or headers (you'd implement your auth logic here)
     const userId = url.searchParams.get('user_id') || 'anonymous';
     
+    console.log('Analytics access attempt:', {
+      userId,
+      authorizedUsers: AUTHORIZED_USER_IDS,
+      isAuthorized: AUTHORIZED_USER_IDS.includes(userId)
+    });
+    
     // Check if user is authorized to view analytics
     if (!AUTHORIZED_USER_IDS.includes(userId)) {
+      console.log('Unauthorized analytics access:', { userId, authorizedUsers: AUTHORIZED_USER_IDS });
       return new Response(JSON.stringify({ 
-        error: 'Unauthorized access to analytics data' 
+        error: `Unauthorized access to analytics data. User ID: ${userId}` 
       }), {
         status: 403,
         headers: {

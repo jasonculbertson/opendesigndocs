@@ -29,7 +29,7 @@ import Layout from '../layouts/Layout.astro';
     try {
       // For now, use a hardcoded authorized user ID
       // In production, you'd get this from your auth system
-      const userId = 'user_2ycNsYsOHZUfRlxgP2ysOCztGkt';
+      const userId = 'dev'; // Use simple dev user ID for development
       
       const response = await fetch(`/api/analytics?user_id=${userId}`);
       const result = await response.json();
