@@ -110,6 +110,24 @@ const ReviewsAIChat: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  // Word limit configuration
+  const WORD_LIMIT = 3000;
+  
+  // Calculate total word count from all messages
+  const calculateWordCount = () => {
+    const allText = messages
+      .map(msg => msg.content)
+      .join(' ') + ' ' + inputValue;
+    
+    const words = allText.trim().split(/\s+/).filter(word => word.length > 0);
+    return words.length;
+  };
+  
+  const currentWordCount = calculateWordCount();
+  const remainingWords = Math.max(0, WORD_LIMIT - currentWordCount);
+  const isNearLimit = remainingWords <= 300;
+  const isAtLimit = remainingWords <= 0;
+
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -142,7 +160,7 @@ const ReviewsAIChat: React.FC = () => {
 
   // Function to process user input from the input field
   const processUserInput = async (userInput: string) => {
-    if (!userInput.trim() || isLoading) return;
+    if (!userInput.trim() || isLoading || isAtLimit) return;
     
     // Set hasStarted to true if this is the first message
     if (!hasStarted) {
@@ -856,6 +874,7 @@ const ReviewsAIChat: React.FC = () => {
   // Normal chat mode after first user input
   return (
     <div className="flex flex-col h-screen bg-white relative">
+
       {showWelcome ? (
         // Welcome content - mobile-optimized layout
         <>
@@ -943,9 +962,11 @@ const ReviewsAIChat: React.FC = () => {
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Ask me anything about reviews"
-                    className="flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base"
-                    disabled={isLoading}
+                    placeholder={isAtLimit ? "Word limit reached" : "Ask me anything about reviews"}
+                    className={`flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base ${
+                      isAtLimit ? 'text-red-500 placeholder-red-400' : ''
+                    }`}
+                    disabled={isLoading || isAtLimit}
                     autoFocus
                     style={{ fontFamily: 'Inter, sans-serif' }}
                     onKeyDown={(e) => {
@@ -959,7 +980,7 @@ const ReviewsAIChat: React.FC = () => {
                     {inputValue.trim() && (
                       <button
                         onClick={handleSubmit}
-                        disabled={isLoading}
+                        disabled={isLoading || isAtLimit}
                         className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mr-2"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1002,9 +1023,11 @@ const ReviewsAIChat: React.FC = () => {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask anything"
-                className="flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400"
-                disabled={isLoading}
+                placeholder={isAtLimit ? "Word limit reached" : "Ask anything"}
+                className={`flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400 ${
+                  isAtLimit ? 'text-red-500 placeholder-red-400' : ''
+                }`}
+                disabled={isLoading || isAtLimit}
                 style={{ fontFamily: 'Inter, sans-serif' }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -1017,7 +1040,7 @@ const ReviewsAIChat: React.FC = () => {
                 {inputValue.trim() && (
                   <button
                     onClick={handleSubmit}
-                    disabled={isLoading}
+                    disabled={isLoading || isAtLimit}
                     className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1088,6 +1111,7 @@ const ReviewsAIChat: React.FC = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder={
+                      isAtLimit ? "Word limit reached" :
                       showWelcome ? "Ask anything about reviews" :
                       currentStep === 'self-name' ? "Enter your name..." :
                       currentStep === 'self-title' ? "Enter your job title..." :
@@ -1122,15 +1146,17 @@ const ReviewsAIChat: React.FC = () => {
                       currentStep === 'additional-notes' ? "Any final notes or 'ready to finalize'..." :
                       "Ask me anything about reviews"
                     }
-                    className="flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base"
-                    disabled={isLoading}
+                    className={`flex-1 px-2 py-4 bg-transparent border-none focus:outline-none text-base ${
+                      isAtLimit ? 'text-red-500 placeholder-red-400' : ''
+                    }`}
+                    disabled={isLoading || isAtLimit}
                     style={{ fontFamily: 'Inter, sans-serif' }}
                   />
                   <div className="flex items-center pr-4">
                     {inputValue.trim() && (
                       <button
                         type="submit"
-                        disabled={isLoading}
+                        disabled={isLoading || isAtLimit}
                         className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mr-2"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1140,6 +1166,25 @@ const ReviewsAIChat: React.FC = () => {
                     )}
                   </div>
                 </form>
+                
+                {/* Word limit counter - positioned under chat input field (only show after chat starts) */}
+                {hasStarted && (
+                  <div className="mt-2 text-center">
+                    <div className="relative group inline-block">
+                      <span className={`text-xs font-medium cursor-default transition-colors underline decoration-dotted ${
+                        isAtLimit ? 'text-red-600' :
+                        isNearLimit ? 'text-yellow-600' :
+                        'text-gray-500'
+                      }`}>
+                        {remainingWords.toLocaleString()} words left
+                      </span>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </article>
           </main>
@@ -1174,6 +1219,7 @@ const ReviewsAIChat: React.FC = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
+                  isAtLimit ? "Word limit reached" :
                   showWelcome ? "Ask anything about reviews" :
                   currentStep === 'self-name' ? "Enter your name..." :
                   currentStep === 'self-title' ? "Enter your job title..." :
@@ -1208,15 +1254,17 @@ const ReviewsAIChat: React.FC = () => {
                   currentStep === 'additional-notes' ? "Any final notes or 'ready to finalize'..." :
                   "Ask me anything about reviews"
                 }
-                className="flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400"
-                disabled={isLoading}
+                className={`flex-1 px-0 py-3 bg-transparent border-none focus:outline-none text-base placeholder-gray-400 ${
+                  isAtLimit ? 'text-red-500 placeholder-red-400' : ''
+                }`}
+                disabled={isLoading || isAtLimit}
                 style={{ fontFamily: 'Inter, sans-serif' }}
               />
               <div className="flex items-center ml-3">
                 {inputValue.trim() && (
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || isAtLimit}
                     className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1226,6 +1274,25 @@ const ReviewsAIChat: React.FC = () => {
                 )}
               </div>
             </form>
+            
+            {/* Word limit counter for mobile (only show after chat starts) */}
+            {hasStarted && (
+              <div className="px-4 pb-2 text-center">
+                <div className="relative group inline-block">
+                  <span className={`text-xs font-medium cursor-default transition-colors underline decoration-dotted ${
+                    isAtLimit ? 'text-red-600' :
+                    isNearLimit ? 'text-yellow-600' :
+                    'text-gray-500'
+                  }`}>
+                    {remainingWords.toLocaleString()} words left
+                  </span>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
