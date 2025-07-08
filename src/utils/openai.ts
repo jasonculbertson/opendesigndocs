@@ -10,6 +10,9 @@ function getOpenAIClient() {
   });
 }
 
+// Using GPT-4o Mini for all tasks - cost-effective and high performance
+const MODEL_NAME = "gpt-4o-mini";
+
 export interface ReviewData {
   name: string;
   title: string;
@@ -90,7 +93,7 @@ Make sure the review speaks directly to ${name} and is ready for submission.`;
   try {
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: MODEL_NAME,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -147,7 +150,7 @@ Format as a complete, submission-ready document.`;
   try {
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: MODEL_NAME,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -199,7 +202,7 @@ Respond with ONLY "APPROVED" or "REJECTED".`;
   try {
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: MODEL_NAME,
       messages: [
         { role: "system", content: validationPrompt },
         { role: "user", content: message }
@@ -261,7 +264,7 @@ Guidelines:
   try {
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: MODEL_NAME,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
@@ -276,3 +279,6 @@ Guidelines:
     throw new Error('Failed to generate response with AI');
   }
 } 
+
+// Export model name for transparency
+export { MODEL_NAME }; 

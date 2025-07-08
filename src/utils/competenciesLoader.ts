@@ -194,4 +194,15 @@ export function getAllCompetenciesText(allCompetencies: RoleCompetencies[]): str
       `${level.level}:\n- Skill: ${level.skill}\n- Influence: ${level.influence}\n- Thinking: ${level.thinking}`
     ).join('\n\n')}`
   }).join('\n\n---\n\n');
+}
+
+// Helper function to load all competencies and return as text
+export async function getCompetenciesText(): Promise<string> {
+  try {
+    const allCompetencies = await loadAllCompetencies();
+    return getAllCompetenciesText(allCompetencies);
+  } catch (error) {
+    console.error('Error loading competencies text:', error);
+    return 'Design competency frameworks available for multiple roles with structured evaluation criteria.';
+  }
 } 
