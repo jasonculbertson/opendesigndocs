@@ -1264,7 +1264,7 @@ const ReviewsAIChat: React.FC = () => {
                       }`}>
                         {remainingWords.toLocaleString()} words left
                       </span>
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                         {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
                       </div>
@@ -1274,6 +1274,25 @@ const ReviewsAIChat: React.FC = () => {
               </div>
             </article>
           </main>
+
+          {/* Word limit counter for mobile - above the input line (only show after chat starts) */}
+          {hasStarted && (
+            <div className="fixed bottom-16 left-0 right-0 bg-white px-4 py-2 pb-4 text-center block sm:hidden">
+              <div className="relative group inline-block">
+                <span className={`text-xs font-medium cursor-default transition-colors underline decoration-dotted ${
+                  isAtLimit ? 'text-red-600' :
+                  isNearLimit ? 'text-yellow-600' :
+                  'text-gray-500'
+                }`}>
+                  {remainingWords.toLocaleString()} words left
+                </span>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Mobile: Fixed bottom ChatGPT style */}
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom block sm:hidden">
@@ -1360,25 +1379,6 @@ const ReviewsAIChat: React.FC = () => {
                 )}
               </div>
             </form>
-            
-            {/* Word limit counter for mobile (only show after chat starts) */}
-            {hasStarted && (
-              <div className="px-4 pb-2 text-center">
-                <div className="relative group inline-block">
-                  <span className={`text-xs font-medium cursor-default transition-colors underline decoration-dotted ${
-                    isAtLimit ? 'text-red-600' :
-                    isNearLimit ? 'text-yellow-600' :
-                    'text-gray-500'
-                  }`}>
-                    {remainingWords.toLocaleString()} words left
-                  </span>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {remainingWords.toLocaleString()} words remaining of {WORD_LIMIT.toLocaleString()} limit
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-900"></div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </>
       )}
