@@ -46,28 +46,40 @@ const ProtectedAnalytics: React.FC = () => {
           isLoaded,
           isSignedIn,
           userId: user?.id,
+          userIdType: typeof user?.id,
           clerkLoaded: clerk.loaded,
           hasUser: !!user
         });
 
-        setClerkState({
-          isLoaded,
-          isSignedIn,
-          user: user ? {
-            id: user.id,
-            emailAddresses: user.emailAddresses || [],
-            firstName: user.firstName,
-            lastName: user.lastName
-          } : null
-        });
+        // Only update state if we have a valid user object with a proper ID
+        if (user && user.id && typeof user.id === 'string' && user.id !== 'undefined') {
+          setClerkState({
+            isLoaded,
+            isSignedIn,
+            user: {
+              id: user.id,
+              emailAddresses: user.emailAddresses || [],
+              firstName: user.firstName,
+              lastName: user.lastName
+            }
+          });
+        } else if (isLoaded && !user) {
+          // User is not signed in but Clerk is loaded
+          setClerkState({
+            isLoaded: true,
+            isSignedIn: false,
+            user: null
+          });
+        }
+        // If user exists but has invalid ID, keep the loading state
       }
     };
 
     // Initial check
     checkClerkState();
 
-    // Set up polling to check for Clerk state changes
-    const interval = setInterval(checkClerkState, 1000);
+    // Set up polling to check for Clerk state changes, but with a shorter interval
+    const interval = setInterval(checkClerkState, 500);
 
     // Listen for Clerk events if available
     if (typeof window !== 'undefined' && (window as any).Clerk) {
@@ -174,7 +186,24 @@ const ProtectedAnalytics: React.FC = () => {
     );
   }
   
-  return <AnalyticsDashboard userId={clerkState.user.id} />;
+  // Additional safety check to ensure userId is a string and not undefined
+  const userId = clerkState.user.id;
+  if (typeof userId !== 'string' || userId === 'undefined' || userId.trim() === '') {
+    console.error('🔍 Protected Analytics: Invalid user ID:', userId);
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
+          <p className="text-gray-600">Invalid user ID. Please sign out and sign back in.</p>
+          <p className="text-sm text-gray-500 mt-2">Debug: {String(userId)}</p>
+        </div>
+      </div>
+    );
+  }
+  
+  console.log('🔍 Protected Analytics: Rendering dashboard with valid userId:', userId);
+  
+  return <AnalyticsDashboard userId={userId} />;
 };
 
 export default ProtectedAnalytics; 

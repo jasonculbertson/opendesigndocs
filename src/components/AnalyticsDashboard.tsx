@@ -38,11 +38,19 @@ export default function AnalyticsDashboard({ userId }: AnalyticsDashboardProps) 
       return;
     }
 
+    // Additional safety checks for userId
+    if (typeof userId !== 'string' || userId === 'undefined' || userId.trim() === '') {
+      console.error('🔍 AnalyticsDashboard: Invalid userId provided:', userId);
+      setError('Invalid user ID provided. Please refresh the page.');
+      setLoading(false);
+      return;
+    }
+
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
         console.log('🔍 AnalyticsDashboard: Making API call with userId:', userId);
-        const response = await fetch(`/api/analytics?user_id=${userId}`);
+        const response = await fetch(`/api/analytics?user_id=${encodeURIComponent(userId)}`);
         
         console.log('🔍 AnalyticsDashboard: API response status:', response.status);
         
