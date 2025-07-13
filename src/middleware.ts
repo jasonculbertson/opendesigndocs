@@ -4,7 +4,12 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server';
 const isPublicRoute = createRouteMatcher([
   '/',
   '/login(.*)',
-  '/api/(.*)'
+  '/api/search.json',
+  '/api/subscribe.json'
 ]);
 
-export const onRequest = clerkMiddleware();
+export const onRequest = clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) {
+    return auth().protect();
+  }
+});
