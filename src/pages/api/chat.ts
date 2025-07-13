@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { z } from 'zod';
 import { loadAllCompetencies, getCompetenciesForRole, getAllCompetenciesText } from '../../utils/competenciesLoader';
 import { 
   generateStructuredReview, 
@@ -7,16 +8,33 @@ import {
   type ReviewData 
 } from '../../utils/openai';
 
+const reviewDataSchema = z.object({
+  title: z.string().min(1),
+  teamContext: z.string().optional(),
+  roleContext: z.string().optional(),
+  performanceSummary: z.string().min(1),
+  draftReview: z.string().optional(),
+});
+
+const requestBodySchema = z.object({
+  message: z.string().min(1),
+  step: z.enum(['analyzing', 'finalizing', 'welcome-conversation']),
+  reviewData: reviewDataSchema.optional(),
+});
+
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { message, step, reviewData } = await request.json();
+    const body = await request.json();
+    const validation = requestBodySchema.safeParse(body);
 
-    if (!message) {
-      return new Response(JSON.stringify({ error: 'Message is required' }), {
+    if (!validation.success) {
+      return new Response(JSON.stringify({ error: 'Invalid request body', details: validation.error.flatten() }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    const { message, step, reviewData } = validation.data;
 
     // Check if OpenAI API key is configured
     if (!process.env.OPENAI_API_KEY) {
