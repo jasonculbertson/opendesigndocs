@@ -100,6 +100,11 @@ const uniqueSpecialties = Array.from(new Set(recruiters.flatMap(r => r.specialti
 const uniqueLevels = Array.from(new Set(recruiters.flatMap(r => r.designerLevels))).sort();
 const uniqueRegions = Array.from(new Set(recruiters.flatMap(r => r.regions))).sort();
 const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companySize))).sort();
+
+// Check for access parameter
+const url = new URL(Astro.request.url);
+const accessKey = url.searchParams.get('access');
+const hasAccess = accessKey === 'recruit2024';
 ---
 
 <WideLayout title={title} description={description}>
@@ -115,19 +120,39 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
         <p class="mt-2 text-[15px] text-[#3c4257] mb-4 md:mb-6">
           Design recruiters personally vetted by me for exceptional results.
         </p>
-        <div class="flex-shrink-0 md:ml-8">
-          <button 
-            id="open-submission-modal"
-            class="inline-flex items-center gap-1.5 text-sm font-normal text-gray-600 underline md:hover:bg-gray-100 md:hover:no-underline md:hover:text-gray-900 py-1 md:px-2 rounded transition-all cursor-pointer"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            Submit Your Agency
-          </button>
-        </div>
+        {hasAccess && (
+          <div class="flex-shrink-0 md:ml-8">
+            <button 
+              id="open-submission-modal"
+              class="inline-flex items-center gap-1.5 text-sm font-normal text-gray-600 underline md:hover:bg-gray-100 md:hover:no-underline md:hover:text-gray-900 py-1 md:px-2 rounded transition-all cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Submit Your Agency
+            </button>
+          </div>
+        )}
       </div>
     </div>
+
+    {!hasAccess ? (
+      <!-- Access Denied Message -->
+      <div class="flex flex-col items-center justify-center min-h-[400px] text-center">
+        <div class="max-w-md mx-auto">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
+          <p class="text-gray-600 mb-6">
+            This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
+          </p>
+          <a 
+            href="/docs" 
+            class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
+          >
+            Back to Documentation
+          </a>
+        </div>
+      </div>
+    ) : (
 
     <!-- Filters Section -->
     <style>
@@ -474,11 +499,12 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
       ))}
     </div>
 
+    )}
 
   </div>
 
   <!-- Modal Component -->
-  <RecruiterSubmissionModal client:load />
+  {hasAccess && (<RecruiterSubmissionModal client:load />)}
 </WideLayout>
 
 <script is:inline define:vars={{ recruiters, uniqueSpecialties, uniqueLevels, uniqueRegions, uniqueCompanySizes }}>

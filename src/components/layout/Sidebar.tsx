@@ -32,6 +32,7 @@ const AUTHORIZED_USER_IDS = [
 const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
   const [showRecruiters, setShowRecruiters] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
+  const [hasRecruiterAccess, setHasRecruiterAccess] = useState(false);
 
   // Try to get user info with fallback
   let user: any = null;
@@ -61,6 +62,15 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
       return () => clearTimeout(timer);
     }
   }, [isLoaded, forceUpdate]);
+
+  // Check for recruiter access parameter
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessKey = urlParams.get('access');
+      setHasRecruiterAccess(accessKey === 'recruit2024');
+    }
+  }, []);
 
   // Check if user is authorized for special menu items
   const isAuthorized = isLoaded && isSignedIn && user && AUTHORIZED_USER_IDS.includes(user.id);
@@ -134,17 +144,12 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
           href: '/docs/team',
           icon: Users
         }] : []),
-        // Conditionally add Recruiters menu item
-        ...(isAuthorized ? [{
-          name: 'Recruiters',
-          href: '/docs/recruiters',
-          icon: Search
-        }] : []),
-        {
+        // Conditionally add Recruiters menu item based on access parameter
+        ...(hasRecruiterAccess ? [{
           name: 'Recruiter Directory',
-          href: '/docs/recruiters',
+          href: '/docs/recruiters?access=recruit2024',
           icon: Book
-        },
+        }] : []),
         {
           name: 'Reviews AI',
           href: '/docs/reviews-ai',
