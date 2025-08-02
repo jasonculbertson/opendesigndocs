@@ -14,7 +14,8 @@ import {
   FileVideo,
   Search,
   User,
-  Bot
+  Bot,
+  Book
 } from 'lucide-react';
 
 interface Props {
@@ -125,7 +126,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
       ]
     },
     {
-      header: 'TOOLS',
+      header: 'RESOURCES',
       items: [
         // Conditionally add My Team menu item
         ...(isAuthorized ? [{
@@ -139,6 +140,11 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
           href: '/docs/recruiters',
           icon: Search
         }] : []),
+        {
+          name: 'Recruiter Directory',
+          href: '/docs/recruiters',
+          icon: Book
+        },
         {
           name: 'Reviews AI',
           href: '/docs/reviews-ai',

@@ -3,7 +3,7 @@ import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
 import RecruiterCard from '../../components/RecruiterCard.tsx';
 
-const title = "Design Recruiters Directory";
+const title = "Recruiter Directory";
 const description = "Find specialized design recruiters to help build your team";
 
 // Sample recruiter data - this would come from a database in production
@@ -108,7 +108,7 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
     <div class="mb-8">
       <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
       <p class="mt-2 text-[15px] text-[#3c4257] mb-6">
-        Browse vetted recruiters who specialize in design roles.
+        Design recruiters personally vetted by me for exceptional results.
       </p>
     </div>
 
@@ -392,7 +392,7 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
       outline: none;
     }
     </style>
-    <div class="filter-bar" id="filterBar">
+    <div class="filter-bar" id="filterBar" style="display: none">
       <div class="filter-pills-container">
         <div class="filter-pill" tabindex="0" data-filter="specialty">
           <span class="filter-pill-content">
