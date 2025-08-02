@@ -37,7 +37,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [authTitle, setAuthTitle] = useState('Get unlimited free access');
   const [initialView, setInitialView] = useState<'sign_in' | 'sign_up'>('sign_up');
-  const [redirectTo, setRedirectTo] = useState<string>(typeof window !== 'undefined' ? window.location.pathname : '/');
+  const [redirectTo, setRedirectTo] = useState<string>(typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/');
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
@@ -116,7 +116,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
     const handleOpenAuth = async (detail: AuthEventDetail) => {
       const view = detail.view || 'sign_in';
       const redirect = detail.redirectTo;
-      const finalRedirect = redirect || (typeof window !== 'undefined' ? window.location.pathname : '/');
+      const finalRedirect = redirect || (typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/');
 
       console.log('🎯 Auth overlay opened:', { 
         view, 
@@ -205,7 +205,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       }
       
       // Determine appropriate redirect URL for other cases
-      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+      const currentPath = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/';
       let finalRedirect;
       
       if (redirectTo && redirectTo !== currentPath) {
@@ -352,7 +352,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       console.log('💾 Stored OAuth redirect URL:', finalRedirectTo);
                       
                       // Always redirect to current page after OAuth, then our completion handler will redirect to the final destination
-                      const currentPageUrl = `${window.location.origin}${window.location.pathname}`;
+                      // Include search parameters to preserve URL parameters like ?access=recruit2024
+                      const currentPageUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
                       
                       console.log('🔄 Starting OAuth with redirect:', {
                         initialView,
