@@ -62,13 +62,6 @@ const uniqueSpecialties = Array.from(new Set(recruiters.flatMap(r => r.specialti
 const uniqueLevels = Array.from(new Set(recruiters.flatMap(r => r.designerLevels))).sort();
 const uniqueRegions = Array.from(new Set(recruiters.flatMap(r => r.regions))).sort();
 const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companySize))).sort();
-
-// Serialize data for JavaScript
-const serializedRecruiters = JSON.stringify(recruiters);
-const uniqueSpecialtiesJson = JSON.stringify(uniqueSpecialties);
-const uniqueLevelsJson = JSON.stringify(uniqueLevels);
-const uniqueRegionsJson = JSON.stringify(uniqueRegions);
-const uniqueCompanySizesJson = JSON.stringify(uniqueCompanySizes);
 ---
 
 <WideLayout title={title} description={description}>
@@ -635,6 +628,8 @@ window.onFilterCheckboxChange = function(e) {
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Filter pills initialized');
+  
+  // Add click listeners to filter pills
   document.querySelectorAll('.filter-pill').forEach(pill => {
     console.log('Adding click listener to pill:', pill.dataset.filter);
     pill.addEventListener('click', function(e) {
@@ -667,31 +662,39 @@ document.addEventListener('DOMContentLoaded', () => {
         pill.classList.add('open');
       }
     });
+    
+    // Add keyboard support
     pill.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         pill.click();
       }
     });
+    
     // Prevent dropdown from closing when clicking inside dropdown
-    pill.querySelector('.filter-dropdown').addEventListener('click', function(ev) {
-      ev.stopPropagation();
-    });
-  });
-  // Close dropdowns on outside click
-  document.body.addEventListener('click', closeDropdowns);
-  // Reset filters
-  document.getElementById('resetFilters').addEventListener('click', () => {
-    filterState.specialty = [];
-    filterState.level = [];
-    filterState.region = [];
-    filterState.companySize = [];
-    document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-    updateDropdownSelectedStates();
-    filterRecruiters();
+    const dropdown = pill.querySelector('.filter-dropdown');
+    if (dropdown) {
+      dropdown.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+      });
+    }
   });
   
-  // Close dropdowns when clicking outside (enhanced for mobile)
+  // Reset filters functionality
+  const resetButton = document.getElementById('resetFilters');
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      filterState.specialty = []; // This was missing!
+      filterState.level = [];
+      filterState.region = [];
+      filterState.companySize = [];
+      document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+      updateDropdownSelectedStates();
+      filterRecruiters();
+    });
+  }
+  
+  // Close dropdowns on outside click
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.filter-pill')) {
       closeDropdowns();
