@@ -27,7 +27,7 @@ const recruitersData = [
     linkedin: "https://www.linkedin.com/in/laurahunting/",
     website: "https://www.foundby.co/",
     email: "contact@foundby.co",
-    bio: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace. Laura is LinkedIn Certified Professional–Recruiter and focuses on building diverse teams thoughtfully and effectively for companies ranging from seed stage to Fortune 500.",
+    bio: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace. Laura focuses on building diverse teams thoughtfully and effectively for companies ranging from seed stage to Fortune 500.",
     philosophy: "Talent is the foundation of a company's culture and success. A strong design team will change your business for the better.",
     approach: ["Partnership-focused collaboration", "Quality over quantity placements", "Deep understanding of design community", "Transparent communication throughout process"],
     notableClients: ["Airbnb", "Zillow", "Square", "Yahoo", "Nike", "Calendly", "GoodRx", "Pinterest", "Duolingo", "Squarespace", "Nextdoor", "Hinge", "Monarch"],
@@ -261,7 +261,18 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Approach</h2>
-              <p class="text-[15px]">{recruiter.approach}</p>
+              {Array.isArray(recruiter.approach) ? (
+                <ul class="text-[15px] space-y-2">
+                  {recruiter.approach.map(item => (
+                    <li class="flex items-start">
+                      <span class="mr-2 text-gray-400">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="text-[15px]">{recruiter.approach}</p>
+              )}
             </div>
           </>
         )}
