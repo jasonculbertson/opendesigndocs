@@ -128,28 +128,21 @@ export default function RecruiterSubmissionModal() {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col">
         {/* Header with conditional title */}
-        <div className="flex items-center justify-between px-8 pt-8">
+        <div className="flex items-start justify-between px-8 pt-6">
           {!showConfirmation && (
-            <h2 className="mb-0" style={{
-              fontSize: '28px',
-              fontWeight: 600,
-              lineHeight: '1.3',
-              color: '#1a1f36',
-              letterSpacing: '-0.4px',
-              fontFamily: 'Inter, system-ui, sans-serif'
-            }}>
+            <h2 className="mb-0 text-xl md:text-[24px] font-semibold text-[#1a1f36] tracking-[-0.4px] pt-2">
               Apply to be listed in the directory
             </h2>
           )}
           {showConfirmation && <div></div>} {/* Empty div to maintain flex layout */}
           <button
             onClick={handleClose}
-            className="p-2 hover:bg-gray-100 transition"
+            className="p-2 hover:bg-gray-100 transition -mt-2 -mr-4 md:-mt-2 md:-mr-2"
             aria-label="Close"
             type="button"
             style={{ lineHeight: 0 }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -242,7 +235,7 @@ export default function RecruiterSubmissionModal() {
             </div>
             <div>
               <label className="block text-base font-semibold text-gray-900 mb-2">Specialties *</label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {allSpecialties.map(specialty => (
                   <label key={specialty} className="flex items-center gap-3 text-base font-normal text-gray-800">
                     <input 
@@ -258,7 +251,7 @@ export default function RecruiterSubmissionModal() {
             </div>
             <div>
               <label className="block text-base font-semibold text-gray-900 mb-2">Regions You Work In *</label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {allRegions.map(region => (
                   <label key={region} className="flex items-center gap-3 text-base font-normal text-gray-800">
                     <input 
@@ -317,7 +310,7 @@ export default function RecruiterSubmissionModal() {
           )}
           
           {/* Button section */}
-          <div className="pr-8 pb-12 pt-6">
+          <div className="pr-8 pb-4 pt-6">
             <button
               type="submit"
               disabled={isSubmitting}

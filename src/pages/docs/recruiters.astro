@@ -111,14 +111,14 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
           <h1 class="text-[32px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{title}</h1>
         </div>
       </div>
-      <div class="flex justify-between items-baseline">
-        <p class="mt-2 text-[15px] text-[#3c4257] mb-6">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-baseline">
+        <p class="mt-2 text-[15px] text-[#3c4257] mb-4 md:mb-6">
           Design recruiters personally vetted by me for exceptional results.
         </p>
-        <div class="flex-shrink-0 ml-8">
+        <div class="flex-shrink-0 md:ml-8">
           <button 
             id="open-submission-modal"
-            class="inline-flex items-center gap-1.5 text-sm font-normal text-gray-600 underline hover:bg-gray-100 hover:no-underline hover:text-gray-900 px-2 py-1 rounded transition-all cursor-pointer"
+            class="inline-flex items-center gap-1.5 text-sm font-normal text-gray-600 underline md:hover:bg-gray-100 md:hover:no-underline md:hover:text-gray-900 py-1 md:px-2 rounded transition-all cursor-pointer"
           >
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -456,7 +456,7 @@ const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companyS
     </div>
 
     <!-- Simplified Recruiters Grid -->
-    <div id="recruiters-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
       {recruiters.map(recruiter => (
         <div class="recruiter-card w-full"
           data-specialties={JSON.stringify(recruiter.specialties)}
