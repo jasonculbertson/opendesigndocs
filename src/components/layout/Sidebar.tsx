@@ -227,7 +227,9 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
               </h2>
               <ul className="space-y-[2px]">
                 {section.items.map(item => {
-                  const isActive = currentPath?.startsWith(item.href) ?? false;
+                  // Extract pathname from href for comparison (ignore query params)
+                  const itemPath = item.href.split('?')[0];
+                  const isActive = currentPath?.startsWith(itemPath) ?? false;
                   const Icon = item.icon;
                   return (
                     <li key={item.href}>

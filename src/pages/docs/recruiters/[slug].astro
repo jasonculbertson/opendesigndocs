@@ -1,6 +1,20 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
 
+// Check for access parameter
+const url = new URL(Astro.request.url);
+const accessKey = url.searchParams.get('access');
+const hasAccess = accessKey === 'recruit2024';
+const backToRecruitersUrl = hasAccess ? '/docs/recruiters?access=recruit2024' : '/docs/recruiters';
+
+// Function to create URL-friendly slugs
+function createSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+}
+
 // Define recruiters data - this should match the main recruiters page
 const recruitersData = [
   {
@@ -112,19 +126,18 @@ const recruitersData = [
 
 export async function getStaticPaths() {
   return recruitersData.map((recruiter) => ({
-    params: { id: recruiter.id.toString() },
+    params: { slug: createSlug(recruiter.name) },
     props: { recruiter },
   }));
 }
 
-// Get the ID from the URL params
-const { id } = Astro.params;
+// Get the slug from the URL params
+const { slug } = Astro.params;
 let recruiter = Astro.props.recruiter;
 
-// If no recruiter from props (dev mode), look it up by ID
-if (!recruiter && id) {
-  const recruiterId = parseInt(id);
-  recruiter = recruitersData.find(r => r.id === recruiterId);
+// If no recruiter from props (dev mode), look it up by slug
+if (!recruiter && slug) {
+  recruiter = recruitersData.find(r => createSlug(r.name) === slug);
 }
 
 // If still no recruiter found, redirect
@@ -141,7 +154,7 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
     <!-- Back Button -->
     <div class="mb-8">
       <a 
-        href="/docs/recruiters" 
+        href={backToRecruitersUrl}
         class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
       >
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

@@ -101,6 +101,14 @@ const uniqueLevels = Array.from(new Set(recruiters.flatMap(r => r.designerLevels
 const uniqueRegions = Array.from(new Set(recruiters.flatMap(r => r.regions))).sort();
 const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companySize))).sort();
 
+// Function to create URL-friendly slugs
+function createSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+}
+
 // Check for access parameter
 const url = new URL(Astro.request.url);
 const accessKey = url.searchParams.get('access');
@@ -493,7 +501,7 @@ const hasAccess = accessKey === 'recruit2024';
             imageUrl={recruiter.image}
             title={recruiter.name}
             subtitle={recruiter.agency}
-            primaryButtonUrl={`/docs/recruiters/${recruiter.id}`}
+            primaryButtonUrl={hasAccess ? `/docs/recruiters/${createSlug(recruiter.name)}?access=recruit2024` : `/docs/recruiters/${createSlug(recruiter.name)}`}
           />
         </div>
       ))}
