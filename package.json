@@ -21,6 +21,7 @@
     "@clerk/astro": "^2.8.2",
     "@clerk/clerk-react": "^5.31.8",
     "@clerk/themes": "^2.2.48",
+    "@emailjs/browser": "^4.4.1",
     "@fontsource/fraunces": "^5.2.5",
     "@fontsource/inter": "^5.0.17",
     "@heroicons/react": "^2.1.1",
