@@ -60,8 +60,8 @@ const RecruiterCard: React.FC<SimpleRecruiterCardProps> = ({
       </div>
 
       {/* Text Content */}
-      <div className="px-4 py-4 md:p-6">
-        <h3 className="text-base md:text-lg font-bold text-gray-900 mb-1 group-hover:text-gray-700 transition-colors">
+      <div className="px-4 py-3 md:px-6 md:py-5">
+        <h3 className="text-base md:text-lg font-medium text-gray-900 mb-0.5 group-hover:text-gray-700 transition-colors">
           {title}
         </h3>
         <p className="text-sm text-gray-600">

@@ -87,6 +87,12 @@ export default function AutoAuthGuard({
 
   // Main authentication logic
   useEffect(() => {
+    // Check for recruiter access parameter
+    const hasRecruiterAccess = typeof window !== 'undefined' && (() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('access') === 'recruit2024';
+    })();
+
     // Always log for debugging on live site
     console.log('🔒 AutoAuthGuard state:', { 
       enabled,
@@ -95,7 +101,8 @@ export default function AutoAuthGuard({
       isLoaded,
       userIntent: authState.userIntent,
       isGracePeriodActive: authState.isGracePeriodActive,
-      hasTriggeredAuth: authState.hasTriggeredAuth
+      hasTriggeredAuth: authState.hasTriggeredAuth,
+      hasRecruiterAccess
     });
 
     if (!enabled) {
@@ -117,6 +124,12 @@ export default function AutoAuthGuard({
     // Don't trigger on homepage
     if (currentPath === '/') {
       console.log('🔒 AutoAuthGuard skipping homepage');
+      return;
+    }
+
+    // Don't trigger on recruiter pages with valid access parameter
+    if (hasRecruiterAccess && currentPath.startsWith('/docs/recruiters')) {
+      console.log('🔒 AutoAuthGuard skipping recruiter pages with valid access parameter');
       return;
     }
 
