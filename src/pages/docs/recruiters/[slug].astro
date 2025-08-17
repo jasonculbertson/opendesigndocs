@@ -456,6 +456,108 @@ function closeEditModal() {
   }
 }
 
+// Update page content with new data after successful save
+function updatePageContent(formData) {
+  console.log('Updating page content with:', formData);
+  
+  // Update the page title
+  const pageTitleH1 = document.querySelector('h1');
+  if (pageTitleH1) {
+    pageTitleH1.textContent = formData.name;
+  }
+  
+  // Update the subtitle
+  const subtitle = document.querySelector('p.text-sm.text-gray-500');
+  if (subtitle && formData.agency) {
+    // Keep the title if it exists, just update agency
+    const titleText = recruiterData.title || 'Recruiter';
+    subtitle.textContent = `${titleText} at ${formData.agency}`;
+  }
+  
+  // Update About section
+  const aboutSection = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('About'));
+  if (aboutSection && formData.about) {
+    const aboutText = aboutSection.parentElement.querySelector('p');
+    if (aboutText) {
+      aboutText.textContent = formData.about;
+    }
+  }
+  
+  // Update Specialties section
+  if (formData.specialties) {
+    updatePillSection('Specialties', formData.specialties);
+  }
+  
+  // Update Philosophy section
+  const philosophySection = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Philosophy'));
+  if (philosophySection && formData.philosophy) {
+    const philosophyText = philosophySection.parentElement.querySelector('p');
+    if (philosophyText) {
+      philosophyText.textContent = `"${formData.philosophy}"`;
+    }
+  }
+  
+  // Update Approach section
+  const approachSection = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes('Approach'));
+  if (approachSection && formData.approach) {
+    const approachText = approachSection.parentElement.querySelector('p');
+    if (approachText) {
+      approachText.textContent = formData.approach;
+    }
+  }
+  
+  // Update Notable Clients section
+  if (formData.notable_clients) {
+    updatePillSection('Notable Clients', formData.notable_clients);
+  }
+  
+  // Update contact links
+  if (formData.linkedin) {
+    const linkedinLink = document.querySelector('a[href*="linkedin"]');
+    if (linkedinLink) {
+      linkedinLink.href = formData.linkedin;
+    }
+  }
+  
+  if (formData.website) {
+    const websiteLink = Array.from(document.querySelectorAll('a')).find(a => a.textContent.includes('Visit Website'));
+    if (websiteLink) {
+      websiteLink.href = formData.website;
+    }
+  }
+  
+  if (formData.email) {
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+    if (emailLink) {
+      emailLink.href = `mailto:${formData.email}`;
+    }
+  }
+}
+
+// Helper function to update pill sections (Specialties, Notable Clients)
+function updatePillSection(sectionName, data) {
+  const section = Array.from(document.querySelectorAll('h2')).find(h => h.textContent.includes(sectionName));
+  if (section && data) {
+    const pillContainer = section.parentElement.querySelector('div.flex.flex-wrap.gap-2');
+    if (pillContainer) {
+      // Clear existing pills
+      pillContainer.innerHTML = '';
+      
+      // Add new pills
+      const items = data.split(',');
+      items.forEach(item => {
+        const trimmedItem = item.trim();
+        if (trimmedItem) {
+          const pill = document.createElement('span');
+          pill.className = 'px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium';
+          pill.textContent = trimmedItem;
+          pillContainer.appendChild(pill);
+        }
+      });
+    }
+  }
+}
+
 // Handle form submission
 async function handleFormSubmit(event) {
   event.preventDefault();
@@ -518,16 +620,16 @@ async function handleFormSubmit(event) {
 
     console.log('Profile updated successfully:', result.data);
     
+    // Update the page content immediately with the new data
+    updatePageContent(formData);
+    
     // Close modal and show success
     closeEditModal();
     
-    // Show success message with more detail
-    alert(`Profile updated successfully in database!\n\nNOTE: Changes may not be visible immediately since the page uses static data for speed. The database has been updated with your changes.\n\nUpdated data: ${JSON.stringify(formData, null, 2)}`);
+    // Show success message
+    alert('Profile updated successfully! Your changes are now live.');
     
-    // Force reload after a short delay to ensure the alert is seen
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // No need to reload since we updated the content directly
     
   } catch (error) {
     console.error('Failed to update profile:', error);
