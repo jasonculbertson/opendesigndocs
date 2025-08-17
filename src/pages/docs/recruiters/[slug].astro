@@ -433,17 +433,20 @@ function openEditModal() {
   const modal = document.getElementById('editModal');
   if (!modal || !recruiterData) return;
 
-  // Populate form fields with current data
-  document.getElementById('edit-name').value = recruiterData.name || '';
-  document.getElementById('edit-agency').value = recruiterData.agency || '';
-  document.getElementById('edit-email').value = recruiterData.email || '';
-  document.getElementById('edit-website').value = recruiterData.website || '';
-  document.getElementById('edit-linkedin').value = recruiterData.linkedin || '';
-  document.getElementById('edit-about').value = recruiterData.about || '';
-  document.getElementById('edit-specialties').value = recruiterData.specialties || '';
-  document.getElementById('edit-philosophy').value = recruiterData.philosophy || '';
-  document.getElementById('edit-approach').value = recruiterData.approach || '';
-  document.getElementById('edit-notable-clients').value = recruiterData.notableClients || '';
+  // Use the current (potentially updated) recruiter data
+  const currentData = window.currentRecruiterData || recruiterData;
+
+  // Populate form fields with current data (including any updates)
+  document.getElementById('edit-name').value = currentData.name || '';
+  document.getElementById('edit-agency').value = currentData.agency || '';
+  document.getElementById('edit-email').value = currentData.email || '';
+  document.getElementById('edit-website').value = currentData.website || '';
+  document.getElementById('edit-linkedin').value = currentData.linkedin || '';
+  document.getElementById('edit-about').value = currentData.about || '';
+  document.getElementById('edit-specialties').value = currentData.specialties || '';
+  document.getElementById('edit-philosophy').value = currentData.philosophy || '';
+  document.getElementById('edit-approach').value = currentData.approach || '';
+  document.getElementById('edit-notable-clients').value = currentData.notableClients || '';
 
   // Show modal
   modal.style.display = 'flex';
@@ -558,6 +561,27 @@ function updatePillSection(sectionName, data) {
   }
 }
 
+// Update the stored recruiter data so the modal shows updated values next time
+function updateRecruiterData(formData) {
+  console.log('Updating stored recruiter data with:', formData);
+  
+  // Update the global recruiter data object
+  if (window.currentRecruiterData) {
+    window.currentRecruiterData.name = formData.name;
+    window.currentRecruiterData.agency = formData.agency;
+    window.currentRecruiterData.email = formData.email;
+    window.currentRecruiterData.website = formData.website;
+    window.currentRecruiterData.linkedin = formData.linkedin;
+    window.currentRecruiterData.about = formData.about;
+    window.currentRecruiterData.specialties = formData.specialties;
+    window.currentRecruiterData.philosophy = formData.philosophy;
+    window.currentRecruiterData.approach = formData.approach;
+    window.currentRecruiterData.notableClients = formData.notable_clients;
+    
+    console.log('Updated currentRecruiterData:', window.currentRecruiterData);
+  }
+}
+
 // Handle form submission
 async function handleFormSubmit(event) {
   event.preventDefault();
@@ -622,6 +646,9 @@ async function handleFormSubmit(event) {
     
     // Update the page content immediately with the new data
     updatePageContent(formData);
+    
+    // Update the stored recruiter data so modal shows updated values next time
+    updateRecruiterData(formData);
     
     // Close modal and show success
     closeEditModal();
