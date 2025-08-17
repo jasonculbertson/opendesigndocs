@@ -7,51 +7,102 @@ const accessKey = url.searchParams.get('access');
 const hasAccess = accessKey === 'recruit2024';
 const backToRecruitersUrl = hasAccess ? '/docs/recruiters?access=recruit2024' : '/docs/recruiters';
 
-// Get the slug from the URL params
-const { slug } = Astro.params;
-
-if (!slug) {
-  return Astro.redirect('/docs/recruiters');
+// Function to create URL-friendly slugs
+function createSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
 }
 
-// Fetch recruiter data from the API
-let recruiter = null;
-try {
-  const apiUrl = new URL('/api/recruiters.json', Astro.url);
-  apiUrl.searchParams.set('slug', slug);
-  
-  const response = await fetch(apiUrl);
-  const result = await response.json();
-  
-  if (response.ok && result.success) {
-    recruiter = result.data;
+// Define recruiters data - we'll use this for fast loading and reading, but save to database
+const recruitersData = [
+  {
+    id: 1,
+    name: "Laura Hunting",
+    agency: "Found By",
+    title: "Founding Partner",
+    image: "/images/laura.jpeg",
+    linkedin: "https://www.linkedin.com/in/laurahunting/",
+    website: "https://www.foundby.co/",
+    email: "laura@foundby.co",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace.",
+    specialties: "Design Leadership, Executive Search, UX Design, Product Design",
+    philosophy: "I focus on building diverse teams thoughtfully and effectively, understanding that great design teams are built on a foundation of varied perspectives and complementary skills.",
+    approach: "My approach involves deep discovery sessions with both clients and candidates to understand cultural fit, growth trajectory, and long-term career goals. I believe in transparent communication and building lasting relationships rather than just filling positions.",
+    notableClients: "Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, Squarespace",
+  },
+  {
+    id: 2,
+    name: "Garrett Fowler",
+    agency: "Offsite",
+    title: "Founder",
+    image: "/images/garrett.jpeg",
+    linkedin: "https://www.linkedin.com/in/garrettfowler/",
+    website: "https://www.off.site",
+    email: "garrett@off.site",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals.",
+    specialties: "Product Design, UX Design, Design Leadership",
+    philosophy: "I believe in going beyond traditional recruiting to build meaningful relationships within the creative community. Design talent deserves more than just job placement—they deserve career partnership.",
+    approach: "My approach centers on understanding both the creative and business sides of design roles. I focus on long-term career trajectory matching rather than quick placements, ensuring both candidates and companies find the right cultural and skill alignment.",
+    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
+  },
+  {
+    id: 4,
+    name: "Dirk Cleveland",
+    agency: "Fusion",
+    title: "Executive Recruiter",
+    image: "/images/dirk.jpeg",
+    linkedin: "https://www.linkedin.com/in/dirkcleveland/",
+    website: "https://www.fusiontalent.com",
+    email: "dirk@fusiontalent.com",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
+    specialties: "UX Design, Product Design, Design Systems, Design Leadership",
+    philosophy: "I believe in the power of referral-based recruiting and building long-term relationships. Great design leaders aren't just found—they're cultivated through trust and understanding of their career aspirations.",
+    approach: "My approach is exclusively referral-based, focusing on quality over quantity. I invest time in understanding both the cultural dynamics of client organizations and the career motivations of design leaders to ensure sustainable, long-term placements.",
+    notableClients: "Uber, Airbnb, Atlassian, and other leading SaaS, Enterprise Software, FinTech, and Healthcare Tech companies",
+  },
+  {
+    id: 6,
+    name: "Jared Tredly",
+    agency: "Bamboo X",
+    title: "Design Recruiter",
+    image: "/images/jared.jpeg",
+    linkedin: "https://www.linkedin.com/in/jaredtredly/",
+    website: "https://bamboo-x.com",
+    email: "jared@bamboocrowd.com",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors.",
+    specialties: "Product Design, UX Design, UI Design, Design Leadership",
+    philosophy: "I believe in supporting disruptive startups and innovative companies that are building the future. Great design talent thrives in environments where they can make meaningful impact and drive product innovation.",
+    approach: "I focus on understanding the unique challenges and opportunities that come with startup environments. My approach involves matching design talent not just with roles, but with companies where they can grow alongside revolutionary products and teams.",
+    notableClients: "200+ VC-backed startups across AI & Machine Learning, FinTech, HealthTech, B2B SaaS, and Consumer Tech sectors",
   }
-} catch (error) {
-  console.error('Error fetching recruiter:', error);
+];
+
+export async function getStaticPaths() {
+  return recruitersData.map((recruiter) => ({
+    params: { slug: createSlug(recruiter.name) },
+    props: { recruiter },
+  }));
+}
+
+// Get the slug from the URL params
+const { slug } = Astro.params;
+let recruiterData = Astro.props.recruiter;
+
+// If no recruiter from props (dev mode), look it up by slug
+if (!recruiterData && slug) {
+  recruiterData = recruitersData.find(r => createSlug(r.name) === slug);
 }
 
 // If still no recruiter found, redirect
-if (!recruiter) {
+if (!recruiterData) {
   return Astro.redirect('/docs/recruiters');
 }
-
-// Convert database column names to match the component expectations
-const recruiterData = {
-  id: recruiter.id,
-  name: recruiter.name,
-  agency: recruiter.agency,
-  title: recruiter.title,
-  image: recruiter.image,
-  linkedin: recruiter.linkedin,
-  website: recruiter.website,
-  email: recruiter.email,
-  loginEmail: recruiter.login_email,
-  about: recruiter.about,
-  specialties: recruiter.specialties,
-  philosophy: recruiter.philosophy,
-  approach: recruiter.approach,
-  notableClients: recruiter.notable_clients,
-};
 
 const title = `${recruiterData.name} - ${recruiterData.agency}`;
 const description = `Connect with ${recruiterData.name} from ${recruiterData.agency}. Specializing in ${recruiterData.specialties}.`;
