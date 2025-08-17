@@ -86,14 +86,14 @@ const recruitersData = [
     name: "MJ", // Keep this for URL slug generation
     displayName: "Monica (MJ) Jin", // Use this for display
     agency: "Offsite",
-    title: "Product Designer", // Based on "owning IC Product Design..."
+    title: "Talent Director",
     image: "/images/mj.jpeg",
     linkedin: "https://www.linkedin.com/in/monjin/",
     website: "https://www.off.site",
     email: "mj@off.site",
     loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
-    about: "Monica (MJ) Jin leads IC Product Design, Content Design, UX Research, and Design Ops at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise across multiple design disciplines, Monica helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.",
-    specialties: "Product Design, Content Design, UX Research, Design Ops",
+    about: "Monica (MJ) Jin is the Talent Director at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise in talent acquisition and team building across multiple design disciplines, Monica helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.",
+    specialties: "Design Talent Acquisition, Team Building, Creative Recruiting, Design Leadership",
     philosophy: "I believe in empowering design professionals across all disciplines to find their ideal career paths. Great design happens when talented individuals are matched with the right opportunities and teams.",
     approach: "My approach is holistic, considering not just design skills but also career aspirations, creative growth, and cultural fit. I work closely with both candidates and companies to ensure sustainable, long-term placements that benefit everyone involved.",
     notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
@@ -368,6 +368,17 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
               </div>
             </div>
 
+            <!-- Title -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Title</label>
+              <input
+                type="text"
+                id="edit-title"
+                placeholder="e.g., Talent Director, Founding Partner, Executive Recruiter"
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+              />
+            </div>
+
             <!-- Contact Information -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -601,6 +612,7 @@ function openEditModal() {
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
   document.getElementById('edit-agency').value = currentData.agency || '';
+  document.getElementById('edit-title').value = currentData.title || '';
   document.getElementById('edit-email').value = currentData.email || '';
   document.getElementById('edit-website').value = currentData.website || '';
   document.getElementById('edit-linkedin').value = currentData.linkedin || '';
@@ -665,8 +677,8 @@ function updatePageContent(formData) {
   // Update the subtitle
   const subtitle = document.querySelector('p.text-sm.text-gray-500');
   if (subtitle && formData.agency) {
-    // Keep the title if it exists, just update agency
-    const titleText = recruiterData.title || 'Recruiter';
+    // Use updated title if available, otherwise fall back to existing
+    const titleText = formData.title || recruiterData.title || 'Recruiter';
     subtitle.textContent = `${titleText} at ${formData.agency}`;
   }
   
@@ -765,6 +777,7 @@ function updateRecruiterData(formData) {
     window.currentRecruiterData.name = formData.name;
     window.displayName = formData.name;
     window.currentRecruiterData.agency = formData.agency;
+    window.currentRecruiterData.title = formData.title;
     window.currentRecruiterData.email = formData.email;
     window.currentRecruiterData.website = formData.website;
     window.currentRecruiterData.linkedin = formData.linkedin;
@@ -850,6 +863,7 @@ async function handleFormSubmit(event) {
       userEmail: 'jculbertson@gmail.com', // Admin email for testing
       name: document.getElementById('edit-name').value,
       agency: document.getElementById('edit-agency').value,
+      title: document.getElementById('edit-title').value,
       email: document.getElementById('edit-email').value,
       website: document.getElementById('edit-website').value,
       linkedin: document.getElementById('edit-linkedin').value,
