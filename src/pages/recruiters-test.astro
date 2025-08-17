@@ -1,0 +1,346 @@
+---
+// Simple test page without any auth or complex layout
+const recruiters = [
+  {
+    id: 1,
+    name: "Laura Hunting",
+    agency: "Found By",
+    image: "/images/laura.jpeg",
+    linkedin: "https://www.linkedin.com/in/laurahunting/",
+    website: "https://www.foundby.co/",
+    email: "laura@foundby.co",
+    loginEmail: "jason@opendesigndocs.com",
+    about: "Laura is a founding partner at Found By...",
+    specialties: "Design Leadership, Executive Search",
+    philosophy: "I focus on building diverse teams...",
+    approach: "My approach involves deep discovery...",
+    notableClients: "Airbnb, Zillow, Square...",
+  },
+  {
+    id: 2,
+    name: "Garrett Fowler", 
+    agency: "Offsite",
+    image: "/images/garrett.jpeg",
+    linkedin: "https://www.linkedin.com/in/garrettfowler/",
+    website: "https://www.off.site",
+    email: "garrett@off.site",
+    loginEmail: "garrett@off.site",
+    about: "Garrett is the Founder of Offsite...",
+    specialties: "Product Design, UX Design",
+    philosophy: "I believe in going beyond traditional recruiting...",
+    approach: "My approach centers on understanding...",
+    notableClients: "Various SaaS companies",
+  }
+];
+
+function createSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Recruiter Directory Test</h1>
+        
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {recruiters.map(recruiter => (
+                <div class="relative">
+                    <a 
+                        href={`/docs/recruiters/${createSlug(recruiter.name)}?access=recruit2024`}
+                        class="block bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer"
+                    >
+                        <!-- Image -->
+                        <div class="aspect-square bg-gray-50 relative">
+                            {recruiter.image ? (
+                                <img src={recruiter.image} alt={recruiter.name} class="w-full h-full object-cover" />
+                            ) : (
+                                <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                                    <span class="text-white font-bold text-4xl">
+                                        {recruiter.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase().slice(0, 2)}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="px-4 py-3 md:px-6 md:py-5">
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 mb-0.5">
+                                {recruiter.name}
+                            </h3>
+                            <p class="text-sm text-gray-600">
+                                {recruiter.agency}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            ))}
+        </div>
+        
+        <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+            <h2 class="font-semibold text-blue-900 mb-2">Test Instructions:</h2>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li>• Click any recruiter card to go to their profile page</li>
+                <li>• Edit buttons are now on individual profile pages, not the cards</li>
+                <li>• Your email (jculbertson@gmail.com) has admin access to edit all recruiters</li>
+                <li>• Test the full edit modal and form submission on profile pages</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col">
+            <!-- Header -->
+            <div class="flex items-start justify-between px-8 pt-6">
+                <h2 class="mb-0 text-xl md:text-[24px] font-semibold text-[#1a1f36] tracking-[-0.4px] pt-2">
+                    Edit Your Profile
+                </h2>
+                <button
+                    onclick="closeEditModal()"
+                    class="p-2 hover:bg-gray-100 transition -mt-2 -mr-4 md:-mt-2 md:-mr-2"
+                    aria-label="Close"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-8 flex-1 flex flex-col">
+                <div class="mb-6">
+                    <div class="border-b border-gray-200 w-full"></div>
+                </div>
+                
+                <form onsubmit="handleSubmit(event)" class="space-y-7">
+                    <!-- Basic Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-base font-semibold text-gray-900 mb-2">Name *</label>
+                            <input 
+                                type="text" 
+                                id="edit-name"
+                                required
+                                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-semibold text-gray-900 mb-2">Agency Name</label>
+                            <input 
+                                type="text" 
+                                id="edit-agency"
+                                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-base font-semibold text-gray-900 mb-2">Email *</label>
+                            <input 
+                                type="email" 
+                                id="edit-email"
+                                required
+                                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-semibold text-gray-900 mb-2">Website</label>
+                            <input 
+                                type="url" 
+                                id="edit-website"
+                                placeholder="https://"
+                                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">LinkedIn Profile *</label>
+                        <input 
+                            type="url" 
+                            id="edit-linkedin"
+                            required
+                            placeholder="https://linkedin.com/in/"
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                        />
+                    </div>
+
+                    <!-- About -->
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">About *</label>
+                        <textarea 
+                            id="edit-about"
+                            required
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                            rows="4"
+                            placeholder="Tell us about your background, experience, and what makes you unique..."
+                        ></textarea>
+                    </div>
+
+                    <!-- Specialties -->
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">Specialties</label>
+                        <textarea 
+                            id="edit-specialties"
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                            rows="3"
+                            placeholder="What design roles and areas do you specialize in? (Optional)"
+                        ></textarea>
+                    </div>
+
+                    <!-- Philosophy -->
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">Philosophy *</label>
+                        <textarea 
+                            id="edit-philosophy"
+                            required
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                            rows="3"
+                            placeholder="What's your recruiting philosophy and approach to talent matching?"
+                        ></textarea>
+                    </div>
+
+                    <!-- Approach -->
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">Approach *</label>
+                        <textarea 
+                            id="edit-approach"
+                            required
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                            rows="3"
+                            placeholder="Describe your process and methodology for finding and placing candidates..."
+                        ></textarea>
+                    </div>
+
+                    <!-- Notable Clients -->
+                    <div>
+                        <label class="block text-base font-semibold text-gray-900 mb-2">Notable Clients</label>
+                        <textarea 
+                            id="edit-notable-clients"
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                            rows="3"
+                            placeholder="Notable companies or clients you've worked with... (Optional)"
+                        ></textarea>
+                    </div>
+                </form>
+                
+                <!-- Button section -->
+                <div class="pt-6">
+                    <button
+                        onclick="handleSubmit(event)"
+                        class="font-semibold py-3 px-12 rounded-lg shadow-sm transition bg-black text-white hover:bg-gray-900"
+                    >
+                        Update Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRecruiter = null;
+        const adminEmail = "jculbertson@gmail.com";
+        
+        const recruiters = [
+            {
+                id: 1,
+                name: "Laura Hunting",
+                agency: "Found By",
+                email: "laura@foundby.co",
+                website: "https://www.foundby.co/",
+                linkedin: "https://www.linkedin.com/in/laurahunting/",
+                about: "Laura is a founding partner at Found By...",
+                specialties: "Design Leadership, Executive Search",
+                philosophy: "I focus on building diverse teams...",
+                approach: "My approach involves deep discovery...",
+                notableClients: "Airbnb, Zillow, Square..."
+            },
+            {
+                id: 2,
+                name: "Garrett Fowler", 
+                agency: "Offsite",
+                email: "garrett@off.site",
+                website: "https://www.off.site",
+                linkedin: "https://www.linkedin.com/in/garrettfowler/",
+                about: "Garrett is the Founder of Offsite...",
+                specialties: "Product Design, UX Design",
+                philosophy: "I believe in going beyond traditional recruiting...",
+                approach: "My approach centers on understanding...",
+                notableClients: "Various SaaS companies"
+            }
+        ];
+
+        function openEditModal(recruiterId) {
+            const recruiter = recruiters.find(r => r.id === recruiterId);
+            if (!recruiter) return;
+            
+            currentRecruiter = recruiter;
+            
+            // Populate form fields
+            document.getElementById('edit-name').value = recruiter.name || '';
+            document.getElementById('edit-agency').value = recruiter.agency || '';
+            document.getElementById('edit-email').value = recruiter.email || '';
+            document.getElementById('edit-website').value = recruiter.website || '';
+            document.getElementById('edit-linkedin').value = recruiter.linkedin || '';
+            document.getElementById('edit-about').value = recruiter.about || '';
+            document.getElementById('edit-specialties').value = recruiter.specialties || '';
+            document.getElementById('edit-philosophy').value = recruiter.philosophy || '';
+            document.getElementById('edit-approach').value = recruiter.approach || '';
+            document.getElementById('edit-notable-clients').value = recruiter.notableClients || '';
+            
+            // Show modal
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentRecruiter = null;
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('edit-name').value,
+                agency: document.getElementById('edit-agency').value,
+                email: document.getElementById('edit-email').value,
+                website: document.getElementById('edit-website').value,
+                linkedin: document.getElementById('edit-linkedin').value,
+                about: document.getElementById('edit-about').value,
+                specialties: document.getElementById('edit-specialties').value,
+                philosophy: document.getElementById('edit-philosophy').value,
+                approach: document.getElementById('edit-approach').value,
+                notableClients: document.getElementById('edit-notable-clients').value
+            };
+            
+            alert(`Profile updated for ${currentRecruiter?.name}!\n\nSubmitted data:\n${JSON.stringify(formData, null, 2)}\n\nIn production, this would:\n• Send an email to you for review\n• Update the recruiter database\n• Refresh the page with new data`);
+            
+            closeEditModal();
+        }
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeEditModal();
+            }
+        });
+        
+        // Close modal on background click
+        document.getElementById('editModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeEditModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 ---
 import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
-import RecruiterCard from '../../components/RecruiterCard.tsx';
+import RecruiterGridSimple from '../../components/RecruiterGridSimple.tsx';
 
 const title = "Recruiter Directory";
 const description = "Find specialized design recruiters to help build your team";
@@ -13,34 +13,30 @@ const recruiters = [
     name: "Laura Hunting",
     agency: "Found By",
     image: "/images/laura.jpeg",
-    specialties: ["Design Leadership", "Executive Search", "UX Design", "Product Design"],
-    regions: ["North America", "Global"],
-    companySize: ["Startup", "Mid-market", "Enterprise"],
-    designerLevels: ["Senior", "Executive", "Leadership"],
     linkedin: "https://www.linkedin.com/in/laurahunting/",
     website: "https://www.foundby.co/",
-    email: "contact@foundby.co",
-    bio: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace. Laura focuses on building diverse teams thoughtfully and effectively.",
-    experience: "10+ years",
-    placements: "500+",
-    industries: ["Technology", "E-commerce", "FinTech", "Consumer Products", "Enterprise Software"],
+    email: "laura@foundby.co",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace.",
+    specialties: "Design Leadership, Executive Search, UX Design, Product Design",
+    philosophy: "I focus on building diverse teams thoughtfully and effectively, understanding that great design teams are built on a foundation of varied perspectives and complementary skills.",
+    approach: "My approach involves deep discovery sessions with both clients and candidates to understand cultural fit, growth trajectory, and long-term career goals. I believe in transparent communication and building lasting relationships rather than just filling positions.",
+    notableClients: "Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, Squarespace",
   },
   {
     id: 2,
     name: "Garrett Fowler",
     agency: "Offsite",
     image: "/images/garrett.jpeg",
-    specialties: ["Product Design", "UX Design", "Design Leadership"],
-    regions: ["North America", "Remote"],
-    companySize: ["Startup", "Scale-up", "Enterprise"],
-    designerLevels: ["Mid-level", "Senior", "Lead", "Principal"],
     linkedin: "https://www.linkedin.com/in/garrettfowler/",
     website: "https://www.off.site",
     email: "garrett@off.site",
-    bio: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals. His approach goes beyond traditional recruiting to build meaningful relationships within the creative community.",
-    experience: "8+ years",
-    placements: "300+",
-    industries: ["SaaS", "FinTech", "E-commerce", "Enterprise Software", "Consumer Apps"],
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals.",
+    specialties: "Product Design, UX Design, Design Leadership",
+    philosophy: "I believe in going beyond traditional recruiting to build meaningful relationships within the creative community. Design talent deserves more than just job placement—they deserve career partnership.",
+    approach: "My approach centers on understanding both the creative and business sides of design roles. I focus on long-term career trajectory matching rather than quick placements, ensuring both candidates and companies find the right cultural and skill alignment.",
+    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
   },
 
   {
@@ -48,60 +44,35 @@ const recruiters = [
     name: "Dirk Cleveland",
     agency: "Fusion",
     image: "/images/dirk.jpeg",
-    specialties: ["UX Design", "Product Design", "Design Systems"],
-    regions: ["North America", "Europe"],
-    companySize: ["Mid-market", "Enterprise", "Scale-up"],
-    designerLevels: ["Mid-level", "Senior", "Lead", "Principal"],
     linkedin: "https://www.linkedin.com/in/dirkcleveland/",
     website: "https://www.fusiontalent.com",
     email: "dirk@fusiontalent.com",
-    bio: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
-    experience: "12+ years",
-    placements: "350+",
-    industries: ["SaaS", "Enterprise Software", "FinTech", "Healthcare Tech"],
-  },
-  {
-    id: 5,
-    name: "Dany Lennon",
-    agency: "The Creative Register Inc.",
-    image: "/images/dany.jpeg",
-    specialties: ["Creative Management", "Talent Representation", "Multimedia Storytelling"],
-    regions: ["Global"],
-    companySize: ["Startup", "Mid-market", "Enterprise"],
-    designerLevels: ["All Levels"],
-    linkedin: "https://www.linkedin.com/in/danylennon/",
-    website: "https://www.linkedin.com/company/the-creative-register-inc./",
-    email: "hello@danylennon.com",
-    bio: "Dany works at The Creative Register Inc., a creative management and representation company founded in 1987. The company specializes in promoting the representation of the finest creative talent available throughout the world, and negotiating their contracts and career prospects for alternative positioning within multimedia businesses across all platforms of storytelling.",
-    experience: "5+ years",
-    placements: "100+",
-    industries: ["Advertising", "Digital Marketing", "Creative Services"],
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
+    specialties: "UX Design, Product Design, Design Systems, Design Leadership",
+    philosophy: "I believe in the power of referral-based recruiting and building long-term relationships. Great design leaders aren't just found—they're cultivated through trust and understanding of their career aspirations.",
+    approach: "My approach is exclusively referral-based, focusing on quality over quantity. I invest time in understanding both the cultural dynamics of client organizations and the career motivations of design leaders to ensure sustainable, long-term placements.",
+    notableClients: "Uber, Airbnb, Atlassian, and other leading SaaS, Enterprise Software, FinTech, and Healthcare Tech companies",
   },
   {
     id: 6,
     name: "Jared Tredly",
     agency: "Bamboo X",
     image: "/images/jared.jpeg",
-    specialties: ["Product Design", "UX Design", "UI Design", "Design Leadership"],
-    regions: ["North America", "Global"],
-    companySize: ["Startup", "Scale-up", "Enterprise"],
-    designerLevels: ["Mid-level", "Senior", "Lead", "Principal"],
     linkedin: "https://www.linkedin.com/in/jaredtredly/",
     website: "https://bamboo-x.com",
-    email: "info@bamboo-x.com",
-    bio: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors, working with tier-1 VC firms and over 200 startups.",
-    experience: "6+ years",
-    placements: "200+",
-    industries: ["AI & Machine Learning", "FinTech", "HealthTech", "B2B SaaS", "Consumer Tech"],
+    email: "jared@bamboocrowd.com",
+    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    about: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors.",
+    specialties: "Product Design, UX Design, UI Design, Design Leadership",
+    philosophy: "I believe in supporting disruptive startups and innovative companies that are building the future. Great design talent thrives in environments where they can make meaningful impact and drive product innovation.",
+    approach: "I focus on understanding the unique challenges and opportunities that come with startup environments. My approach involves matching design talent not just with roles, but with companies where they can grow alongside revolutionary products and teams.",
+    notableClients: "200+ VC-backed startups across AI & Machine Learning, FinTech, HealthTech, B2B SaaS, and Consumer Tech sectors",
   },
 
 ];
 
-// Dynamically generate unique filter options from recruiter data
-const uniqueSpecialties = Array.from(new Set(recruiters.flatMap(r => r.specialties))).sort();
-const uniqueLevels = Array.from(new Set(recruiters.flatMap(r => r.designerLevels))).sort();
-const uniqueRegions = Array.from(new Set(recruiters.flatMap(r => r.regions))).sort();
-const uniqueCompanySizes = Array.from(new Set(recruiters.flatMap(r => r.companySize))).sort();
+// Note: Filtering has been simplified since recruiters now have text-based categories
 
 // Function to create URL-friendly slugs
 function createSlug(name: string): string {
@@ -130,7 +101,7 @@ const hasAccess = accessKey === 'recruit2024';
         <p class="mt-2 text-[15px] text-[#3c4257] mb-4 md:mb-6">
           Design recruiters personally vetted by me for exceptional results.
         </p>
-        {hasAccess && (
+        {false && hasAccess && (
           <div class="flex-shrink-0 md:ml-8">
             <button 
               id="open-submission-modal"
@@ -164,574 +135,25 @@ const hasAccess = accessKey === 'recruit2024';
       </div>
     ) : (
 
-    <!-- Filters Section -->
-    <style>
-    .filter-bar { 
-      display: flex; 
-      flex-wrap: nowrap; 
-      gap: 1rem; 
-      align-items: flex-start; 
-      margin-bottom: 2.5rem;
-      overflow-x: auto;
-      overflow-y: visible;
-    }
-    
-    .filter-pills-container {
-      display: flex;
-      gap: 0.75rem;
-      flex: 1;
-      align-items: flex-start;
-    }
-    
-    .filter-pill { 
-      position: relative;
-      display: flex; 
-      align-items: center; 
-      gap: 0.5rem; 
-      padding: 0.75rem 1rem; 
-      background: #ffffff; 
-      border: 1.5px solid #e5e7eb; 
-      border-radius: 2rem; 
-      cursor: pointer; 
-      transition: all 0.2s ease; 
-      font-size: 0.875rem; 
-      font-weight: 500; 
-      color: #374151; 
-      white-space: nowrap;
-      min-height: 44px;
-      outline: none;
-    }
-    
-    .filter-pill:hover {
-      border-color: #d1d5db;
-    }
-    
-    .filter-pill.open {
-      border-color: #111;
-      z-index: 1000;
-    }
-    
-    .filter-pill-content { 
-      display: flex; 
-      align-items: center; 
-      gap: 0.5rem; 
-      min-width: 0; 
-    }
-    
-    .filter-pill .arrow { 
-      margin-left: 0.2rem; 
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-      display: flex; 
-      align-items: center; 
-      opacity: 0.7;
-    }
-    
-    .filter-pill.open .arrow { 
-      transform: rotate(180deg); 
-      opacity: 1;
-    }
-    
-    .filter-count-badge { 
-      margin-left: 0.2rem; 
-      margin-right: 0rem;
-      background: #000 !important; 
-      color: #fff !important; 
-      border-radius: 9999px; 
-      font-size: 0.75rem; 
-      min-width: 1.25rem; 
-      height: 1.25rem; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 0 0.375rem; 
-      font-weight: 600;
-      animation: fadeIn 0.2s ease-out;
-    }
-    
-    .filter-pill.active .filter-count-badge {
-      background: #000000;
-    }
-    
-    .filter-dropdown { 
-      position: fixed; 
-      z-index: 9999; 
-      min-width: 280px; 
-      width: max-content; 
-      max-width: 400px;
-      background: #fff; 
-      border: 1px solid #e5e7eb; 
-      border-radius: 1rem; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-      padding: 0.75rem 0; 
-      display: none;
-    }
-    
-    .filter-pill.open .filter-dropdown { 
-      display: block;
-    }
-    
-    .filter-dropdown-option { 
-      padding: 0.75rem 1.5rem; 
-      cursor: pointer; 
-      transition: all 0.15s ease; 
-      display: flex; 
-      align-items: center; 
-      gap: 0.75rem; 
-      position: relative;
-      min-height: 44px;
-    }
-    
-    .filter-dropdown-option:hover {
-      background: #f9fafb;
-    }
-    
-    .filter-dropdown-option.selected {
-      background: #f3f4f6;
-      color: #374151;
-      font-weight: 600;
-    }
-    
-    .filter-dropdown-option-label { 
-      flex: 1;
-      padding-right: 1rem;
-    }
-    
-    .filter-dropdown-count { 
-      background: #f1f5f9;
-      color: #64748b;
-      border-radius: 0.5rem;
-      font-size: 0.875rem;
-      min-width: 2rem;
-      height: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 0.5rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-    }
-    
-    .filter-dropdown-option.selected .filter-dropdown-count {
-      background: #e5e7eb;
-      color: #374151;
-    }
-    
-    .filter-reset { 
-      color: #6b7280; 
-      text-decoration: underline; 
-      margin-left: 1.5rem; 
-      cursor: pointer; 
-      font-size: 0.875rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      transition: all 0.2s ease;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-    }
-    
-    .filter-reset:hover {
-      background: #f3f4f6;
-      color: #374151;
-      text-decoration: none;
-    }
-    
-    .filter-checkbox { 
-      accent-color: #000; 
-      width: 1.25rem; 
-      height: 1.25rem; 
-      border-radius: 0.25rem;
-      cursor: pointer;
-    }
-    
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-      .filter-bar {
-        gap: 0.75rem;
-        position: relative;
-      }
-      
-      .filter-pills-container {
-        gap: 0.625rem;
-      }
-      
-      .filter-pill {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        flex-shrink: 0;
-        white-space: nowrap;
-      }
-      
-      .filter-dropdown {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100vw;
-        max-width: 100vw;
-        height: 100vh;
-        border-radius: 0;
-        padding: 2rem 1rem 1rem;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        transform: translateY(100%);
-        box-shadow: none;
-        border: none;
-        overflow-y: auto;
-      }
-      
-      .filter-pill.open .filter-dropdown {
-        transform: translateY(0);
-      }
-      
-      .filter-dropdown::before {
-        content: '';
-        position: absolute;
-        top: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2rem;
-        height: 0.25rem;
-        background: #d1d5db;
-        border-radius: 9999px;
-      }
-      
-      .filter-dropdown-option {
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid #f3f4f6;
-      }
-      
-      .filter-dropdown-option:last-child {
-        border-bottom: none;
-      }
-      
-      .filter-reset {
-        margin-left: 0;
-        margin-top: 0.5rem;
-        justify-content: center;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .filter-bar {
-        gap: 0.5rem;
-      }
-      
-      .filter-pills-container {
-        gap: 0.375rem;
-      }
-      
-      .filter-pill {
-        padding: 0.625rem 0.75rem;
-        font-size: 0.8125rem;
-        flex-shrink: 0;
-      }
-    }
-    
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    
-    /* Focus styles for accessibility */
-    .filter-pill:focus {
-      outline: none;
-    }
-    
-    .filter-checkbox:focus {
-      outline: none;
-    }
-    </style>
-    <div class="filter-bar" id="filterBar" style="display: none">
-      <div class="filter-pills-container">
-        <div class="filter-pill" tabindex="0" data-filter="specialty">
-          <span class="filter-pill-content">
-            <span id="specialty-pill-label">Specialty</span>
-            <span class="filter-count-badge" id="specialty-count-badge" style="display:none">0</span>
-          </span>
-          <span class="arrow"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></span>
-          <div class="filter-dropdown">
-            {uniqueSpecialties.map(s => <label class="filter-dropdown-option"><input type="checkbox" class="filter-checkbox" value={s} data-filter="specialty" onchange="onFilterCheckboxChange(event)"><span class="filter-dropdown-option-label">{s}</span><span class="filter-dropdown-count" id={`count-specialty-${s.replace(/\W/g,'_')}`}>0</span></label>)}
-          </div>
-        </div>
-        <div class="filter-pill" tabindex="0" data-filter="level">
-          <span class="filter-pill-content">
-            <span id="level-pill-label">Level</span>
-            <span class="filter-count-badge" id="level-count-badge" style="display:none">0</span>
-          </span>
-          <span class="arrow"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></span>
-          <div class="filter-dropdown">
-            {uniqueLevels.map(l => <label class="filter-dropdown-option"><input type="checkbox" class="filter-checkbox" value={l} data-filter="level" onchange="onFilterCheckboxChange(event)"><span class="filter-dropdown-option-label">{l}</span><span class="filter-dropdown-count" id={`count-level-${l.replace(/\W/g,'_')}`}>0</span></label>)}
-          </div>
-        </div>
-        <div class="filter-pill" tabindex="0" data-filter="region">
-          <span class="filter-pill-content">
-            <span id="region-pill-label">Region</span>
-            <span class="filter-count-badge" id="region-count-badge" style="display:none">0</span>
-          </span>
-          <span class="arrow"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></span>
-          <div class="filter-dropdown">
-            {uniqueRegions.map(r => <label class="filter-dropdown-option"><input type="checkbox" class="filter-checkbox" value={r} data-filter="region" onchange="onFilterCheckboxChange(event)"><span class="filter-dropdown-option-label">{r}</span><span class="filter-dropdown-count" id={`count-region-${r.replace(/\W/g,'_')}`}>0</span></label>)}
-          </div>
-        </div>
-        <div class="filter-pill" tabindex="0" data-filter="companySize">
-          <span class="filter-pill-content">
-            <span id="companySize-pill-label">Company Size</span>
-            <span class="filter-count-badge" id="companySize-count-badge" style="display:none">0</span>
-          </span>
-          <span class="arrow"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></span>
-          <div class="filter-dropdown">
-            {uniqueCompanySizes.map(c => <label class="filter-dropdown-option"><input type="checkbox" class="filter-checkbox" value={c} data-filter="companySize" onchange="onFilterCheckboxChange(event)"><span class="filter-dropdown-option-label">{c}</span><span class="filter-dropdown-count" id={`count-companySize-${c.replace(/\W/g,'_')}`}>0</span></label>)}
-          </div>
-        </div>
-      </div>
-      <span class="filter-reset" id="resetFilters" style="display:none">Reset filters</span>
-    </div>
+    <!-- Filters have been removed with the new simplified data structure -->
 
-    <!-- Simplified Recruiters Grid -->
-    <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
-      {recruiters.map(recruiter => (
-        <div class="recruiter-card w-full"
-          data-specialties={JSON.stringify(recruiter.specialties)}
-          data-levels={JSON.stringify(recruiter.designerLevels)}
-          data-regions={JSON.stringify(recruiter.regions)}
-          data-company-size={JSON.stringify(recruiter.companySize)}
-        >
-          <RecruiterCard
-            imageUrl={recruiter.image}
-            title={recruiter.name}
-            subtitle={recruiter.agency}
-            primaryButtonUrl={hasAccess ? `/docs/recruiters/${createSlug(recruiter.name)}?access=recruit2024` : `/docs/recruiters/${createSlug(recruiter.name)}`}
-          />
-        </div>
-      ))}
-    </div>
+    <!-- Recruiters Grid -->
+    <RecruiterGridSimple 
+      recruiters={recruiters}
+      hasAccess={hasAccess}
+      createSlug={createSlug}
+      client:load
+    />
 
     )}
 
   </div>
 
-  <!-- Modal Component -->
+  <!-- Modal Components -->
   {hasAccess && (<RecruiterSubmissionModal client:load />)}
 </WideLayout>
 
-<script is:inline define:vars={{ recruiters, uniqueSpecialties, uniqueLevels, uniqueRegions, uniqueCompanySizes }}>
-// Make data globally available
-window.recruitersData = recruiters;
-window.uniqueSpecialtiesData = uniqueSpecialties;
-window.uniqueLevelsData = uniqueLevels;
-window.uniqueRegionsData = uniqueRegions;
-window.uniqueCompanySizesData = uniqueCompanySizes;
 
-const filterState = { specialty: [], level: [], region: [], companySize: [] };
-let openDropdown = null;
-
-function anyFilterActive() {
-  return filterState.specialty.length || filterState.level.length || filterState.region.length || filterState.companySize.length;
-}
-
-function showOrHideReset() {
-  document.getElementById('resetFilters').style.display = anyFilterActive() ? '' : 'none';
-}
-
-function closeDropdowns(e) {
-  // Only close if click is outside any filter-pill or dropdown
-  if (e && (e.target.closest('.filter-pill') || e.target.closest('.filter-dropdown'))) return;
-  document.querySelectorAll('.filter-pill').forEach(pill => pill.classList.remove('open'));
-  openDropdown = null;
-}
-
-function updatePillLabelsAndBadges() {
-  // Update pill labels with counts and active states
-  const filterLabels = {
-    specialty: 'Specialty',
-    level: 'Level', 
-    region: 'Region',
-    companySize: 'Company Size'
-  };
-  
-  Object.keys(filterLabels).forEach(filterType => {
-    const count = filterState[filterType].length;
-    const label = document.getElementById(`${filterType}-pill-label`);
-    const badge = document.getElementById(`${filterType}-count-badge`);
-    const pill = document.querySelector(`[data-filter="${filterType}"]`);
-    
-    if (count > 0) {
-      label.textContent = filterLabels[filterType];
-      badge.textContent = count;
-      badge.style.display = 'flex';
-      pill.classList.add('active');
-    } else {
-      label.textContent = filterLabels[filterType];
-      badge.style.display = 'none';
-      pill.classList.remove('active');
-    }
-  });
-  
-  showOrHideReset();
-}
-
-function getFilteredRecruiters() {
-  return window.recruitersData.filter(r => {
-    if (filterState.specialty.length && !filterState.specialty.some(s => r.specialties.includes(s))) return false;
-    if (filterState.level.length && !filterState.level.some(l => (r.designerLevels||[]).includes(l))) return false;
-    if (filterState.region.length && !filterState.region.some(reg => r.regions.includes(reg))) return false;
-    if (filterState.companySize.length && !filterState.companySize.some(c => r.companySize.includes(c))) return false;
-    return true;
-  });
-}
-
-function updateDropdownCounts() {
-  const filtered = getFilteredRecruiters();
-  window.uniqueSpecialtiesData.forEach((value, i) => {
-    const id = `count-specialty-${value.replace(/\W/g,'_')}`;
-    const count = filtered.filter(r => r.specialties.includes(value)).length;
-    const el = document.getElementById(id);
-    if (el) el.textContent = count.toString();
-  });
-  window.uniqueLevelsData.forEach((value, i) => {
-    const id = `count-level-${value.replace(/\W/g,'_')}`;
-    const count = filtered.filter(r => (r.designerLevels||[]).includes(value)).length;
-    const el = document.getElementById(id);
-    if (el) el.textContent = count.toString();
-  });
-  window.uniqueRegionsData.forEach((value, i) => {
-    const id = `count-region-${value.replace(/\W/g,'_')}`;
-    const count = filtered.filter(r => r.regions.includes(value)).length;
-    const el = document.getElementById(id);
-    if (el) el.textContent = count.toString();
-  });
-  window.uniqueCompanySizesData.forEach((value, i) => {
-    const id = `count-companySize-${value.replace(/\W/g,'_')}`;
-    const count = filtered.filter(r => r.companySize.includes(value)).length;
-    const el = document.getElementById(id);
-    if (el) el.textContent = count.toString();
-  });
-}
-
-function filterRecruiters() {
-  document.querySelectorAll('.recruiter-card').forEach(card => {
-    const specialties = JSON.parse(card.dataset.specialties || '[]');
-    const levels = JSON.parse(card.dataset.levels || '[]');
-    const regions = JSON.parse(card.dataset.regions || '[]');
-    const companySizes = JSON.parse(card.dataset.companySize || '[]');
-    let show = true;
-    if (filterState.specialty.length && !filterState.specialty.some(s => specialties.includes(s))) show = false;
-    if (filterState.level.length && !filterState.level.some(l => levels.includes(l))) show = false;
-    if (filterState.region.length && !filterState.region.some(r => regions.includes(r))) show = false;
-    if (filterState.companySize.length && !filterState.companySize.some(c => companySizes.includes(c))) show = false;
-    card.style.display = show ? '' : 'none';
-  });
-  updatePillLabelsAndBadges();
-  updateDropdownCounts();
-}
-
-function updateDropdownSelectedStates() {
-  // Update selected states for all dropdown options
-  document.querySelectorAll('.filter-dropdown-option').forEach(option => {
-    const checkbox = option.querySelector('.filter-checkbox');
-    if (checkbox && checkbox.checked) {
-      option.classList.add('selected');
-    } else {
-      option.classList.remove('selected');
-    }
-  });
-}
-
-// Make this function globally available
-window.onFilterCheckboxChange = function(e) {
-  e.stopPropagation();
-  const filter = e.target.getAttribute('data-filter');
-  const value = e.target.value;
-  
-  if (e.target.checked) {
-    if (!filterState[filter].includes(value)) filterState[filter].push(value);
-  } else {
-    filterState[filter] = filterState[filter].filter(v => v !== value);
-  }
-  
-  // Update visual states
-  updateDropdownSelectedStates();
-  filterRecruiters();
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Add click listeners to filter pills
-  document.querySelectorAll('.filter-pill').forEach(pill => {
-    pill.addEventListener('click', function(e) {
-      // Only open/close if not clicking a checkbox
-      if (e.target.tagName === 'INPUT') {
-        return;
-      }
-      e.stopPropagation();
-      
-      // Close other dropdowns
-      document.querySelectorAll('.filter-pill').forEach(otherPill => {
-        if (otherPill !== pill) {
-          otherPill.classList.remove('open');
-        }
-      });
-      
-      // Toggle current dropdown
-      const isOpen = pill.classList.contains('open');
-      if (isOpen) {
-        pill.classList.remove('open');
-      } else {
-        // Calculate position for fixed dropdown
-        const dropdown = pill.querySelector('.filter-dropdown');
-        const rect = pill.getBoundingClientRect();
-        dropdown.style.top = (rect.bottom + 8) + 'px';
-        dropdown.style.left = rect.left + 'px';
-        
-        pill.classList.add('open');
-      }
-    });
-    
-    // Add keyboard support
-    pill.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        pill.click();
-      }
-    });
-    
-    // Prevent dropdown from closing when clicking inside dropdown
-    const dropdown = pill.querySelector('.filter-dropdown');
-    if (dropdown) {
-      dropdown.addEventListener('click', function(ev) {
-        ev.stopPropagation();
-      });
-    }
-  });
-  
-  // Reset filters functionality
-  const resetButton = document.getElementById('resetFilters');
-  if (resetButton) {
-    resetButton.addEventListener('click', () => {
-      filterState.specialty = [];
-      filterState.level = [];
-      filterState.region = [];
-      filterState.companySize = [];
-      document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-      updateDropdownSelectedStates();
-      filterRecruiters();
-    });
-  }
-  
-  // Close dropdowns on outside click
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.filter-pill')) {
-      closeDropdowns();
-    }
-  });
-  
-  // Initialize
-  updateDropdownSelectedStates();
-  filterRecruiters();
-});
-</script>
 
 <script>
   // Modal functionality

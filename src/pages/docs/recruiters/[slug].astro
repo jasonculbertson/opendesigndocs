@@ -1,5 +1,6 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
+import RecruiterEditModalWrapper from '../../../components/ui/RecruiterEditModalWrapper.tsx';
 
 // Check for access parameter
 const url = new URL(Astro.request.url);
@@ -7,137 +8,27 @@ const accessKey = url.searchParams.get('access');
 const hasAccess = accessKey === 'recruit2024';
 const backToRecruitersUrl = hasAccess ? '/docs/recruiters?access=recruit2024' : '/docs/recruiters';
 
-// Function to create URL-friendly slugs
-function createSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
-}
-
-// Define recruiters data - this should match the main recruiters page
-const recruitersData = [
-  {
-    id: 1,
-    name: "Laura Hunting",
-    agency: "Found By",
-    title: "Founding Partner",
-    image: "/images/laura.jpeg",
-    specialties: ["Design Leadership", "Executive Search", "UX Design", "Product Design"],
-    linkedin: "https://www.linkedin.com/in/laurahunting/",
-    website: "https://www.foundby.co/",
-    email: "contact@foundby.co",
-    bio: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace. Laura focuses on building diverse teams thoughtfully and effectively for companies ranging from seed stage to Fortune 500.",
-    philosophy: "Talent is the foundation of a company's culture and success. A strong design team will change your business for the better.",
-    approach: ["Partnership-focused collaboration", "Quality over quantity placements", "Deep understanding of design community", "Transparent communication throughout process"],
-    notableClients: ["Airbnb", "Zillow", "Square", "Yahoo", "Nike", "Calendly", "GoodRx", "Pinterest", "Duolingo", "Squarespace", "Nextdoor", "Hinge", "Monarch"],
-
-    socialMedia: {
-      linkedin: "/company/found-by-inc",
-      instagram: "@foundby_co", 
-      twitter: "@foundby_co"
-    }
-  },
-  {
-    id: 2,
-    name: "Garrett Fowler",
-    agency: "Offsite",
-    title: "Founder",
-    image: "/images/garrett.jpeg",
-    specialties: ["Product Design", "UX Design", "Design Leadership"],
-    linkedin: "https://www.linkedin.com/in/garrettfowler/",
-    website: "https://www.off.site",
-    email: "garrett@off.site",
-    bio: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals. His approach goes beyond traditional recruiting to build meaningful relationships within the creative community.",
-    philosophy: "I believe that great design talent is the cornerstone of successful products. My role is to find not just skilled designers, but creative problem-solvers who can drive meaningful impact.",
-    approach: "I take time to understand both the technical requirements and team dynamics before making introductions. Every placement should be a win-win for both designer and company.",
-
-    socialMedia: {
-      linkedin: "/in/garrettfowler",
-      twitter: "@garrettfowler", 
-      website: "off.site"
-    }
-  },
-  {
-    id: 4,
-    name: "Dirk Cleveland",
-    agency: "Fusion",
-    title: "Executive Recruiter",
-    image: "/images/dirk.jpeg",
-    specialties: ["UX Design", "Product Design", "Design Systems"],
-
-    linkedin: "https://www.linkedin.com/in/dirkcleveland/",
-    website: "https://www.fusiontalent.com",
-    email: "dirk@fusiontalent.com",
-    bio: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
-    experience: "12+ years",
-    placements: "350+",
-    industries: ["SaaS", "Enterprise Software", "FinTech", "Healthcare Tech"],
-    philosophy: "Success in design recruiting comes from understanding both the craft and the person. Every designer has a unique story and career trajectory that deserves thoughtful consideration.",
-    approach: "I take time to understand each designer's career goals, work style, and values before making introductions. This ensures placements that lead to long-term satisfaction and growth.",
-    notableClients: ["Uber", "Airbnb", "Atlassian", "Benchling", "Cohere", "Confluent", "Datadog", "Grammarly", "HubSpot", "Ironclad", "Okta", "Webflow", "Xero"],
-
-    socialMedia: {
-      linkedin: "/in/dirkcleveland",
-      twitter: "@dirkcleveland", 
-      website: "fusiontalent.com"
-    }
-  },
-  {
-    id: 5,
-    name: "Dany Lennon",
-    agency: "The Creative Register Inc.",
-    title: "Talent Representative",
-    image: "/images/dany.jpeg",
-    specialties: ["Creative Management", "Talent Representation", "Multimedia Storytelling"],
-    linkedin: "https://www.linkedin.com/in/danylennon/",
-    website: "https://www.linkedin.com/company/the-creative-register-inc./",
-    email: "hello@danylennon.com",
-    bio: "Dany works at The Creative Register Inc., a creative management and representation company founded in 1987. The company specializes in promoting the representation of the finest creative talent available throughout the world, and negotiating their contracts and career prospects for alternative positioning within multimedia businesses across all platforms of storytelling.",
-    philosophy: "Great creative talent deserves exceptional representation. We focus on positioning artists and creators for meaningful career advancement across all media disciplines.",
-    approach: "I take a comprehensive approach to creative talent management, understanding both the artistic vision and business opportunities to create sustainable career paths for our represented talent.",
-
-    socialMedia: {
-      linkedin: "/in/danylennon",
-      company: "/company/the-creative-register-inc"
-    }
-  },
-  {
-    id: 6,
-    name: "Jared Tredly",
-    agency: "Bamboo X",
-    title: "Design Recruiter",
-    image: "/images/jared.jpeg",
-    specialties: ["Product Design", "UX Design", "UI Design", "Design Leadership"],
-    linkedin: "https://www.linkedin.com/in/jaredtredly/",
-    website: "https://bamboo-x.com",
-    email: "info@bamboo-x.com",
-    bio: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors, working with tier-1 VC firms and over 200 startups.",
-    philosophy: "Design talent is the creative force behind breakthrough products. We focus on connecting visionary designers with startups that are building the future.",
-    approach: ["Startup-focused recruitment", "Cross-functional collaboration", "Innovation-driven matching", "Long-term career partnerships"],
-    notableClients: ["AI Startups", "FinTech Companies", "HealthTech Ventures", "B2B SaaS Platforms", "Consumer Tech Brands"],
-
-    socialMedia: {
-      linkedin: "/in/jaredtredly",
-      company: "/company/bamboo-x"
-    }
-  }
-];
-
-export async function getStaticPaths() {
-  return recruitersData.map((recruiter) => ({
-    params: { slug: createSlug(recruiter.name) },
-    props: { recruiter },
-  }));
-}
-
 // Get the slug from the URL params
 const { slug } = Astro.params;
-let recruiter = Astro.props.recruiter;
 
-// If no recruiter from props (dev mode), look it up by slug
-if (!recruiter && slug) {
-  recruiter = recruitersData.find(r => createSlug(r.name) === slug);
+if (!slug) {
+  return Astro.redirect('/docs/recruiters');
+}
+
+// Fetch recruiter data from the API
+let recruiter = null;
+try {
+  const apiUrl = new URL('/api/recruiters.json', Astro.url);
+  apiUrl.searchParams.set('slug', slug);
+  
+  const response = await fetch(apiUrl);
+  const result = await response.json();
+  
+  if (response.ok && result.success) {
+    recruiter = result.data;
+  }
+} catch (error) {
+  console.error('Error fetching recruiter:', error);
 }
 
 // If still no recruiter found, redirect
@@ -145,8 +36,26 @@ if (!recruiter) {
   return Astro.redirect('/docs/recruiters');
 }
 
-const title = `${recruiter!.name} - ${recruiter!.agency}`;
-const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. Specializing in ${recruiter!.specialties.join(', ')}.`;
+// Convert database column names to match the component expectations
+const recruiterData = {
+  id: recruiter.id,
+  name: recruiter.name,
+  agency: recruiter.agency,
+  title: recruiter.title,
+  image: recruiter.image,
+  linkedin: recruiter.linkedin,
+  website: recruiter.website,
+  email: recruiter.email,
+  loginEmail: recruiter.login_email,
+  about: recruiter.about,
+  specialties: recruiter.specialties,
+  philosophy: recruiter.philosophy,
+  approach: recruiter.approach,
+  notableClients: recruiter.notable_clients,
+};
+
+const title = `${recruiterData.name} - ${recruiterData.agency}`;
+const description = `Connect with ${recruiterData.name} from ${recruiterData.agency}. Specializing in ${recruiterData.specialties}.`;
 ---
 
 <WideLayout title={title} description={description}>
@@ -172,16 +81,30 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
           <!-- Profile Image -->
           <div class="flex justify-center mb-6">
             <img
-              src={recruiter.image}
-              alt={`${recruiter.name} profile`}
+              src={recruiterData.image}
+              alt={`${recruiterData.name} profile`}
               class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
             />
           </div>
           
           <!-- Name & Agency -->
           <div class="text-center mb-6">
-            <h1 class="text-xl font-bold text-gray-900 mb-2">{recruiter.name}</h1>
-            <p class="text-sm text-gray-500 mb-4">{recruiter.title} at {recruiter.agency}</p>
+            <h1 class="text-xl font-bold text-gray-900 mb-2">{recruiterData.name}</h1>
+            <p class="text-sm text-gray-500 mb-4">{recruiterData.title} at {recruiterData.agency}</p>
+            
+            <!-- Edit Button - Only visible to authorized users -->
+            {hasAccess && (
+              <button 
+                id="edit-profile-btn"
+                data-recruiter-id={recruiterData.id}
+                class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit Profile
+              </button>
+            )}
           </div>
 
 
@@ -189,7 +112,7 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
           <!-- Contact Buttons -->
           <div class="space-y-3">
             <a
-              href={recruiter.linkedin}
+              href={recruiterData.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
@@ -200,9 +123,9 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
               </svg>
               Connect on LinkedIn
             </a>
-            {recruiter.website && (
+            {recruiterData.website && (
               <a
-                href={recruiter.website}
+                href={recruiterData.website}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
@@ -211,9 +134,9 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
                 Visit Website
               </a>
             )}
-            {recruiter.email && (
+            {recruiterData.email && (
               <a
-                href={`mailto:${recruiter.email}`}
+                href={`mailto:${recruiterData.email}`}
                 class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
                 style="background-color: #f9fafb"
               >
@@ -226,66 +149,57 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
 
       <!-- Right Column - Details -->
       <div class="lg:col-span-5">
-        <!-- Bio -->
+        <!-- About -->
         <div class="mb-8">
           <h2 class="text-xl font-semibold mt-8 mb-4">About</h2>
-          <p class="text-[15px]">{recruiter.bio}</p>
+          <p class="text-[15px]">{recruiterData.about}</p>
         </div>
 
-        <hr class="border-gray-200 mb-8" />
+        {recruiterData.specialties && (
+          <>
+            <hr class="border-gray-200 mb-8" />
+            <div class="mb-8">
+              <h2 class="text-xl font-semibold mt-8 mb-4">Specialties</h2>
+              <div class="flex flex-wrap gap-2">
+                {recruiterData.specialties.split(',').map(specialty => (
+                  <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    {specialty.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
-        <!-- Specialties -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold mt-8 mb-4">Specialties</h2>
-          <div class="flex flex-wrap gap-2">
-            {recruiter.specialties.map(specialty => (
-              <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                {specialty}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {recruiter.philosophy && (
+        {recruiterData.philosophy && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Philosophy</h2>
-              <p class="text-[15px] italic">"{recruiter.philosophy}"</p>
+              <p class="text-[15px] italic">"{recruiterData.philosophy}"</p>
             </div>
           </>
         )}
 
-        {recruiter.approach && (
+        {recruiterData.approach && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Approach</h2>
-              {Array.isArray(recruiter.approach) ? (
-                <ul class="text-[15px] space-y-2">
-                  {recruiter.approach.map(item => (
-                    <li class="flex items-start">
-                      <span class="mr-2 text-gray-400">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p class="text-[15px]">{recruiter.approach}</p>
-              )}
+              <p class="text-[15px]">{recruiterData.approach}</p>
             </div>
           </>
         )}
 
-        {recruiter.notableClients && (
+        {recruiterData.notableClients && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Notable Clients</h2>
               <div class="flex flex-wrap gap-2">
-                {recruiter.notableClients.map(client => (
+                {recruiterData.notableClients.split(',').map(client => (
                   <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                    {client}
+                    {client.trim()}
                   </span>
                 ))}
               </div>
@@ -296,4 +210,50 @@ const description = `Connect with ${recruiter!.name} from ${recruiter!.agency}. 
       </div>
     </div>
   </div>
-</WideLayout> 
+
+  <!-- Edit Modal Component -->
+  {hasAccess && (<RecruiterEditModalWrapper client:load />)}
+</WideLayout>
+
+<script define:vars={{ recruiterData, hasAccess }}>
+// Make recruiter data globally available for the edit modal
+window.currentRecruiterData = recruiterData;
+window.hasAccess = hasAccess;
+
+// Admin emails that can edit recruiters
+const adminEmails = ["jculbertson@gmail.com", "jason@opendesigndocs.com"];
+
+document.addEventListener('DOMContentLoaded', function() {
+  const editBtn = document.getElementById('edit-profile-btn');
+  
+  console.log('Edit button found:', editBtn);
+  console.log('Has access:', hasAccess);
+  console.log('Recruiter data:', recruiterData);
+  
+  if (editBtn && hasAccess) {
+    console.log('Adding click listener to edit button');
+    editBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      console.log('Edit button clicked! Dispatching event...');
+      
+      // Dispatch event to open the edit modal
+      const event = new CustomEvent('openRecruiterEditModal', { 
+        detail: { recruiter: recruiterData },
+        bubbles: true
+      });
+      
+      console.log('Dispatching event:', event);
+      document.dispatchEvent(event);
+    });
+  } else {
+    console.log('Edit button not found or no access');
+  }
+  
+  // Debug: Listen for the custom event
+  document.addEventListener('openRecruiterEditModal', function(event) {
+    console.log('Event received on document:', event.detail?.recruiter?.name);
+  });
+});
+</script>
