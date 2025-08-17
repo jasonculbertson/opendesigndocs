@@ -1,6 +1,5 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
-import RecruiterEditModalWrapper from '../../../components/ui/RecruiterEditModalWrapper.tsx';
 
 // Check for access parameter
 const url = new URL(Astro.request.url);
@@ -211,49 +210,302 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
     </div>
   </div>
 
-  <!-- Edit Modal Component -->
-  {hasAccess && (<RecruiterEditModalWrapper client:load />)}
+  <!-- Edit Modal - Pure HTML/JS Implementation -->
+  {hasAccess && (
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] items-center justify-center p-4" style="display: none;">
+      <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col">
+        <!-- Header -->
+        <div class="flex items-start justify-between px-8 pt-6">
+          <h2 class="mb-0 text-xl md:text-[24px] font-semibold text-[#1a1f36] tracking-[-0.4px] pt-2">
+            Edit Your Profile
+          </h2>
+          <button
+            onclick="closeEditModal()"
+            class="p-2 hover:bg-gray-100 transition -mt-2 -mr-4 md:-mt-2 md:-mr-2"
+            aria-label="Close"
+            type="button"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Form Content -->
+        <div class="px-8 pb-8">
+          <form id="editForm" class="space-y-7">
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Name *</label>
+                <input
+                  type="text"
+                  id="edit-name"
+                  required
+                  class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                />
+              </div>
+              <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Agency Name</label>
+                <input
+                  type="text"
+                  id="edit-agency"
+                  class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                />
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Email *</label>
+                <input
+                  type="email"
+                  id="edit-email"
+                  required
+                  class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                />
+              </div>
+              <div>
+                <label class="block text-base font-semibold text-gray-900 mb-2">Website</label>
+                <input
+                  type="url"
+                  id="edit-website"
+                  placeholder="https://"
+                  class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">LinkedIn Profile *</label>
+              <input
+                type="url"
+                id="edit-linkedin"
+                required
+                placeholder="https://linkedin.com/in/"
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base"
+              />
+            </div>
+
+            <!-- About -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">About *</label>
+              <textarea
+                id="edit-about"
+                required
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                rows="4"
+                placeholder="Tell us about your background, experience, and what makes you unique..."
+              ></textarea>
+            </div>
+
+            <!-- Specialties -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Specialties</label>
+              <textarea
+                id="edit-specialties"
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                rows="2"
+                placeholder="Design Leadership, UX Design, Product Design... (Optional)"
+              ></textarea>
+            </div>
+
+            <!-- Philosophy -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Philosophy *</label>
+              <textarea
+                id="edit-philosophy"
+                required
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                rows="3"
+                placeholder="Share your core beliefs about recruiting and talent acquisition..."
+              ></textarea>
+            </div>
+
+            <!-- Approach -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Approach *</label>
+              <textarea
+                id="edit-approach"
+                required
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                rows="3"
+                placeholder="Describe your process and methodology for finding and placing candidates..."
+              ></textarea>
+            </div>
+
+            <!-- Notable Clients -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Notable Clients</label>
+              <textarea
+                id="edit-notable-clients"
+                class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black text-base resize-none"
+                rows="3"
+                placeholder="Notable companies or clients you've worked with... (Optional)"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6">
+              <button
+                type="submit"
+                id="submit-btn"
+                class="font-semibold py-3 px-12 rounded-lg shadow-sm transition bg-black text-white hover:bg-gray-900"
+              >
+                Update Profile
+              </button>
+            </div>
+          </form>
+
+          <!-- Error/Success Messages -->
+          <div id="error-message" class="mt-4 hidden">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p class="text-sm text-red-600" id="error-text"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
 </WideLayout>
 
 <script define:vars={{ recruiterData, hasAccess }}>
-// Make recruiter data globally available for the edit modal
+// Make recruiter data globally available
 window.currentRecruiterData = recruiterData;
 window.hasAccess = hasAccess;
 
-// Admin emails that can edit recruiters
-const adminEmails = ["jculbertson@gmail.com", "jason@opendesigndocs.com"];
+// Modal functions
+function openEditModal() {
+  const modal = document.getElementById('editModal');
+  if (!modal || !recruiterData) return;
 
+  // Populate form fields with current data
+  document.getElementById('edit-name').value = recruiterData.name || '';
+  document.getElementById('edit-agency').value = recruiterData.agency || '';
+  document.getElementById('edit-email').value = recruiterData.email || '';
+  document.getElementById('edit-website').value = recruiterData.website || '';
+  document.getElementById('edit-linkedin').value = recruiterData.linkedin || '';
+  document.getElementById('edit-about').value = recruiterData.about || '';
+  document.getElementById('edit-specialties').value = recruiterData.specialties || '';
+  document.getElementById('edit-philosophy').value = recruiterData.philosophy || '';
+  document.getElementById('edit-approach').value = recruiterData.approach || '';
+  document.getElementById('edit-notable-clients').value = recruiterData.notableClients || '';
+
+  // Show modal
+  modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+  const modal = document.getElementById('editModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+// Handle form submission
+async function handleFormSubmit(event) {
+  event.preventDefault();
+  
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMessage = document.getElementById('error-message');
+  const errorText = document.getElementById('error-text');
+  
+  // Show loading state
+  submitBtn.textContent = 'Updating...';
+  submitBtn.disabled = true;
+  errorMessage.classList.add('hidden');
+  
+  try {
+    // Collect form data
+    const formData = {
+      id: recruiterData.id,
+      userEmail: 'jculbertson@gmail.com', // Admin email for testing
+      name: document.getElementById('edit-name').value,
+      agency: document.getElementById('edit-agency').value,
+      email: document.getElementById('edit-email').value,
+      website: document.getElementById('edit-website').value,
+      linkedin: document.getElementById('edit-linkedin').value,
+      about: document.getElementById('edit-about').value,
+      specialties: document.getElementById('edit-specialties').value,
+      philosophy: document.getElementById('edit-philosophy').value,
+      approach: document.getElementById('edit-approach').value,
+      notable_clients: document.getElementById('edit-notable-clients').value
+    };
+
+    console.log('Submitting form data:', formData);
+
+    // Call the API
+    const response = await fetch('/api/recruiters.json', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to update profile');
+    }
+
+    console.log('Profile updated successfully:', result.data);
+    
+    // Show success and refresh
+    alert('Profile updated successfully! The page will refresh to show your changes.');
+    window.location.reload();
+    
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    errorText.textContent = error.message || 'Failed to update profile. Please try again.';
+    errorMessage.classList.remove('hidden');
+  } finally {
+    // Reset button state
+    submitBtn.textContent = 'Update Profile';
+    submitBtn.disabled = false;
+  }
+}
+
+// Set up event listeners
 document.addEventListener('DOMContentLoaded', function() {
   const editBtn = document.getElementById('edit-profile-btn');
+  const editForm = document.getElementById('editForm');
+  const modal = document.getElementById('editModal');
   
   console.log('Edit button found:', editBtn);
   console.log('Has access:', hasAccess);
   console.log('Recruiter data:', recruiterData);
   
+  // Edit button click
   if (editBtn && hasAccess) {
-    console.log('Adding click listener to edit button');
     editBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      
-      console.log('Edit button clicked! Dispatching event...');
-      
-      // Dispatch event to open the edit modal
-      const event = new CustomEvent('openRecruiterEditModal', { 
-        detail: { recruiter: recruiterData },
-        bubbles: true
-      });
-      
-      console.log('Dispatching event:', event);
-      document.dispatchEvent(event);
+      console.log('Edit button clicked! Opening modal...');
+      openEditModal();
     });
-  } else {
-    console.log('Edit button not found or no access');
   }
   
-  // Debug: Listen for the custom event
-  document.addEventListener('openRecruiterEditModal', function(event) {
-    console.log('Event received on document:', event.detail?.recruiter?.name);
+  // Form submission
+  if (editForm) {
+    editForm.addEventListener('submit', handleFormSubmit);
+  }
+  
+  // Close modal when clicking outside
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeEditModal();
+      }
+    });
+  }
+  
+  // Close modal on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeEditModal();
+    }
   });
 });
 </script>
