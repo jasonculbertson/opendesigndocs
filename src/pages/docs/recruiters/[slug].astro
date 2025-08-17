@@ -495,10 +495,23 @@ async function handleFormSubmit(event) {
       body: JSON.stringify(formData)
     });
 
-    const result = await response.json();
+    console.log('API Response status:', response.status);
+    console.log('API Response headers:', response.headers);
+
+    let result;
+    try {
+      result = await response.json();
+      console.log('API Response data:', result);
+    } catch (parseError) {
+      console.error('Failed to parse API response:', parseError);
+      const text = await response.text();
+      console.log('Raw response:', text);
+      throw new Error(`API returned invalid JSON. Status: ${response.status}, Response: ${text.substring(0, 200)}`);
+    }
 
     if (!response.ok) {
-      throw new Error(result.error || 'Failed to update profile');
+      console.error('API Error:', result);
+      throw new Error(result.error || `API Error: ${response.status} - ${JSON.stringify(result)}`);
     }
 
     console.log('Profile updated successfully:', result.data);
@@ -506,8 +519,8 @@ async function handleFormSubmit(event) {
     // Close modal and show success
     closeEditModal();
     
-    // Show success message
-    alert('Profile updated successfully! The page will refresh to show your changes.');
+    // Show success message with more detail
+    alert(`Profile updated successfully in database!\n\nNOTE: Changes may not be visible immediately since the page uses static data for speed. The database has been updated with your changes.\n\nUpdated data: ${JSON.stringify(formData, null, 2)}`);
     
     // Force reload after a short delay to ensure the alert is seen
     setTimeout(() => {
