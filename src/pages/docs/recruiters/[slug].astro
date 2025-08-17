@@ -83,7 +83,8 @@ const recruitersData = [
   },
   {
     id: 7,
-    name: "Monica (MJ) Jin",
+    name: "MJ", // Keep this for URL slug generation
+    displayName: "Monica (MJ) Jin", // Use this for display
     agency: "Offsite",
     title: "Product Designer", // Based on "owning IC Product Design..."
     image: "/images/mj.jpeg",
@@ -120,8 +121,9 @@ if (!recruiterData) {
   return Astro.redirect('/docs/recruiters');
 }
 
-const title = `${recruiterData.name} - ${recruiterData.agency}`;
-const description = `Connect with ${recruiterData.name} from ${recruiterData.agency}. Specializing in ${recruiterData.specialties}.`;
+const displayName = recruiterData.displayName || recruiterData.name;
+const title = `${displayName} - ${recruiterData.agency}`;
+const description = `Connect with ${displayName} from ${recruiterData.agency}. Specializing in ${recruiterData.specialties}.`;
 ---
 
 <WideLayout title={title} description={description}>
@@ -148,14 +150,14 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
           <div class="flex justify-center mb-6">
             <img
               src={recruiterData.image}
-              alt={`${recruiterData.name} profile`}
+              alt={`${displayName} profile`}
               class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
             />
           </div>
           
           <!-- Name & Agency -->
           <div class="text-center mb-6">
-            <h1 class="text-xl font-bold text-gray-900 mb-2">{recruiterData.name}</h1>
+            <h1 class="text-xl font-bold text-gray-900 mb-2">{displayName}</h1>
             <p class="text-sm text-gray-500 mb-4">{recruiterData.title} at {recruiterData.agency}</p>
             
             <!-- Edit Button - Only visible to authorized users -->
@@ -483,10 +485,11 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
   )}
 </WideLayout>
 
-<script define:vars={{ recruiterData, hasAccess }}>
+<script define:vars={{ recruiterData, hasAccess, displayName }}>
 // Make recruiter data globally available
 window.currentRecruiterData = recruiterData;
 window.hasAccess = hasAccess;
+window.displayName = displayName;
 
 // Image handling functions
 function populateCurrentImage(recruiterData) {
@@ -501,7 +504,8 @@ function populateCurrentImage(recruiterData) {
     imagePlaceholder.style.display = 'none';
   } else {
     // Show initials placeholder
-    const initials = recruiterData.name
+    const nameForInitials = window.displayName || recruiterData.name;
+    const initials = nameForInitials
       .split(' ')
       .map(word => word.charAt(0))
       .join('')
@@ -595,7 +599,7 @@ function openEditModal() {
   const currentData = window.currentRecruiterData || recruiterData;
 
   // Populate form fields with current data (including any updates)
-  document.getElementById('edit-name').value = currentData.name || '';
+  document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
   document.getElementById('edit-agency').value = currentData.agency || '';
   document.getElementById('edit-email').value = currentData.email || '';
   document.getElementById('edit-website').value = currentData.website || '';
@@ -653,7 +657,9 @@ function updatePageContent(formData) {
   // Update the page title
   const pageTitleH1 = document.querySelector('h1');
   if (pageTitleH1) {
-    pageTitleH1.textContent = formData.name;
+    // Use displayName if available, otherwise use formData.name
+    const nameToShow = window.displayName || formData.name;
+    pageTitleH1.textContent = nameToShow;
   }
   
   // Update the subtitle
@@ -754,7 +760,10 @@ function updateRecruiterData(formData) {
   
   // Update the global recruiter data object
   if (window.currentRecruiterData) {
+    // Update both name and displayName for consistency
+    window.currentRecruiterData.displayName = formData.name;
     window.currentRecruiterData.name = formData.name;
+    window.displayName = formData.name;
     window.currentRecruiterData.agency = formData.agency;
     window.currentRecruiterData.email = formData.email;
     window.currentRecruiterData.website = formData.website;
