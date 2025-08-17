@@ -266,13 +266,13 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
     <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] items-center justify-center p-4" style="display: none;">
       <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col">
         <!-- Header -->
-        <div class="flex items-start justify-between px-8 pt-6">
+        <div class="flex items-start justify-between px-8 pt-6 pb-4">
           <h2 class="mb-0 text-xl md:text-[24px] font-semibold text-[#1a1f36] tracking-[-0.4px] pt-2">
             Edit Your Profile
           </h2>
           <button
-            onclick="closeEditModal()"
-            class="p-2 hover:bg-gray-100 transition -mt-2 -mr-4 md:-mt-2 md:-mr-2"
+            id="close-modal-btn"
+            class="p-2 hover:bg-gray-100 transition -mt-2 -mr-4 md:-mt-2 md:-mr-2 rounded-lg"
             aria-label="Close"
             type="button"
           >
@@ -503,9 +503,16 @@ async function handleFormSubmit(event) {
 
     console.log('Profile updated successfully:', result.data);
     
-    // Show success and refresh
+    // Close modal and show success
+    closeEditModal();
+    
+    // Show success message
     alert('Profile updated successfully! The page will refresh to show your changes.');
-    window.location.reload();
+    
+    // Force reload after a short delay to ensure the alert is seen
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
     
   } catch (error) {
     console.error('Failed to update profile:', error);
@@ -523,8 +530,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const editBtn = document.getElementById('edit-profile-btn');
   const editForm = document.getElementById('editForm');
   const modal = document.getElementById('editModal');
+  const closeBtn = document.getElementById('close-modal-btn');
   
   console.log('Edit button found:', editBtn);
+  console.log('Close button found:', closeBtn);
   console.log('Has access:', hasAccess);
   console.log('Recruiter data:', recruiterData);
   
@@ -538,6 +547,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // Close button click
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Close button clicked!');
+      closeEditModal();
+    });
+  }
+  
   // Form submission
   if (editForm) {
     editForm.addEventListener('submit', handleFormSubmit);
@@ -547,6 +566,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (modal) {
     modal.addEventListener('click', function(e) {
       if (e.target === modal) {
+        console.log('Clicked outside modal, closing...');
         closeEditModal();
       }
     });
@@ -555,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Close modal on escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
+      console.log('Escape key pressed, closing modal...');
       closeEditModal();
     }
   });
