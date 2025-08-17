@@ -23,6 +23,7 @@ interface RecruiterUpdate {
   philosophy?: string;
   approach?: string;
   notable_clients?: string;
+  image?: string;
 }
 
 // GET - Fetch all active recruiters

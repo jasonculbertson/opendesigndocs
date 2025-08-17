@@ -5,7 +5,7 @@ INSERT INTO recruiters (
   id, name, agency, title, image, linkedin, website, email, login_email,
   about, specialties, philosophy, approach, notable_clients
 ) VALUES (
-  7, 'MJ', 'Offsite', 'Product Designer', '', 
+  7, 'MJ', 'Offsite', 'Product Designer', '/images/mj.jpeg', 
   'https://www.linkedin.com/in/monjin/', 'https://www.off.site', 'mj@off.site', 'jculbertson@gmail.com',
   'MJ leads IC Product Design, Content Design, UX Research, and Design Ops at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise across multiple design disciplines, MJ helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.',
   'Product Design, Content Design, UX Research, Design Ops',

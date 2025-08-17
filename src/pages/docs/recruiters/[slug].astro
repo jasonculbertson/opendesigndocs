@@ -86,7 +86,7 @@ const recruitersData = [
     name: "MJ",
     agency: "Offsite",
     title: "Product Designer", // Based on "owning IC Product Design..."
-    image: "", // No image provided yet
+    image: "/images/mj.jpeg",
     linkedin: "https://www.linkedin.com/in/monjin/",
     website: "https://www.off.site",
     email: "mj@off.site",
@@ -301,6 +301,50 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
         <!-- Form Content -->
         <div class="px-8 pb-8">
           <form id="editForm" class="space-y-7">
+            
+            <!-- Profile Image Upload -->
+            <div>
+              <label class="block text-base font-semibold text-gray-900 mb-2">Profile Photo</label>
+              <div class="flex items-start gap-6">
+                <!-- Current Image Preview -->
+                <div class="flex-shrink-0">
+                  <div id="current-image-container" class="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                    <img id="current-image" src="" alt="Current profile" class="w-full h-full object-cover" style="display: none;">
+                    <div id="image-placeholder" class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                      <span id="initials-placeholder" class="text-white font-bold text-lg"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Upload Controls -->
+                <div class="flex-1">
+                  <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                  <button
+                    type="button"
+                    id="upload-button"
+                    class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2z"></path>
+                    </svg>
+                    Upload New Photo
+                  </button>
+                  <p class="text-sm text-gray-500 mt-2">JPG, PNG or GIF. Max 5MB. Recommended: 400x400px square image.</p>
+                  <div id="upload-progress" class="hidden mt-2">
+                    <div class="bg-gray-200 rounded-full h-2">
+                      <div id="upload-progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="upload-status" class="text-sm text-gray-600 mt-1">Uploading...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Basic Information -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -444,6 +488,104 @@ const description = `Connect with ${recruiterData.name} from ${recruiterData.age
 window.currentRecruiterData = recruiterData;
 window.hasAccess = hasAccess;
 
+// Image handling functions
+function populateCurrentImage(recruiterData) {
+  const currentImage = document.getElementById('current-image');
+  const imagePlaceholder = document.getElementById('image-placeholder');
+  const initialsPlaceholder = document.getElementById('initials-placeholder');
+  
+  if (recruiterData.image && recruiterData.image.trim()) {
+    // Show current image
+    currentImage.src = recruiterData.image;
+    currentImage.style.display = 'block';
+    imagePlaceholder.style.display = 'none';
+  } else {
+    // Show initials placeholder
+    const initials = recruiterData.name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+    initialsPlaceholder.textContent = initials;
+    currentImage.style.display = 'none';
+    imagePlaceholder.style.display = 'flex';
+  }
+}
+
+function handleImageUpload() {
+  const fileInput = document.getElementById('image-upload');
+  const file = fileInput.files[0];
+  
+  if (!file) return;
+  
+  // Validate file
+  if (!validateImageFile(file)) return;
+  
+  // Show preview
+  showImagePreview(file);
+  
+  // Store the file for upload when form is submitted
+  window.selectedImageFile = file;
+}
+
+function validateImageFile(file) {
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+  
+  if (file.size > maxSize) {
+    alert('File size must be less than 5MB');
+    return false;
+  }
+  
+  if (!allowedTypes.includes(file.type)) {
+    alert('Please select a valid image file (JPG, PNG, or GIF)');
+    return false;
+  }
+  
+  return true;
+}
+
+function showImagePreview(file) {
+  const currentImage = document.getElementById('current-image');
+  const imagePlaceholder = document.getElementById('image-placeholder');
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    currentImage.src = e.target.result;
+    currentImage.style.display = 'block';
+    imagePlaceholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function showUploadProgress(show) {
+  const progressContainer = document.getElementById('upload-progress');
+  const progressBar = document.getElementById('upload-progress-bar');
+  const statusText = document.getElementById('upload-status');
+  
+  if (show) {
+    progressContainer.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    statusText.textContent = 'Uploading...';
+  } else {
+    progressContainer.classList.add('hidden');
+  }
+}
+
+function updateUploadProgress(percent) {
+  const progressBar = document.getElementById('upload-progress-bar');
+  const statusText = document.getElementById('upload-status');
+  
+  progressBar.style.width = percent + '%';
+  
+  if (percent < 100) {
+    statusText.textContent = `Uploading... ${percent}%`;
+  } else {
+    statusText.textContent = 'Processing...';
+  }
+}
+
 // Modal functions
 function openEditModal() {
   const modal = document.getElementById('editModal');
@@ -463,6 +605,9 @@ function openEditModal() {
   document.getElementById('edit-philosophy').value = currentData.philosophy || '';
   document.getElementById('edit-approach').value = currentData.approach || '';
   document.getElementById('edit-notable-clients').value = currentData.notableClients || '';
+  
+  // Populate current image
+  populateCurrentImage(currentData);
 
   // Show modal
   modal.style.display = 'flex';
@@ -478,6 +623,32 @@ function closeEditModal() {
 // Update page content with new data after successful save
 function updatePageContent(formData) {
   console.log('Updating page content with:', formData);
+  
+  // Update the profile image
+  if (formData.image) {
+    const profileImages = document.querySelectorAll('img[alt*="' + formData.name + '"], img[alt*="profile"]');
+    profileImages.forEach(img => {
+      img.src = formData.image;
+      img.alt = formData.name;
+    });
+    
+    // Also update any image containers that might have initials
+    const imageContainers = document.querySelectorAll('.aspect-square img');
+    imageContainers.forEach(img => {
+      if (img.alt.includes(formData.name) || img.src.includes('gradient')) {
+        img.src = formData.image;
+        img.alt = formData.name;
+        img.style.display = 'block';
+        
+        // Hide any initials placeholder that might be showing
+        const parent = img.parentElement;
+        const initialsDiv = parent.querySelector('div[class*="gradient"]');
+        if (initialsDiv) {
+          initialsDiv.style.display = 'none';
+        }
+      }
+    });
+  }
   
   // Update the page title
   const pageTitleH1 = document.querySelector('h1');
@@ -593,9 +764,40 @@ function updateRecruiterData(formData) {
     window.currentRecruiterData.philosophy = formData.philosophy;
     window.currentRecruiterData.approach = formData.approach;
     window.currentRecruiterData.notableClients = formData.notable_clients;
+    window.currentRecruiterData.image = formData.image;
     
     console.log('Updated currentRecruiterData:', window.currentRecruiterData);
   }
+}
+
+// Upload image function
+async function uploadImage(file) {
+  return new Promise((resolve, reject) => {
+    // For now, we'll create a simple filename based on timestamp and original name
+    // In production, you'd want to upload to a cloud storage service
+    const timestamp = Date.now();
+    const extension = file.name.split('.').pop();
+    const fileName = `recruiter_${timestamp}.${extension}`;
+    const imagePath = `/images/${fileName}`;
+    
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('fileName', fileName);
+    
+    // For now, we'll simulate the upload and use a data URL
+    // In production, you'd upload to your server/cloud storage
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // Store the data URL temporarily
+      // In production, this would be the actual uploaded file path
+      resolve(imagePath);
+    };
+    reader.onerror = function() {
+      reject(new Error('Failed to read file'));
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 // Handle form submission
@@ -612,6 +814,27 @@ async function handleFormSubmit(event) {
   errorMessage.classList.add('hidden');
   
   try {
+    let imagePath = (window.currentRecruiterData || recruiterData).image; // Default to current image
+    
+    // Handle image upload if a new file was selected
+    if (window.selectedImageFile) {
+      console.log('Uploading new image...');
+      showUploadProgress(true);
+      updateUploadProgress(10);
+      
+      try {
+        imagePath = await uploadImage(window.selectedImageFile);
+        updateUploadProgress(90);
+        console.log('Image uploaded successfully:', imagePath);
+      } catch (uploadError) {
+        console.error('Image upload failed:', uploadError);
+        throw new Error('Failed to upload image: ' + uploadError.message);
+      }
+      
+      updateUploadProgress(100);
+      showUploadProgress(false);
+    }
+    
     // Collect form data
     const formData = {
       id: recruiterData.id,
@@ -625,7 +848,8 @@ async function handleFormSubmit(event) {
       specialties: document.getElementById('edit-specialties').value,
       philosophy: document.getElementById('edit-philosophy').value,
       approach: document.getElementById('edit-approach').value,
-      notable_clients: document.getElementById('edit-notable-clients').value
+      notable_clients: document.getElementById('edit-notable-clients').value,
+      image: imagePath // Include the image path
     };
 
     console.log('Submitting form data:', formData);
@@ -691,6 +915,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const editForm = document.getElementById('editForm');
   const modal = document.getElementById('editModal');
   const closeBtn = document.getElementById('close-modal-btn');
+  const uploadBtn = document.getElementById('upload-button');
+  const imageInput = document.getElementById('image-upload');
   
   console.log('Edit button found:', editBtn);
   console.log('Close button found:', closeBtn);
@@ -714,6 +940,20 @@ document.addEventListener('DOMContentLoaded', function() {
       e.stopPropagation();
       console.log('Close button clicked!');
       closeEditModal();
+    });
+  }
+  
+  // Image upload handlers
+  if (uploadBtn && imageInput) {
+    uploadBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Upload button clicked!');
+      imageInput.click();
+    });
+    
+    imageInput.addEventListener('change', function(e) {
+      console.log('Image selected:', e.target.files[0]);
+      handleImageUpload();
     });
   }
   
