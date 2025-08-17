@@ -913,13 +913,8 @@ async function handleFormSubmit(event) {
     // Update the stored recruiter data so modal shows updated values next time
     updateRecruiterData(formData);
     
-    // Close modal and show success
+    // Close modal - changes are already visible on page
     closeEditModal();
-    
-    // Show success message
-    alert('Profile updated successfully! Your changes are now live.');
-    
-    // No need to reload since we updated the content directly
     
   } catch (error) {
     console.error('Failed to update profile:', error);
