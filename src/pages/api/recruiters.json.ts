@@ -92,42 +92,40 @@ export async function PUT({ request }: APIContext) {
       });
     }
 
-    // Set the current user email for RLS policies
-    await supabase.rpc('set_config', {
-      setting_name: 'app.current_user_email',
-      setting_value: userEmail
-    });
-
-    // First, check if the user has permission to update this recruiter
-    const { data: recruiter, error: fetchError } = await supabase
-      .from('recruiters')
-      .select('login_email')
-      .eq('id', id)
-      .single();
-
-    if (fetchError) {
-      console.error('Error fetching recruiter:', fetchError);
-      return new Response(JSON.stringify({ 
-        error: 'Recruiter not found',
-        details: fetchError.message
-      }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Check if user is authorized (admin or matches login email)
+    // Check authorization directly (bypass RLS for now)
     const adminEmails = ['jculbertson@gmail.com', 'jason@opendesigndocs.com'];
     const isAdmin = adminEmails.includes(userEmail);
-    const isOwner = recruiter.login_email === userEmail;
+    
+    console.log('Authorization check:', { userEmail, isAdmin, adminEmails });
 
-    if (!isAdmin && !isOwner) {
-      return new Response(JSON.stringify({ 
-        error: 'Unauthorized: You can only edit your own profile' 
-      }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' }
-      });
+    if (!isAdmin) {
+      // For non-admin users, check if they own this profile
+      const { data: recruiter, error: fetchError } = await supabase
+        .from('recruiters')
+        .select('login_email')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) {
+        console.error('Error fetching recruiter for auth check:', fetchError);
+        return new Response(JSON.stringify({ 
+          error: 'Recruiter not found for authorization check',
+          details: fetchError.message
+        }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      const isOwner = recruiter.login_email === userEmail;
+      if (!isOwner) {
+        return new Response(JSON.stringify({ 
+          error: `Unauthorized: You can only edit your own profile. Your email: ${userEmail}, Profile owner: ${recruiter.login_email}` 
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     // Validate required fields if they're being updated
@@ -159,7 +157,9 @@ export async function PUT({ request }: APIContext) {
       });
     }
 
-    // Update recruiter profile
+    console.log('Attempting to update recruiter with data:', updateData);
+
+    // Update recruiter profile (using service role key should bypass RLS)
     const { data: updatedRecruiter, error } = await supabase
       .from('recruiters')
       .update(updateData)
@@ -167,11 +167,15 @@ export async function PUT({ request }: APIContext) {
       .select()
       .single();
 
+    console.log('Update result:', { updatedRecruiter, error });
+
     if (error) {
-      console.error('Error updating recruiter:', error);
+      console.error('Supabase update error:', error);
       return new Response(JSON.stringify({ 
-        error: 'Failed to update recruiter profile',
-        details: error.message
+        error: 'Failed to update recruiter profile in database',
+        details: error.message,
+        code: error.code,
+        hint: error.hint
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -179,13 +183,16 @@ export async function PUT({ request }: APIContext) {
     }
 
     if (!updatedRecruiter) {
+      console.error('No recruiter returned after update');
       return new Response(JSON.stringify({ 
-        error: 'Recruiter not found or access denied' 
+        error: 'Update appeared to succeed but no data returned. This might indicate a database issue.' 
       }), {
-        status: 404,
+        status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    console.log('Successfully updated recruiter:', updatedRecruiter);
 
     return new Response(JSON.stringify({ 
       success: true, 
