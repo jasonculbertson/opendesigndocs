@@ -1,7 +1,6 @@
 ---
 import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
-import RecruiterGridSimple from '../../components/RecruiterGridSimple.tsx';
 
 const title = "Recruiter Directory";
 const description = "Find specialized design recruiters to help build your team";
@@ -138,12 +137,39 @@ const hasAccess = accessKey === 'recruit2024';
     <!-- Filters have been removed with the new simplified data structure -->
 
     <!-- Recruiters Grid -->
-    <RecruiterGridSimple 
-      recruiters={recruiters}
-      hasAccess={hasAccess}
-      createSlug={createSlug}
-      client:load
-    />
+    <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
+      {recruiters.map(recruiter => (
+        <div key={recruiter.id} class="recruiter-card w-full" data-recruiter-id={recruiter.id}>
+          <a 
+            href={hasAccess ? `/docs/recruiters/${createSlug(recruiter.name)}?access=recruit2024` : `/docs/recruiters/${createSlug(recruiter.name)}`}
+            class="block relative bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer group"
+          >
+            <!-- Image -->
+            <div class="aspect-square bg-gray-50 relative">
+              {recruiter.image ? (
+                <img src={recruiter.image} alt={recruiter.name} class="w-full h-full object-cover" />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                  <span class="text-white font-bold text-4xl">
+                    {recruiter.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase().slice(0, 2)}
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            <!-- Content -->
+            <div class="px-4 py-3 md:px-6 md:py-5">
+              <h3 class="text-base md:text-lg font-medium text-gray-900 mb-0.5 group-hover:text-black transition-colors">
+                {recruiter.name}
+              </h3>
+              <p class="text-sm text-gray-600">
+                {recruiter.agency}
+              </p>
+            </div>
+          </a>
+        </div>
+      ))}
+    </div>
 
     )}
 
