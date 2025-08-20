@@ -107,13 +107,32 @@ export async function getStaticPaths() {
   }));
 }
 
+// Define types for recruiter data
+type RecruiterData = {
+  id: number;
+  name: string;
+  displayName?: string;
+  agency: string;
+  title: string;
+  image: string;
+  linkedin: string;
+  website: string;
+  email: string;
+  loginEmail: string;
+  about: string;
+  specialties: string;
+  philosophy: string;
+  approach: string;
+  notableClients: string;
+};
+
 // Get the slug from the URL params
 const { slug } = Astro.params;
-let recruiterData = Astro.props.recruiter;
+let recruiterData: RecruiterData | null = Astro.props.recruiter || null;
 
 // If no recruiter from props (dev mode), look it up by slug
 if (!recruiterData && slug) {
-  recruiterData = recruitersData.find(r => createSlug(r.name) === slug);
+  recruiterData = recruitersData.find(r => createSlug(r.name) === slug) || null;
 }
 
 // If still no recruiter found, redirect
@@ -121,9 +140,11 @@ if (!recruiterData) {
   return Astro.redirect('/docs/recruiters');
 }
 
-const displayName = recruiterData.displayName || recruiterData.name;
-const title = `${displayName} - ${recruiterData.agency}`;
-const description = `Connect with ${displayName} from ${recruiterData.agency}. Specializing in ${recruiterData.specialties}.`;
+// TypeScript now knows recruiterData is not null here
+const validRecruiterData: RecruiterData = recruiterData;
+const displayName = validRecruiterData.displayName || validRecruiterData.name;
+const title = `${displayName} - ${validRecruiterData.agency}`;
+const description = `Connect with ${displayName} from ${validRecruiterData.agency}. Specializing in ${validRecruiterData.specialties}.`;
 ---
 
 <WideLayout title={title} description={description}>
@@ -149,7 +170,7 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
           <!-- Profile Image -->
           <div class="flex justify-center mb-6">
             <img
-              src={recruiterData.image}
+              src={validRecruiterData.image}
               alt={`${displayName} profile`}
               class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
             />
@@ -158,13 +179,13 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
           <!-- Name & Agency -->
           <div class="text-center mb-6">
             <h1 class="text-xl font-bold text-gray-900 mb-2">{displayName}</h1>
-            <p class="text-sm text-gray-500 mb-4">{recruiterData.title} at {recruiterData.agency}</p>
+            <p class="text-sm text-gray-500 mb-4">{validRecruiterData.title} at {validRecruiterData.agency}</p>
             
             <!-- Edit Button - Only visible to authorized users -->
             {hasAccess && (
               <button 
                 id="edit-profile-btn"
-                data-recruiter-id={recruiterData.id}
+                data-recruiter-id={validRecruiterData.id}
                 class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,7 +201,7 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
           <!-- Contact Buttons -->
           <div class="space-y-3">
             <a
-              href={recruiterData.linkedin}
+              href={validRecruiterData.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
@@ -191,9 +212,9 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
               </svg>
               Connect on LinkedIn
             </a>
-            {recruiterData.website && (
+            {validRecruiterData.website && (
               <a
-                href={recruiterData.website}
+                href={validRecruiterData.website}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
@@ -202,9 +223,9 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
                 Visit Website
               </a>
             )}
-            {recruiterData.email && (
+            {validRecruiterData.email && (
               <a
-                href={`mailto:${recruiterData.email}`}
+                href={`mailto:${validRecruiterData.email}`}
                 class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
                 style="background-color: #f9fafb"
               >
@@ -220,16 +241,16 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
         <!-- About -->
         <div class="mb-8">
           <h2 class="text-xl font-semibold mt-8 mb-4">About</h2>
-          <p class="text-[15px]">{recruiterData.about}</p>
+          <p class="text-[15px]">{validRecruiterData.about}</p>
         </div>
 
-        {recruiterData.specialties && (
+        {validRecruiterData.specialties && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Specialties</h2>
               <div class="flex flex-wrap gap-2">
-                {recruiterData.specialties.split(',').map(specialty => (
+                {validRecruiterData.specialties.split(',').map(specialty => (
                   <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
                     {specialty.trim()}
                   </span>
@@ -239,33 +260,33 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
           </>
         )}
 
-        {recruiterData.philosophy && (
+        {validRecruiterData.philosophy && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Philosophy</h2>
-              <p class="text-[15px] italic">"{recruiterData.philosophy}"</p>
+              <p class="text-[15px] italic">"{validRecruiterData.philosophy}"</p>
             </div>
           </>
         )}
 
-        {recruiterData.approach && (
+        {validRecruiterData.approach && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Approach</h2>
-              <p class="text-[15px]">{recruiterData.approach}</p>
+              <p class="text-[15px]">{validRecruiterData.approach}</p>
             </div>
           </>
         )}
 
-        {recruiterData.notableClients && (
+        {validRecruiterData.notableClients && (
           <>
             <hr class="border-gray-200 mb-8" />
             <div class="mb-8">
               <h2 class="text-xl font-semibold mt-8 mb-4">Notable Clients</h2>
               <div class="flex flex-wrap gap-2">
-                {recruiterData.notableClients.split(',').map(client => (
+                {validRecruiterData.notableClients.split(',').map(client => (
                   <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
                     {client.trim()}
                   </span>
@@ -496,9 +517,9 @@ const description = `Connect with ${displayName} from ${recruiterData.agency}. S
   )}
 </WideLayout>
 
-<script define:vars={{ recruiterData, hasAccess, displayName }}>
+<script define:vars={{ validRecruiterData, hasAccess, displayName }}>
 // Make recruiter data globally available
-window.currentRecruiterData = recruiterData;
+window.currentRecruiterData = validRecruiterData;
 window.hasAccess = hasAccess;
 window.displayName = displayName;
 
@@ -604,10 +625,10 @@ function updateUploadProgress(percent) {
 // Modal functions
 function openEditModal() {
   const modal = document.getElementById('editModal');
-  if (!modal || !recruiterData) return;
+  if (!modal || !validRecruiterData) return;
 
   // Use the current (potentially updated) recruiter data
-  const currentData = window.currentRecruiterData || recruiterData;
+  const currentData = window.currentRecruiterData || validRecruiterData;
 
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
@@ -836,7 +857,7 @@ async function handleFormSubmit(event) {
   errorMessage.classList.add('hidden');
   
   try {
-    let imagePath = (window.currentRecruiterData || recruiterData).image; // Default to current image
+    let imagePath = (window.currentRecruiterData || validRecruiterData).image; // Default to current image
     
     // Handle image upload if a new file was selected
     if (window.selectedImageFile) {
@@ -859,7 +880,7 @@ async function handleFormSubmit(event) {
     
     // Collect form data
     const formData = {
-      id: recruiterData.id,
+      id: validRecruiterData.id,
       userEmail: 'jculbertson@gmail.com', // Admin email for testing
       name: document.getElementById('edit-name').value,
       agency: document.getElementById('edit-agency').value,
@@ -927,8 +948,8 @@ async function handleFormSubmit(event) {
   }
 }
 
-// Set up event listeners
-document.addEventListener('DOMContentLoaded', function() {
+// Set up event listeners function that works with both direct loads and View Transitions
+function setupEventListeners() {
   const editBtn = document.getElementById('edit-profile-btn');
   const editForm = document.getElementById('editForm');
   const modal = document.getElementById('editModal');
@@ -936,66 +957,88 @@ document.addEventListener('DOMContentLoaded', function() {
   const uploadBtn = document.getElementById('upload-button');
   const imageInput = document.getElementById('image-upload');
   
-  console.log('Edit button found:', editBtn);
+  console.log('Setting up event listeners - Edit button found:', editBtn);
   console.log('Close button found:', closeBtn);
   console.log('Has access:', hasAccess);
-  console.log('Recruiter data:', recruiterData);
+  console.log('Recruiter data:', validRecruiterData);
   
-  // Edit button click
+  // Remove any existing event listeners to prevent duplicates
   if (editBtn && hasAccess) {
-    editBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log('Edit button clicked! Opening modal...');
-      openEditModal();
-    });
+    editBtn.removeEventListener('click', handleEditClick);
+    editBtn.addEventListener('click', handleEditClick);
   }
   
-  // Close button click
   if (closeBtn) {
-    closeBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log('Close button clicked!');
-      closeEditModal();
-    });
+    closeBtn.removeEventListener('click', handleCloseClick);
+    closeBtn.addEventListener('click', handleCloseClick);
   }
   
-  // Image upload handlers
   if (uploadBtn && imageInput) {
-    uploadBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      console.log('Upload button clicked!');
-      imageInput.click();
-    });
+    uploadBtn.removeEventListener('click', handleUploadClick);
+    uploadBtn.addEventListener('click', handleUploadClick);
     
-    imageInput.addEventListener('change', function(e) {
-      console.log('Image selected:', e.target.files[0]);
-      handleImageUpload();
-    });
+    imageInput.removeEventListener('change', handleImageChange);
+    imageInput.addEventListener('change', handleImageChange);
   }
   
-  // Form submission
   if (editForm) {
+    editForm.removeEventListener('submit', handleFormSubmit);
     editForm.addEventListener('submit', handleFormSubmit);
   }
   
-  // Close modal when clicking outside
   if (modal) {
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) {
-        console.log('Clicked outside modal, closing...');
-        closeEditModal();
-      }
-    });
+    modal.removeEventListener('click', handleModalClick);
+    modal.addEventListener('click', handleModalClick);
   }
   
-  // Close modal on escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      console.log('Escape key pressed, closing modal...');
-      closeEditModal();
-    }
-  });
-});
+  // Remove existing keydown listener and add new one
+  document.removeEventListener('keydown', handleEscapeKey);
+  document.addEventListener('keydown', handleEscapeKey);
+}
+
+// Event handler functions
+function handleEditClick(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log('Edit button clicked! Opening modal...');
+  openEditModal();
+}
+
+function handleCloseClick(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log('Close button clicked!');
+  closeEditModal();
+}
+
+function handleUploadClick(e) {
+  e.preventDefault();
+  console.log('Upload button clicked!');
+  const imageInput = document.getElementById('image-upload');
+  if (imageInput) imageInput.click();
+}
+
+function handleImageChange(e) {
+  console.log('Image selected:', e.target.files[0]);
+  handleImageUpload();
+}
+
+function handleModalClick(e) {
+  const modal = document.getElementById('editModal');
+  if (e.target === modal) {
+    console.log('Clicked outside modal, closing...');
+    closeEditModal();
+  }
+}
+
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') {
+    console.log('Escape key pressed, closing modal...');
+    closeEditModal();
+  }
+}
+
+// Set up event listeners for both initial load and Astro View Transitions
+document.addEventListener('DOMContentLoaded', setupEventListeners);
+document.addEventListener('astro:page-load', setupEventListeners);
 </script>
