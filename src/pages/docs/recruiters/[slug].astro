@@ -181,19 +181,19 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
             <h1 class="text-xl font-bold text-gray-900 mb-2">{displayName}</h1>
             <p class="text-sm text-gray-500 mb-4">{validRecruiterData.title} at {validRecruiterData.agency}</p>
             
-            <!-- Edit Button - Only visible to authorized users -->
-            {hasAccess && (
-              <button 
-                id="edit-profile-btn"
-                data-recruiter-id={validRecruiterData.id}
-                class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-                Edit Profile
-              </button>
-            )}
+            <!-- Edit Button - Only visible to profile owners (checked dynamically) -->
+            <button 
+              id="edit-profile-btn"
+              data-recruiter-id={validRecruiterData.id}
+              data-recruiter-email={validRecruiterData.loginEmail}
+              class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+              style="display: none;"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              Edit Profile
+            </button>
           </div>
 
 
@@ -301,8 +301,8 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
   </div>
 
   <!-- Edit Modal - Pure HTML/JS Implementation -->
-  {hasAccess && (
-    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] items-center justify-center p-4" style="display: none;">
+  <!-- Modal is always present but only shown to authorized users via JavaScript -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] items-center justify-center p-4" style="display: none;">
       <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col">
         <!-- Header -->
         <div class="flex items-start justify-between px-8 pt-6 pb-4">
@@ -514,13 +514,11 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
         </div>
       </div>
     </div>
-  )}
 </WideLayout>
 
-<script define:vars={{ validRecruiterData, hasAccess, displayName }}>
+<script define:vars={{ validRecruiterData, displayName }}>
 // Make recruiter data globally available
 window.currentRecruiterData = validRecruiterData;
-window.hasAccess = hasAccess;
 window.displayName = displayName;
 
 // Image handling functions
@@ -871,10 +869,9 @@ async function handleFormSubmit(event) {
       console.log('No new image selected, keeping existing image:', imagePath);
     }
     
-    // Collect form data
+    // Collect form data (userEmail will be handled by server-side authentication)
     const formData = {
       id: validRecruiterData.id,
-      userEmail: 'jculbertson@gmail.com', // Admin email for testing
       name: document.getElementById('edit-name').value,
       agency: document.getElementById('edit-agency').value,
       title: document.getElementById('edit-title').value,
@@ -947,6 +944,41 @@ async function handleFormSubmit(event) {
   }
 }
 
+// Check if current user can edit this profile
+async function checkEditPermission() {
+  const editBtn = document.getElementById('edit-profile-btn');
+  if (!editBtn) return;
+
+  const recruiterEmail = editBtn.getAttribute('data-recruiter-email');
+  const adminEmails = ['jculbertson@gmail.com', 'jason@opendesigndocs.com'];
+  
+  try {
+    // Check if user is signed in with Clerk
+    if (typeof window !== 'undefined' && window.Clerk) {
+      await window.Clerk.load();
+      
+      if (window.Clerk.user) {
+        const userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
+        const isAdmin = adminEmails.includes(userEmail || '');
+        const isOwner = userEmail === recruiterEmail;
+        
+        console.log('Authorization check:', { userEmail, recruiterEmail, isAdmin, isOwner });
+        
+        if (isAdmin || isOwner) {
+          editBtn.style.display = 'inline-flex';
+          console.log('Edit permission granted:', isAdmin ? 'admin' : 'owner');
+        } else {
+          console.log('Edit permission denied: not owner or admin');
+        }
+      } else {
+        console.log('User not signed in');
+      }
+    }
+  } catch (error) {
+    console.error('Error checking edit permission:', error);
+  }
+}
+
 // Set up event listeners function that works with both direct loads and View Transitions
 function setupEventListeners() {
   const editBtn = document.getElementById('edit-profile-btn');
@@ -958,11 +990,13 @@ function setupEventListeners() {
   
   console.log('Setting up event listeners - Edit button found:', editBtn);
   console.log('Close button found:', closeBtn);
-  console.log('Has access:', hasAccess);
   console.log('Recruiter data:', validRecruiterData);
   
+  // Check edit permissions
+  checkEditPermission();
+  
   // Remove any existing event listeners to prevent duplicates
-  if (editBtn && hasAccess) {
+  if (editBtn) {
     editBtn.removeEventListener('click', handleEditClick);
     editBtn.addEventListener('click', handleEditClick);
   }

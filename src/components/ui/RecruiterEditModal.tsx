@@ -93,10 +93,9 @@ export default function RecruiterEditModal({ recruiter, isOpen, onClose }: Recru
     setSubmitError('');
     
     try {
-      // Prepare update data for the API
+      // Prepare update data for the API (authentication handled server-side)
       const updateData = {
         id: recruiter?.id,
-        userEmail: 'jculbertson@gmail.com', // For now, hardcode admin email for testing
         name: formData.name,
         agency: formData.agency,
         email: formData.email,

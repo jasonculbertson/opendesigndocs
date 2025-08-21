@@ -74,20 +74,42 @@ export async function GET({ url }: APIContext) {
 }
 
 // PUT - Update an existing recruiter profile
-export async function PUT({ request }: APIContext) {
+export async function PUT({ request, locals }: APIContext) {
   try {
-    const body = await request.json();
-    const { id, userEmail, ...updateData }: { id: number; userEmail: string } & RecruiterUpdate = body;
-
-    if (!id) {
-      return new Response(JSON.stringify({ error: 'Recruiter ID is required' }), {
-        status: 400,
+    // Get authentication from Clerk
+    let userId: string | null = null;
+    let userEmail: string | null = null;
+    
+    try {
+      if (locals.auth) {
+        const authResult = locals.auth();
+        userId = authResult?.userId || null;
+        // Try to get email from session claims
+        userEmail = authResult?.sessionClaims?.email as string || null;
+      }
+    } catch (error) {
+      console.log('Auth not available:', error);
+    }
+    
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        status: 401,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
     if (!userEmail) {
-      return new Response(JSON.stringify({ error: 'User email is required for authorization' }), {
+      return new Response(JSON.stringify({ error: 'User email not found in authentication' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const body = await request.json();
+    const { id, ...updateData }: { id: number } & RecruiterUpdate = body;
+
+    if (!id) {
+      return new Response(JSON.stringify({ error: 'Recruiter ID is required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -97,7 +119,7 @@ export async function PUT({ request }: APIContext) {
     const adminEmails = ['jculbertson@gmail.com', 'jason@opendesigndocs.com'];
     const isAdmin = adminEmails.includes(userEmail);
     
-    console.log('Authorization check:', { userEmail, isAdmin, adminEmails });
+    console.log('Authorization check:', { userId, userEmail, isAdmin, recruiterId: id });
 
     if (!isAdmin) {
       // For non-admin users, check if they own this profile
