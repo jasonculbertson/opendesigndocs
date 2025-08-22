@@ -84,8 +84,28 @@ export async function PUT({ request, locals }: APIContext) {
       if (locals.auth) {
         const authResult = locals.auth();
         userId = authResult?.userId || null;
-        // Try to get email from session claims
-        userEmail = authResult?.sessionClaims?.email as string || null;
+        
+        // Try multiple ways to get email from Clerk
+        userEmail = authResult?.sessionClaims?.email as string || 
+                   authResult?.sessionClaims?.primaryEmailAddress?.emailAddress as string ||
+                   authResult?.sessionClaims?.emailAddress as string ||
+                   null;
+        
+        // If sessionClaims doesn't work, try accessing user data directly
+        if (!userEmail && authResult?.user) {
+          userEmail = authResult.user.primaryEmailAddress?.emailAddress ||
+                     authResult.user.emailAddresses?.[0]?.emailAddress ||
+                     null;
+        }
+        
+        console.log('Auth debug:', {
+          userId,
+          userEmail,
+          sessionClaims: authResult?.sessionClaims,
+          user: authResult?.user,
+          availableKeys: authResult?.sessionClaims ? Object.keys(authResult.sessionClaims) : 'no claims',
+          userKeys: authResult?.user ? Object.keys(authResult.user) : 'no user'
+        });
       }
     } catch (error) {
       console.log('Auth not available:', error);
