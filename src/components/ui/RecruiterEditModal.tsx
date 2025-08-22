@@ -108,11 +108,18 @@ export default function RecruiterEditModal({ recruiter, isOpen, onClose }: Recru
         notable_clients: formData.notableClients
       };
 
+      // Get user email from Clerk for API authentication
+      let userEmail = null;
+      if (typeof window !== 'undefined' && window.Clerk?.user) {
+        userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
+      }
+
       // Call the API to update the recruiter profile
       const response = await fetch('/api/recruiters.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...(userEmail && { 'x-user-email': userEmail })
         },
         body: JSON.stringify(updateData)
       });

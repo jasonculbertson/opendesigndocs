@@ -74,52 +74,18 @@ export async function GET({ url }: APIContext) {
 }
 
 // PUT - Update an existing recruiter profile
-export async function PUT({ request, locals }: APIContext) {
+export async function PUT({ request }: APIContext) {
   try {
-    // Get authentication from Clerk
-    let userId: string | null = null;
-    let userEmail: string | null = null;
+    // Get user email from request headers (sent by frontend)
+    const userEmail = request.headers.get('x-user-email');
     
-    try {
-      if (locals.auth) {
-        const authResult = locals.auth();
-        userId = authResult?.userId || null;
-        
-        // Try multiple ways to get email from Clerk
-        userEmail = authResult?.sessionClaims?.email as string || 
-                   authResult?.sessionClaims?.primaryEmailAddress?.emailAddress as string ||
-                   authResult?.sessionClaims?.emailAddress as string ||
-                   null;
-        
-        // If sessionClaims doesn't work, try accessing user data directly
-        if (!userEmail && authResult?.user) {
-          userEmail = authResult.user.primaryEmailAddress?.emailAddress ||
-                     authResult.user.emailAddresses?.[0]?.emailAddress ||
-                     null;
-        }
-        
-        console.log('Auth debug:', {
-          userId,
-          userEmail,
-          sessionClaims: authResult?.sessionClaims,
-          user: authResult?.user,
-          availableKeys: authResult?.sessionClaims ? Object.keys(authResult.sessionClaims) : 'no claims',
-          userKeys: authResult?.user ? Object.keys(authResult.user) : 'no user'
-        });
-      }
-    } catch (error) {
-      console.log('Auth not available:', error);
-    }
-    
-    if (!userId) {
-      return new Response(JSON.stringify({ error: 'Authentication required' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    console.log('Auth debug:', {
+      userEmail,
+      headers: Object.fromEntries(request.headers.entries())
+    });
 
     if (!userEmail) {
-      return new Response(JSON.stringify({ error: 'User email not found in authentication' }), {
+      return new Response(JSON.stringify({ error: 'User email not found in request headers' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -139,7 +105,7 @@ export async function PUT({ request, locals }: APIContext) {
     const adminEmails = ['jculbertson@gmail.com', 'jason@opendesigndocs.com'];
     const isAdmin = adminEmails.includes(userEmail);
     
-    console.log('Authorization check:', { userId, userEmail, isAdmin, recruiterId: id });
+    console.log('Authorization check:', { userEmail, isAdmin, recruiterId: id });
 
     if (!isAdmin) {
       // For non-admin users, check if they own this profile

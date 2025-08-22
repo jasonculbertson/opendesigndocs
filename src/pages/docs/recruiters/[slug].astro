@@ -888,11 +888,18 @@ async function handleFormSubmit(event) {
 
     console.log('Submitting form data:', formData);
 
+    // Get user email from Clerk for API authentication  
+    let userEmail = null;
+    if (typeof window !== 'undefined' && window.Clerk?.user) {
+      userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
+    }
+
     // Call the API
     const response = await fetch('/api/recruiters.json', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...(userEmail && { 'x-user-email': userEmail })
       },
       body: JSON.stringify(formData)
     });
