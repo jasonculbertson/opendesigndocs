@@ -15,7 +15,7 @@ const recruiters = [
     linkedin: "https://www.linkedin.com/in/laurahunting/",
     website: "https://www.foundby.co/",
     email: "laura@foundby.co",
-    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    loginEmail: "laura@foundby.co",
     about: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace.",
     specialties: "Design Leadership, Executive Search, UX Design, Product Design",
     philosophy: "I focus on building diverse teams thoughtfully and effectively, understanding that great design teams are built on a foundation of varied perspectives and complementary skills.",
@@ -30,7 +30,7 @@ const recruiters = [
     linkedin: "https://www.linkedin.com/in/garrettfowler/",
     website: "https://www.off.site",
     email: "garrett@off.site",
-    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    loginEmail: "garrett@off.site",
     about: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals.",
     specialties: "Product Design, UX Design, Design Leadership",
     philosophy: "I believe in going beyond traditional recruiting to build meaningful relationships within the creative community. Design talent deserves more than just job placement—they deserve career partnership.",
@@ -46,7 +46,7 @@ const recruiters = [
     linkedin: "https://www.linkedin.com/in/dirkcleveland/",
     website: "https://www.fusiontalent.com",
     email: "dirk@fusiontalent.com",
-    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    loginEmail: "dirk@fusiontalent.com",
     about: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
     specialties: "UX Design, Product Design, Design Systems, Design Leadership",
     philosophy: "I believe in the power of referral-based recruiting and building long-term relationships. Great design leaders aren't just found—they're cultivated through trust and understanding of their career aspirations.",
@@ -61,7 +61,7 @@ const recruiters = [
     linkedin: "https://www.linkedin.com/in/jaredtredly/",
     website: "https://bamboo-x.com",
     email: "jared@bamboocrowd.com",
-    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    loginEmail: "jared@bamboocrowd.com",
     about: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors.",
     specialties: "Product Design, UX Design, UI Design, Design Leadership",
     philosophy: "I believe in supporting disruptive startups and innovative companies that are building the future. Great design talent thrives in environments where they can make meaningful impact and drive product innovation.",
@@ -77,7 +77,7 @@ const recruiters = [
     linkedin: "https://www.linkedin.com/in/monjin/",
     website: "https://www.off.site",
     email: "mj@off.site",
-    loginEmail: "jculbertson@gmail.com", // TEMP: Admin access for testing
+    loginEmail: "mj@off.site",
     about: "MJ leads IC Product Design, Content Design, UX Research, and Design Ops at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise across multiple design disciplines, MJ helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.",
     specialties: "Product Design, Content Design, UX Research, Design Ops",
     philosophy: "I believe in empowering design professionals across all disciplines to find their ideal career paths. Great design happens when talented individuals are matched with the right opportunities and teams.",
@@ -105,6 +105,26 @@ const hasAccess = accessKey === 'recruit2024';
 
 <WideLayout title={title} description={description}>
   <div class="py-8">
+    <!-- Recruiter Onboarding Banner -->
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <svg class="w-5 h-5 text-blue-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-blue-800">Are you a recruiter featured below?</h3>
+          <p class="mt-1 text-sm text-blue-700">
+            Learn how to access and edit your profile. 
+            <a href="/docs/recruiters/onboarding" class="font-medium underline hover:text-blue-900">
+              View onboarding guide →
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="mb-8">
       <div class="flex justify-between items-start">
