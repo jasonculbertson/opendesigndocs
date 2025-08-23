@@ -1,0 +1,176 @@
+---
+import WideLayout from '../../../layouts/WideLayout.astro';
+
+// Check for admin access
+const url = new URL(Astro.request.url);
+const adminKey = url.searchParams.get('admin');
+const isAdmin = adminKey === 'jason2024';
+
+if (!isAdmin) {
+  return Astro.redirect('/docs/recruiters');
+}
+
+const recruiters = [
+  {
+    key: 'laura',
+    name: 'Laura Hunting',
+    email: 'laura@foundby.co',
+    agency: 'Found By'
+  },
+  {
+    key: 'garrett', 
+    name: 'Garrett Fowler',
+    email: 'garrett@off.site',
+    agency: 'Offsite'
+  },
+  {
+    key: 'dirk',
+    name: 'Dirk Cleveland', 
+    email: 'dirk@fusiontalent.com',
+    agency: 'Fusion'
+  },
+  {
+    key: 'jared',
+    name: 'Jared Tredly',
+    email: 'jared@bamboocrowd.com', 
+    agency: 'Bamboo X'
+  },
+  {
+    key: 'mj',
+    name: 'Monica (MJ) Jin',
+    email: 'mj@off.site',
+    agency: 'Offsite'
+  }
+];
+
+const baseUrl = url.origin;
+---
+
+<WideLayout title="Recruiter Invitation Links - Admin" description="Admin page for recruiter invitation links">
+  <div class="py-8 max-w-4xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Recruiter Invitation Links</h1>
+      <p class="text-gray-600">Send these personalized links to each recruiter for easy onboarding.</p>
+    </div>
+
+    <div class="space-y-6">
+      {recruiters.map((recruiter) => {
+        const inviteUrl = `${baseUrl}/docs/recruiters/invite/${recruiter.key}`;
+        
+        return (
+          <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900">{recruiter.name}</h3>
+                <p class="text-sm text-gray-600 mb-1">{recruiter.agency}</p>
+                <p class="text-sm text-gray-500 font-mono">{recruiter.email}</p>
+                
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Invitation Link:</label>
+                  <div class="flex items-center space-x-2">
+                    <input 
+                      type="text" 
+                      value={inviteUrl}
+                      readonly
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm font-mono bg-gray-50"
+                      id={`link-${recruiter.key}`}
+                    />
+                    <button 
+                      onclick={`copyLink('${recruiter.key}')`}
+                      class="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="ml-4 flex space-x-2">
+                <a 
+                  href={inviteUrl}
+                  target="_blank"
+                  class="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Preview
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Email Template -->
+    <div class="mt-12 bg-gray-50 border border-gray-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Email Template</h2>
+      <div class="bg-white border border-gray-300 rounded-md p-4">
+        <div class="text-sm text-gray-700 space-y-3">
+          <p><strong>Subject:</strong> Your Open Design Docs Profile - Ready to Edit</p>
+          
+          <div class="border-t pt-3">
+            <p>Hi [Name],</p>
+            
+            <p>I've set up your recruiter profile on Open Design Docs! You can now access and edit your profile using this personalized link:</p>
+            
+            <p class="bg-blue-50 border border-blue-200 rounded p-2 font-mono text-sm">[INVITATION_LINK]</p>
+            
+            <p>This link will guide you through:</p>
+            <ul class="list-disc ml-6 space-y-1">
+              <li>Creating your account (using your professional email)</li>
+              <li>Accessing your profile page</li>
+              <li>Editing your information, specialties, and approach</li>
+            </ul>
+            
+            <p>The whole process takes just a few minutes. Let me know if you have any questions!</p>
+            
+            <p>Best,<br/>Jason</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="mt-8 text-center">
+      <a 
+        href="/docs/recruiters"
+        class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Back to Recruiters
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function copyLink(recruiterKey) {
+      const input = document.getElementById(`link-${recruiterKey}`);
+      input.select();
+      input.setSelectionRange(0, 99999); // For mobile devices
+      
+      try {
+        document.execCommand('copy');
+        
+        // Show feedback
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.add('bg-green-600', 'hover:bg-green-700');
+        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove('bg-green-600', 'hover:bg-green-700');
+          button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }, 2000);
+        
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    }
+  </script>
+</WideLayout>

@@ -1,0 +1,223 @@
+---
+import WideLayout from '../../../../layouts/WideLayout.astro';
+
+// Define recruiter data
+const recruiters = {
+  'laura': {
+    name: 'Laura Hunting',
+    email: 'laura@foundby.co',
+    agency: 'Found By',
+    profileUrl: '/docs/recruiters/laura-hunting'
+  },
+  'garrett': {
+    name: 'Garrett Fowler', 
+    email: 'garrett@off.site',
+    agency: 'Offsite',
+    profileUrl: '/docs/recruiters/garrett-fowler'
+  },
+  'dirk': {
+    name: 'Dirk Cleveland',
+    email: 'dirk@fusiontalent.com', 
+    agency: 'Fusion',
+    profileUrl: '/docs/recruiters/dirk-cleveland'
+  },
+  'jared': {
+    name: 'Jared Tredly',
+    email: 'jared@bamboocrowd.com',
+    agency: 'Bamboo X', 
+    profileUrl: '/docs/recruiters/jared-tredly'
+  },
+  'mj': {
+    name: 'Monica (MJ) Jin',
+    email: 'mj@off.site',
+    agency: 'Offsite',
+    profileUrl: '/docs/recruiters/mj'
+  }
+};
+
+export async function getStaticPaths() {
+  return Object.keys(recruiters).map((key) => ({
+    params: { recruiter: key },
+    props: { recruiterData: recruiters[key] },
+  }));
+}
+
+const { recruiter } = Astro.params;
+const recruiterData = recruiters[recruiter as keyof typeof recruiters];
+
+if (!recruiterData) {
+  return Astro.redirect('/docs/recruiters');
+}
+
+const title = `Welcome ${recruiterData.name} - Open Design Docs`;
+const description = `Personal invitation for ${recruiterData.name} to join Open Design Docs`;
+---
+
+<WideLayout title={title} description={description}>
+  <div class="py-8 max-w-3xl mx-auto">
+    <!-- Personal Welcome Header -->
+    <div class="text-center mb-12">
+      <div class="mb-6">
+        <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+          {recruiterData.name.split(' ').map(n => n[0]).join('')}
+        </div>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome, {recruiterData.name}!</h1>
+      <p class="text-lg text-gray-600">You've been invited to manage your recruiter profile on Open Design Docs</p>
+    </div>
+
+    <!-- Current Status -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-8">
+      <h2 class="text-lg font-semibold text-blue-900 mb-3">Your Profile Details</h2>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-blue-700 font-medium">Name:</span>
+          <span class="text-blue-800">{recruiterData.name}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-blue-700 font-medium">Agency:</span>
+          <span class="text-blue-800">{recruiterData.agency}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-blue-700 font-medium">Email:</span>
+          <span class="text-blue-800 font-mono">{recruiterData.email}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Steps -->
+    <div class="space-y-6">
+      <!-- Step 1: Sign Up -->
+      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">1</div>
+          </div>
+          <div class="ml-4 flex-1">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Create Your Account</h3>
+            <p class="text-gray-600 mb-4">
+              Sign up using your email address: <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">{recruiterData.email}</code>
+            </p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+              <p class="text-sm text-amber-800">
+                <strong>Important:</strong> You must use exactly this email address to access your profile.
+              </p>
+            </div>
+            <button 
+              onclick="handleSignUp()"
+              class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+              </svg>
+              Sign Up / Log In
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Access Profile -->
+      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-semibold">2</div>
+          </div>
+          <div class="ml-4 flex-1">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Access Your Profile</h3>
+            <p class="text-gray-600 mb-4">
+              Once logged in, you'll be able to edit your recruiter profile and update your information.
+            </p>
+            <a 
+              href={recruiterData.profileUrl}
+              class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              View Your Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What You Can Do -->
+    <div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">What You Can Edit</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div class="space-y-2">
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            About section
+          </div>
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Specialties
+          </div>
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Philosophy
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Approach
+          </div>
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Contact information
+          </div>
+          <div class="flex items-center text-gray-700">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Notable clients
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-600">
+        Need help? Contact <a href="mailto:jculbertson@gmail.com" class="text-blue-600 hover:text-blue-800 underline">jculbertson@gmail.com</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function handleSignUp() {
+      // Store the recruiter's profile URL for redirect after login
+      const profileUrl = '{recruiterData.profileUrl}';
+      localStorage.setItem('recruiter_redirect_url', profileUrl);
+      
+      // Redirect to login page
+      window.location.href = '/login';
+    }
+
+    // Check if user just logged in and redirect to their profile
+    document.addEventListener('DOMContentLoaded', function() {
+      const redirectUrl = localStorage.getItem('recruiter_redirect_url');
+      if (redirectUrl && typeof window !== 'undefined' && window.Clerk) {
+        window.Clerk.load().then(() => {
+          if (window.Clerk.user) {
+            // User is logged in, redirect to their profile
+            localStorage.removeItem('recruiter_redirect_url');
+            window.location.href = redirectUrl;
+          }
+        });
+      }
+    });
+  </script>
+</WideLayout>
