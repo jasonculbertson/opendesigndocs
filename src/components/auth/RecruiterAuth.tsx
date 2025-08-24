@@ -44,13 +44,8 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
   const [authMode, setAuthMode] = useState<'sign_up' | 'sign_in'>('sign_up');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already signed in
-  useEffect(() => {
-    if (isSignedIn && user) {
-      console.log('✅ User already signed in, redirecting to profile');
-      window.location.href = recruiterProfileUrl;
-    }
-  }, [isSignedIn, user, recruiterProfileUrl]);
+  // Don't auto-redirect if already signed in - show continue button instead
+  // This allows users to see they're logged in and choose to continue
 
   const handleGoogleAuth = async () => {
     try {
@@ -197,6 +192,36 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
       setIsLoading(false);
     }
   };
+
+  // If user is already signed in, show continue button
+  if (isSignedIn && user) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              You're signed in!
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Welcome back, {user.firstName || user.primaryEmailAddress?.emailAddress?.split('@')[0] || 'there'}
+            </p>
+          </div>
+        </div>
+        
+        <button
+          onClick={() => window.location.href = recruiterProfileUrl}
+          className="w-full py-3 px-4 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors"
+        >
+          Continue to Profile
+        </button>
+      </div>
+    );
+  }
 
   if (emailSent && showCodeInput) {
     return (
