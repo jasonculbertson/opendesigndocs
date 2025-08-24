@@ -86,6 +86,16 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       handleOAuthAccountLinkingError('Account creation completed but sign-in failed');
     }
     
+    // Handle missing requirements after OAuth signup
+    if (signUp?.status === 'missing_requirements' && !isSignedIn) {
+      console.log('🚨 SignUp has missing requirements after OAuth - likely account exists');
+      console.log('📋 Missing fields:', signUp.missingFields);
+      console.log('📋 Unverified fields:', signUp.unverifiedFields);
+      
+      // This usually means the user already has an account
+      handleOAuthMissingRequirements();
+    }
+    
     // Check for OAuth errors in signIn status  
     if (signIn?.status === 'complete' && !isSignedIn) {
       console.log('🚨 SignIn completed but user not signed in - possible session issue');
@@ -97,6 +107,25 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       }, 1000);
     }
   }, [signUp?.status, signIn?.status, isSignedIn, isLoaded]);
+
+  const handleOAuthMissingRequirements = () => {
+    console.log('🔧 Handling OAuth missing requirements - suggesting signin instead');
+    
+    const shouldTrySignIn = confirm(
+      'It looks like you already have an account with this email. Would you like to sign in instead of creating a new account?'
+    );
+    
+    if (shouldTrySignIn) {
+      // Reset signup state and switch to signin
+      signUp?.create({ emailAddress: '' }).catch(() => {}); // Reset signup
+      setInitialView('sign_in');
+      setAuthTitle('Welcome back');
+      setIsOpen(true);
+      setShowEmailForm(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   // Preload Clerk initialization on component mount
   useEffect(() => {
