@@ -196,23 +196,12 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
   // If user is already signed in, show continue button
   if (isSignedIn && user) {
     return (
-      <div className="space-y-4">
-        <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            You're signed in!
-          </h3>
-          <p className="text-sm text-gray-600 mb-6">
-            Welcome back, {user.firstName || user.primaryEmailAddress?.emailAddress?.split('@')[0] || 'there'}
-          </p>
-        </div>
-        
-        <button
-          onClick={() => window.location.href = recruiterProfileUrl}
-          className="w-full py-3 px-4 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors"
-        >
-          Continue to Profile
-        </button>
-      </div>
+      <button
+        onClick={() => window.location.href = recruiterProfileUrl}
+        className="w-full py-3 px-4 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors"
+      >
+        Continue to Profile
+      </button>
     );
   }
 
