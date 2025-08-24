@@ -235,6 +235,8 @@ if (Astro.locals.auth?.user) {
       'mj@off.site'
     ];
     
+    let isCheckingAuth = false;
+    
     async function waitForClerk() {
       console.log('⏳ Waiting for Clerk to be ready...');
       
@@ -262,6 +264,12 @@ if (Astro.locals.auth?.user) {
     }
     
     async function checkAndShowContent() {
+      if (isCheckingAuth) {
+        console.log('🔄 Authentication check already in progress, skipping...');
+        return;
+      }
+      
+      isCheckingAuth = true;
       const clerkReady = await waitForClerk();
       
       if (clerkReady && window.Clerk) {
@@ -299,6 +307,8 @@ if (Astro.locals.auth?.user) {
       } else {
         console.log('❌ Clerk not available after waiting');
       }
+      
+      isCheckingAuth = false;
     }
     
     // Start checking when page loads
@@ -307,6 +317,26 @@ if (Astro.locals.auth?.user) {
     } else {
       checkAndShowContent();
     }
+    
+    // Also check when page becomes visible (handles client-side navigation)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        console.log('🔄 Page became visible, re-checking authentication...');
+        checkAndShowContent();
+      }
+    });
+    
+    // Check when navigating back to this page
+    window.addEventListener('pageshow', (event) => {
+      console.log('🔄 Page show event, re-checking authentication...');
+      checkAndShowContent();
+    });
+    
+    // Also listen for focus events (when user returns to tab)
+    window.addEventListener('focus', () => {
+      console.log('🔄 Window focused, re-checking authentication...');
+      checkAndShowContent();
+    });
   </script>
 </WideLayout>
 
