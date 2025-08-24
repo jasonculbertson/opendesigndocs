@@ -164,19 +164,29 @@ if (Astro.locals.auth?.user) {
       </div>
     </div>
 
-    <!-- Access Denied Message (shown by default, hidden by client-side script if authorized) -->
-    <div class="flex flex-col items-center justify-center min-h-[400px] text-center">
+    <!-- Loading/Access Check Message (shown by default, hidden by client-side script if authorized) -->
+    <div id="auth-loading" class="flex flex-col items-center justify-center min-h-[400px] text-center">
       <div class="max-w-md mx-auto">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
-        <p class="text-gray-600 mb-6">
-          This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
-        </p>
-        <a 
-          href="/docs" 
-          class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
-        >
-          Back to Documentation
-        </a>
+        <!-- Loading State (shown initially) -->
+        <div id="loading-state">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <h2 class="text-xl font-medium text-gray-900 mb-2">Loading Directory...</h2>
+          <p class="text-gray-600">Checking access permissions</p>
+        </div>
+        
+        <!-- Access Denied State (shown if not authorized) -->
+        <div id="access-denied-state" style="display: none;">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
+          <p class="text-gray-600 mb-6">
+            This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
+          </p>
+          <a 
+            href="/docs" 
+            class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
+          >
+            Back to Documentation
+          </a>
+        </div>
       </div>
     </div>
 
@@ -242,7 +252,7 @@ if (Astro.locals.auth?.user) {
       
       // Wait for Clerk to be available
       let attempts = 0;
-      const maxAttempts = 50; // 5 seconds max
+      const maxAttempts = 20; // 2 seconds max (reduced from 5)
       
       while (attempts < maxAttempts) {
         if (typeof window !== 'undefined' && window.Clerk) {
@@ -255,11 +265,11 @@ if (Astro.locals.auth?.user) {
           }
         }
         
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 50)); // Reduced from 100ms to 50ms
         attempts++;
       }
       
-      console.log('❌ Clerk failed to load after 5 seconds');
+      console.log('❌ Clerk failed to load after 2 seconds');
       return false;
     }
     
@@ -282,10 +292,10 @@ if (Astro.locals.auth?.user) {
         if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
           console.log('✅ Access granted! Showing recruiter content...');
           
-          // Hide the "Private Directory" message
-          const accessDenied = document.querySelector('.min-h-\\[400px\\]');
-          if (accessDenied) {
-            accessDenied.style.display = 'none';
+          // Hide the loading/access check message
+          const authLoading = document.getElementById('auth-loading');
+          if (authLoading) {
+            authLoading.style.display = 'none';
           }
           
           // Show the recruiters grid
@@ -295,17 +305,25 @@ if (Astro.locals.auth?.user) {
             recruitersGrid.parentElement.style.display = 'block';
           }
           
-          // Update page title if needed
-          const privateTitle = document.querySelector('h2');
-          if (privateTitle && privateTitle.textContent === 'Private Directory') {
-            privateTitle.style.display = 'none';
-          }
-          
         } else {
           console.log('❌ Access denied for email:', userEmail);
+          
+          // Show access denied state
+          const loadingState = document.getElementById('loading-state');
+          const accessDeniedState = document.getElementById('access-denied-state');
+          
+          if (loadingState) loadingState.style.display = 'none';
+          if (accessDeniedState) accessDeniedState.style.display = 'block';
         }
       } else {
         console.log('❌ Clerk not available after waiting');
+        
+        // Show access denied state if Clerk fails to load
+        const loadingState = document.getElementById('loading-state');
+        const accessDeniedState = document.getElementById('access-denied-state');
+        
+        if (loadingState) loadingState.style.display = 'none';
+        if (accessDeniedState) accessDeniedState.style.display = 'block';
       }
       
       isCheckingAuth = false;
