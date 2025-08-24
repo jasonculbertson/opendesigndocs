@@ -124,14 +124,7 @@ import WideLayout from '../../../layouts/WideLayout.astro';
         </form>
       </div>
 
-      <!-- Invitation Links -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold mb-6">Invitation Links</h2>
-        <p class="text-gray-600 mb-4">Click these personalized invitation URLs to view or test them:</p>
-        <div id="invitation-links" class="space-y-3">
-          <!-- Will be populated by JavaScript -->
-        </div>
-      </div>
+
 
       <!-- Existing Recruiters -->
       <div class="bg-white rounded-lg shadow-md p-6">
@@ -468,7 +461,6 @@ import WideLayout from '../../../layouts/WideLayout.astro';
         if (response.ok) {
           recruitersData = await response.json();
           displayRecruiters(recruitersData);
-          displayInvitationLinks(recruitersData);
         }
       } catch (error) {
         console.error('Error loading recruiters:', error);
@@ -577,61 +569,10 @@ import WideLayout from '../../../layouts/WideLayout.astro';
       }
     }
 
-    // Display invitation links
-    function displayInvitationLinks(recruiters) {
-      const container = document.getElementById('invitation-links');
-      if (!container) return;
 
-      container.innerHTML = recruiters.map(recruiter => `
-        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-          <div class="flex items-center space-x-3">
-            <img src="${recruiter.image}" alt="${recruiter.name}" class="w-8 h-8 rounded-full object-cover">
-            <div>
-              <div class="font-medium text-gray-900">${recruiter.name}</div>
-              <div class="text-sm text-gray-500">${recruiter.agency}</div>
-            </div>
-          </div>
-          <div class="flex-1 mx-4">
-            <a href="https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}" 
-               target="_blank" 
-               class="text-blue-600 hover:text-blue-800 underline text-sm font-mono break-all">
-              https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}
-            </a>
-          </div>
-          <div class="flex space-x-2">
-            <button onclick="copyToClipboard('https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}')" 
-                    class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300 transition-colors">
-              Copy
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Copy to clipboard function
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        // Show temporary success message
-        const button = event.target;
-        const originalText = button.textContent;
-        button.textContent = 'Copied!';
-        button.classList.add('bg-green-200', 'text-green-700');
-        button.classList.remove('bg-gray-200', 'text-gray-700');
-        
-        setTimeout(() => {
-          button.textContent = originalText;
-          button.classList.remove('bg-green-200', 'text-green-700');
-          button.classList.add('bg-gray-200', 'text-gray-700');
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        alert('Failed to copy to clipboard');
-      });
-    }
 
     // Make functions globally available
     window.editRecruiter = editRecruiter;
-    window.copyToClipboard = copyToClipboard;
 
     // Image upload functionality
     function setupImageUpload() {

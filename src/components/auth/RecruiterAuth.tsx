@@ -198,19 +198,12 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
     return (
       <div className="space-y-4">
         <div className="text-center">
-          <div className="mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              You're signed in!
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Welcome back, {user.firstName || user.primaryEmailAddress?.emailAddress?.split('@')[0] || 'there'}
-            </p>
-          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            You're signed in!
+          </h3>
+          <p className="text-sm text-gray-600 mb-6">
+            Welcome back, {user.firstName || user.primaryEmailAddress?.emailAddress?.split('@')[0] || 'there'}
+          </p>
         </div>
         
         <button
