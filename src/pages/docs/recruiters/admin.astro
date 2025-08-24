@@ -73,11 +73,30 @@ import WideLayout from '../../../layouts/WideLayout.astro';
             <input type="text" id="notable_clients" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="SaaS, FinTech, E-commerce companies">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image Path</label>
-            <input type="text" id="image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="/images/laura.jpeg">
-            <p class="text-sm text-gray-500 mt-1">Upload image to /public/images/ first, then enter path</p>
-          </div>
+                        <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+                <div class="space-y-4">
+                  <!-- Image Preview -->
+                  <div class="flex items-center space-x-4">
+                    <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
+                      <img id="image-preview" src="/images/default-avatar.png" alt="Profile preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                      <input type="file" id="image-upload" accept="image/*" class="hidden">
+                      <button type="button" onclick="document.getElementById('image-upload').click()" 
+                              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
+                        Choose Image
+                      </button>
+                      <p class="text-xs text-gray-500 mt-1">JPG, PNG, or GIF (max 2MB)</p>
+                    </div>
+                  </div>
+                  <!-- Manual Path Input (fallback) -->
+                  <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Or enter image path manually:</label>
+                    <input type="text" id="image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="/images/laura.jpeg">
+                  </div>
+                </div>
+              </div>
 
           <!-- Auto-generated fields (read-only) -->
           <div class="bg-gray-50 p-4 rounded-md">
@@ -103,6 +122,15 @@ import WideLayout from '../../../layouts/WideLayout.astro';
             </button>
           </div>
         </form>
+      </div>
+
+      <!-- Invitation Links -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-6">Invitation Links</h2>
+        <p class="text-gray-600 mb-4">Click these personalized invitation URLs to view or test them:</p>
+        <div id="invitation-links" class="space-y-3">
+          <!-- Will be populated by JavaScript -->
+        </div>
       </div>
 
       <!-- Existing Recruiters -->
@@ -189,8 +217,28 @@ import WideLayout from '../../../layouts/WideLayout.astro';
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image Path</label>
-                <input type="text" id="edit-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+                <div class="space-y-4">
+                  <!-- Image Preview -->
+                  <div class="flex items-center space-x-4">
+                    <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
+                      <img id="edit-image-preview" src="/images/default-avatar.png" alt="Profile preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                      <input type="file" id="edit-image-upload" accept="image/*" class="hidden">
+                      <button type="button" onclick="document.getElementById('edit-image-upload').click()" 
+                              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
+                        Choose Image
+                      </button>
+                      <p class="text-xs text-gray-500 mt-1">JPG, PNG, or GIF (max 2MB)</p>
+                    </div>
+                  </div>
+                  <!-- Manual Path Input (fallback) -->
+                  <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Or enter image path manually:</label>
+                    <input type="text" id="edit-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                  </div>
+                </div>
               </div>
 
               <!-- Read-only fields -->
@@ -420,6 +468,7 @@ import WideLayout from '../../../layouts/WideLayout.astro';
         if (response.ok) {
           recruitersData = await response.json();
           displayRecruiters(recruitersData);
+          displayInvitationLinks(recruitersData);
         }
       } catch (error) {
         console.error('Error loading recruiters:', error);
@@ -447,6 +496,12 @@ import WideLayout from '../../../layouts/WideLayout.astro';
       document.getElementById('edit-image').value = recruiter.image || '';
       document.getElementById('edit-slug').value = recruiter.slug || '';
       document.getElementById('edit-login_email').value = recruiter.login_email || '';
+
+      // Update image preview
+      const editImagePreview = document.getElementById('edit-image-preview');
+      if (editImagePreview && recruiter.image) {
+        editImagePreview.src = recruiter.image;
+      }
 
       // Show modal
       document.getElementById('edit-modal').classList.remove('hidden');
@@ -522,7 +577,161 @@ import WideLayout from '../../../layouts/WideLayout.astro';
       }
     }
 
-    // Make editRecruiter globally available
+    // Display invitation links
+    function displayInvitationLinks(recruiters) {
+      const container = document.getElementById('invitation-links');
+      if (!container) return;
+
+      container.innerHTML = recruiters.map(recruiter => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+          <div class="flex items-center space-x-3">
+            <img src="${recruiter.image}" alt="${recruiter.name}" class="w-8 h-8 rounded-full object-cover">
+            <div>
+              <div class="font-medium text-gray-900">${recruiter.name}</div>
+              <div class="text-sm text-gray-500">${recruiter.agency}</div>
+            </div>
+          </div>
+          <div class="flex-1 mx-4">
+            <a href="https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}" 
+               target="_blank" 
+               class="text-blue-600 hover:text-blue-800 underline text-sm font-mono break-all">
+              https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}
+            </a>
+          </div>
+          <div class="flex space-x-2">
+            <button onclick="copyToClipboard('https://www.opendesigndocs.com/docs/recruiters/invite/${recruiter.slug}')" 
+                    class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300 transition-colors">
+              Copy
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show temporary success message
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.add('bg-green-200', 'text-green-700');
+        button.classList.remove('bg-gray-200', 'text-gray-700');
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove('bg-green-200', 'text-green-700');
+          button.classList.add('bg-gray-200', 'text-gray-700');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy to clipboard');
+      });
+    }
+
+    // Make functions globally available
     window.editRecruiter = editRecruiter;
+    window.copyToClipboard = copyToClipboard;
+
+    // Image upload functionality
+    function setupImageUpload() {
+      // Add form image upload handler
+      const addImageUpload = document.getElementById('image-upload');
+      const addImagePreview = document.getElementById('image-preview');
+      const addImagePath = document.getElementById('image');
+
+      if (addImageUpload && addImagePreview && addImagePath) {
+        addImageUpload.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            await handleImageUpload(file, addImagePreview, addImagePath, 'add');
+          }
+        });
+
+        // Update preview when path is manually entered
+        addImagePath.addEventListener('input', (e) => {
+          if (e.target.value) {
+            addImagePreview.src = e.target.value;
+          }
+        });
+      }
+
+      // Edit modal image upload handler
+      const editImageUpload = document.getElementById('edit-image-upload');
+      const editImagePreview = document.getElementById('edit-image-preview');
+      const editImagePath = document.getElementById('edit-image');
+
+      if (editImageUpload && editImagePreview && editImagePath) {
+        editImageUpload.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            await handleImageUpload(file, editImagePreview, editImagePath, 'edit');
+          }
+        });
+
+        // Update preview when path is manually entered
+        editImagePath.addEventListener('input', (e) => {
+          if (e.target.value) {
+            editImagePreview.src = e.target.value;
+          }
+        });
+      }
+    }
+
+    async function handleImageUpload(file, previewElement, pathElement, context) {
+      // Validate file size (2MB max)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Image size must be less than 2MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file');
+        return;
+      }
+
+      try {
+        // Show loading state
+        const originalSrc = previewElement.src;
+        previewElement.style.opacity = '0.5';
+
+        // Create FormData for upload
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('context', context);
+
+        // Upload image
+        const response = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: {
+            'x-admin-email': ADMIN_EMAIL
+          },
+          body: formData
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          
+          // Update preview and path
+          previewElement.src = result.path;
+          pathElement.value = result.path;
+          previewElement.style.opacity = '1';
+          
+          console.log('Image uploaded successfully:', result.path);
+        } else {
+          throw new Error('Upload failed');
+        }
+      } catch (error) {
+        console.error('Image upload error:', error);
+        alert('Failed to upload image. Please try again.');
+        previewElement.style.opacity = '1';
+      }
+    }
+
+    // Initialize image upload when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      setupImageUpload();
+    });
   </script>
 </WideLayout>
