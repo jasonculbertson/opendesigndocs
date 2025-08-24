@@ -287,23 +287,37 @@ import WideLayout from '../../../layouts/WideLayout.astro';
     // Check if user is authorized
     async function checkAccess() {
       try {
+        console.log('🔍 Starting admin access check...');
+        
         // Wait for Clerk to load
         if (typeof window !== 'undefined' && window.Clerk) {
+          console.log('✅ Clerk found, loading...');
           await window.Clerk.load();
           
           const user = window.Clerk.user;
+          console.log('👤 User object:', user);
+          console.log('📧 User email:', user?.primaryEmailAddress?.emailAddress);
+          console.log('🎯 Expected admin email:', ADMIN_EMAIL);
+          console.log('✅ Email match:', user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL);
+          
           if (user && user.primaryEmailAddress?.emailAddress === ADMIN_EMAIL) {
+            console.log('🎉 Admin access granted!');
             isAuthorized = true;
             showAdminContent();
             loadRecruiters();
           } else {
+            console.log('❌ Admin access denied');
+            console.log('   - User exists:', !!user);
+            console.log('   - Has email:', !!user?.primaryEmailAddress?.emailAddress);
+            console.log('   - Email value:', user?.primaryEmailAddress?.emailAddress);
             showAccessDenied();
           }
         } else {
+          console.log('❌ Clerk not found or not in browser');
           showAccessDenied();
         }
       } catch (error) {
-        console.error('Access check failed:', error);
+        console.error('❌ Access check failed:', error);
         showAccessDenied();
       }
     }
