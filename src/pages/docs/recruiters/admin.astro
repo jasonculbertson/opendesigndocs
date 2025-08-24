@@ -114,6 +114,114 @@ import WideLayout from '../../../layouts/WideLayout.astro';
       </div>
     </div>
 
+    <!-- Edit Recruiter Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-semibold">Edit Recruiter</h2>
+              <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <form id="edit-recruiter-form" class="space-y-6">
+              <input type="hidden" id="edit-id">
+              
+              <!-- Basic Info -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                  <input type="text" id="edit-name" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                  <input type="email" id="edit-email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Agency *</label>
+                  <input type="text" id="edit-agency" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                  <input type="text" id="edit-title" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+
+              <!-- Social/Web -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn URL</label>
+                  <input type="url" id="edit-linkedin" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                  <input type="url" id="edit-website" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+
+              <!-- Profile Content -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">About</label>
+                <textarea id="edit-about" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Specialties</label>
+                <input type="text" id="edit-specialties" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Philosophy</label>
+                <textarea id="edit-philosophy" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Approach</label>
+                <textarea id="edit-approach" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Notable Clients</label>
+                <input type="text" id="edit-notable_clients" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image Path</label>
+                <input type="text" id="edit-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+
+              <!-- Read-only fields -->
+              <div class="bg-gray-50 p-4 rounded-md">
+                <h3 class="text-lg font-medium mb-3">Auto-Generated (Read-Only)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                    <input type="text" id="edit-slug" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Login Email</label>
+                    <input type="text" id="edit-login_email" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex gap-4 pt-4">
+                <button type="button" id="cancel-edit" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  Update Recruiter
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Access Denied Message -->
     <div id="access-denied" class="text-center py-12">
       <h1 class="text-2xl font-bold text-gray-800 mb-4">Access Restricted</h1>
@@ -260,24 +368,7 @@ import WideLayout from '../../../layouts/WideLayout.astro';
       }
     }
 
-    async function loadRecruiters() {
-      if (!isAuthorized) return;
 
-      try {
-        const response = await fetch('/api/recruiters/list', {
-          headers: {
-            'x-admin-email': ADMIN_EMAIL
-          }
-        });
-        
-        if (response.ok) {
-          const recruiters = await response.json();
-          displayRecruiters(recruiters);
-        }
-      } catch (error) {
-        console.error('Error loading recruiters:', error);
-      }
-    }
 
     function displayRecruiters(recruiters) {
       const container = document.getElementById('recruiters-list');
@@ -295,6 +386,10 @@ import WideLayout from '../../../layouts/WideLayout.astro';
               </div>
             </div>
             <div class="flex space-x-2">
+              <button onclick="editRecruiter(${recruiter.id})" 
+                      class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded text-sm hover:bg-yellow-200">
+                Edit
+              </button>
               <a href="/docs/recruiters/invite/${recruiter.slug}" target="_blank" 
                  class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200">
                 Invite Link
@@ -308,5 +403,126 @@ import WideLayout from '../../../layouts/WideLayout.astro';
         </div>
       `).join('');
     }
+
+    // Store recruiters data for editing
+    let recruitersData = [];
+
+    async function loadRecruiters() {
+      if (!isAuthorized) return;
+
+      try {
+        const response = await fetch('/api/recruiters/list', {
+          headers: {
+            'x-admin-email': ADMIN_EMAIL
+          }
+        });
+        
+        if (response.ok) {
+          recruitersData = await response.json();
+          displayRecruiters(recruitersData);
+        }
+      } catch (error) {
+        console.error('Error loading recruiters:', error);
+      }
+    }
+
+    // Edit recruiter functionality
+    function editRecruiter(id) {
+      const recruiter = recruitersData.find(r => r.id === id);
+      if (!recruiter) return;
+
+      // Populate edit form
+      document.getElementById('edit-id').value = recruiter.id;
+      document.getElementById('edit-name').value = recruiter.name || '';
+      document.getElementById('edit-email').value = recruiter.email || '';
+      document.getElementById('edit-agency').value = recruiter.agency || '';
+      document.getElementById('edit-title').value = recruiter.title || '';
+      document.getElementById('edit-linkedin').value = recruiter.linkedin || '';
+      document.getElementById('edit-website').value = recruiter.website || '';
+      document.getElementById('edit-about').value = recruiter.about || '';
+      document.getElementById('edit-specialties').value = recruiter.specialties || '';
+      document.getElementById('edit-philosophy').value = recruiter.philosophy || '';
+      document.getElementById('edit-approach').value = recruiter.approach || '';
+      document.getElementById('edit-notable_clients').value = recruiter.notable_clients || '';
+      document.getElementById('edit-image').value = recruiter.image || '';
+      document.getElementById('edit-slug').value = recruiter.slug || '';
+      document.getElementById('edit-login_email').value = recruiter.login_email || '';
+
+      // Show modal
+      document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    // Modal event handlers
+    document.addEventListener('DOMContentLoaded', () => {
+      // Close modal handlers
+      document.getElementById('close-modal')?.addEventListener('click', closeEditModal);
+      document.getElementById('cancel-edit')?.addEventListener('click', closeEditModal);
+      
+      // Click outside to close
+      document.getElementById('edit-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'edit-modal') {
+          closeEditModal();
+        }
+      });
+
+      // Edit form submission
+      document.getElementById('edit-recruiter-form')?.addEventListener('submit', handleEditSubmit);
+    });
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.add('hidden');
+    }
+
+    async function handleEditSubmit(e) {
+      e.preventDefault();
+      
+      if (!isAuthorized) {
+        alert('Unauthorized access');
+        return;
+      }
+
+      const id = document.getElementById('edit-id').value;
+      const updatedData = {
+        name: document.getElementById('edit-name').value,
+        email: document.getElementById('edit-email').value,
+        agency: document.getElementById('edit-agency').value,
+        title: document.getElementById('edit-title').value,
+        linkedin: document.getElementById('edit-linkedin').value,
+        website: document.getElementById('edit-website').value,
+        about: document.getElementById('edit-about').value,
+        specialties: document.getElementById('edit-specialties').value,
+        philosophy: document.getElementById('edit-philosophy').value,
+        approach: document.getElementById('edit-approach').value,
+        notable_clients: document.getElementById('edit-notable_clients').value,
+        image: document.getElementById('edit-image').value,
+        login_email: document.getElementById('edit-email').value // Keep login_email synced with email
+      };
+
+      try {
+        const response = await fetch(`/api/recruiters/update`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-email': ADMIN_EMAIL
+          },
+          body: JSON.stringify({ id, ...updatedData })
+        });
+
+        if (response.ok) {
+          alert('Recruiter updated successfully!');
+          closeEditModal();
+          loadRecruiters(); // Refresh the list
+        } else {
+          const error = await response.text();
+          alert(`Error: ${error}`);
+        }
+      } catch (error) {
+        console.error('Error updating recruiter:', error);
+        alert('Failed to update recruiter');
+      }
+    }
+
+    // Make editRecruiter globally available
+    window.editRecruiter = editRecruiter;
   </script>
 </WideLayout>
