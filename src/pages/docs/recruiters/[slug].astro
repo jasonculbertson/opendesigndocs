@@ -1,11 +1,26 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
 
-// Check for access parameter
-const url = new URL(Astro.request.url);
-const accessKey = url.searchParams.get('access');
-const hasAccess = accessKey === 'recruit2024';
-const backToRecruitersUrl = hasAccess ? '/docs/recruiters?access=recruit2024' : '/docs/recruiters';
+// Check if user has access (admin or recruiter)
+const ADMIN_EMAIL = 'jculbertson@gmail.com';
+const RECRUITER_EMAILS = [
+  'laura@foundby.co',
+  'garrett@off.site', 
+  'dirk@fusiontalent.com',
+  'jared@bamboocrowd.com',
+  'mj@off.site'
+];
+
+// Get user email from Clerk auth
+let userEmail = null;
+let hasAccess = false;
+
+if (Astro.locals.auth?.user) {
+  userEmail = Astro.locals.auth.user.primaryEmailAddress?.emailAddress;
+  hasAccess = userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail);
+}
+
+const backToRecruitersUrl = '/docs/recruiters';
 
 // Function to create URL-friendly slugs
 function createSlug(name: string): string {
