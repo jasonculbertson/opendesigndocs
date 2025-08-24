@@ -35,6 +35,13 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
       
       const currentPageUrl = window.location.href;
       
+      // Add immediate visual feedback
+      const button = document.querySelector('button[onclick*="handleGoogleAuth"]') as HTMLButtonElement;
+      if (button) {
+        button.style.opacity = '0.7';
+        button.style.cursor = 'wait';
+      }
+      
       if (authMode === 'sign_up') {
         await signUp?.authenticateWithRedirect({
           strategy: 'oauth_google',

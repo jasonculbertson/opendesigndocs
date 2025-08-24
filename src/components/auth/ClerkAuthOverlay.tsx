@@ -229,6 +229,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       } else if (redirectTo && redirectTo !== currentPath) {
         // Use the specified redirectTo if it's different from current path
         finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
+      } else if (currentPath === '/' && redirectTo && redirectTo !== '/') {
+        // Special case: User came back from OAuth but ended up on homepage
+        // This happens when clicking "Sign Up" with Google but user already exists
+        console.log('🔄 OAuth completion detected: User signed in but on homepage, using intended destination:', redirectTo);
+        finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
       } else if (currentPath === '/') {
         // If we're on homepage and no specific redirect, go to levels
         finalRedirect = '/docs/levels/levels-titles';
