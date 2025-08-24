@@ -86,8 +86,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       handleOAuthAccountLinkingError('Account creation completed but sign-in failed');
     }
     
-    // Handle missing requirements after OAuth signup
-    if (signUp?.status === 'missing_requirements' && !isSignedIn) {
+    // Handle missing requirements after OAuth signup (only if overlay is open)
+    if (signUp?.status === 'missing_requirements' && !isSignedIn && isOpen) {
       console.log('🚨 SignUp has missing requirements after OAuth - likely account exists');
       console.log('📋 Missing fields:', signUp.missingFields);
       console.log('📋 Unverified fields:', signUp.unverifiedFields);
