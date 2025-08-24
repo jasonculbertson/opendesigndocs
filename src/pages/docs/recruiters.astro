@@ -164,28 +164,25 @@ if (Astro.locals.auth?.user) {
       </div>
     </div>
 
-    {!hasAccess ? (
-      <!-- Access Denied Message -->
-      <div class="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <div class="max-w-md mx-auto">
-          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
-          <p class="text-gray-600 mb-6">
-            This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
-          </p>
-          <a 
-            href="/docs" 
-            class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
-          >
-            Back to Documentation
-          </a>
-        </div>
+    <!-- Access Denied Message (shown by default, hidden by client-side script if authorized) -->
+    <div class="flex flex-col items-center justify-center min-h-[400px] text-center">
+      <div class="max-w-md mx-auto">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
+        <p class="text-gray-600 mb-6">
+          This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
+        </p>
+        <a 
+          href="/docs" 
+          class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
+        >
+          Back to Documentation
+        </a>
       </div>
-    ) : (
+    </div>
 
-    <!-- Filters have been removed with the new simplified data structure -->
-
-    <!-- Recruiters Grid -->
-    <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
+    <!-- Recruiters Grid (hidden by default, shown by client-side script if authorized) -->
+    <div style="display: none;">
+      <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
       {recruiters.map(recruiter => (
         <div key={recruiter.id} class="recruiter-card w-full" data-recruiter-id={recruiter.id}>
           <a 
@@ -217,37 +214,61 @@ if (Astro.locals.auth?.user) {
           </a>
         </div>
       ))}
+      </div>
     </div>
-
-    )}
 
   </div>
 
   <!-- Modal Components -->
   {hasAccess && (<RecruiterSubmissionModal client:load />)}
 
-  <!-- Temporary debugging script -->
+  <!-- Client-side authentication override -->
   <script>
-    console.log('🔍 Client-side Clerk debug');
+    console.log('🔍 Client-side authentication check');
     
-    async function checkClerkAuth() {
+    const ADMIN_EMAIL = 'jculbertson@gmail.com';
+    const RECRUITER_EMAILS = [
+      'laura@foundby.co',
+      'garrett@off.site', 
+      'dirk@fusiontalent.com',
+      'jared@jaredtredly.design',
+      'mj@off.site'
+    ];
+    
+    async function checkAndShowContent() {
       if (typeof window !== 'undefined' && window.Clerk) {
         await window.Clerk.load();
         const user = window.Clerk.user;
-        console.log('👤 Clerk user object:', user);
-        console.log('📧 Clerk user email:', user?.primaryEmailAddress?.emailAddress);
-        console.log('🔐 Is signed in:', !!user);
+        const userEmail = user?.primaryEmailAddress?.emailAddress;
         
-        // Show debug info on page
-        const debugDiv = document.createElement('div');
-        debugDiv.style.cssText = 'position: fixed; top: 10px; right: 10px; background: black; color: white; padding: 10px; font-size: 12px; z-index: 9999; border-radius: 5px;';
-        debugDiv.innerHTML = `
-          <strong>Auth Debug:</strong><br/>
-          Signed in: ${!!user}<br/>
-          Email: ${user?.primaryEmailAddress?.emailAddress || 'None'}<br/>
-          Expected: jculbertson@gmail.com
-        `;
-        document.body.appendChild(debugDiv);
+        console.log('📧 User email:', userEmail);
+        console.log('🎯 Checking access...');
+        
+        if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
+          console.log('✅ Access granted! Showing recruiter content...');
+          
+          // Hide the "Private Directory" message
+          const accessDenied = document.querySelector('.min-h-\\[400px\\]');
+          if (accessDenied) {
+            accessDenied.style.display = 'none';
+          }
+          
+          // Show the recruiters grid
+          const recruitersGrid = document.getElementById('recruiters-grid');
+          if (recruitersGrid) {
+            recruitersGrid.style.display = 'grid';
+            recruitersGrid.parentElement.style.display = 'block';
+          }
+          
+          // Update page title if needed
+          const privateTitle = document.querySelector('h2');
+          if (privateTitle && privateTitle.textContent === 'Private Directory') {
+            privateTitle.style.display = 'none';
+          }
+          
+        } else {
+          console.log('❌ Access denied for email:', userEmail);
+        }
       } else {
         console.log('❌ Clerk not available');
       }
@@ -255,9 +276,9 @@ if (Astro.locals.auth?.user) {
     
     // Check auth when page loads
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', checkClerkAuth);
+      document.addEventListener('DOMContentLoaded', checkAndShowContent);
     } else {
-      checkClerkAuth();
+      checkAndShowContent();
     }
   </script>
 </WideLayout>
