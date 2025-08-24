@@ -76,6 +76,17 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
 
+  // Preload Clerk initialization on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.Clerk && !isLoaded) {
+      console.log('🚀 Preloading Clerk initialization...');
+      // Trigger Clerk to start loading immediately
+      window.Clerk.load().catch((error: any) => {
+        console.log('Clerk preload error (non-critical):', error);
+      });
+    }
+  }, [isLoaded]);
+
   // Helper function to set manual redirect flag with sessionStorage persistence
   const setManualRedirectFlag = (value: boolean) => {
     setIsManualRedirect(value);
@@ -367,6 +378,14 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     try {
+                      // Immediate visual feedback
+                      const button = document.activeElement as HTMLButtonElement;
+                      if (button) {
+                        button.style.opacity = '0.7';
+                        button.style.cursor = 'wait';
+                        button.textContent = 'Loading...';
+                      }
+                      
                       setIsRetryingOAuth(true);
                       
                       // Store the desired redirect URL in sessionStorage for OAuth completion
@@ -385,6 +404,13 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         currentPageUrl,
                         windowLocation: window.location.href,
                       });
+                      
+                      // Ensure Clerk is fully loaded before attempting OAuth
+                      if (!signUp || !signIn) {
+                        console.log('⏳ Waiting for Clerk to initialize...');
+                        // Wait a bit for Clerk to load
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                      }
                       
                       if (initialView === 'sign_up') {
                         await signUp?.authenticateWithRedirect({
@@ -502,7 +528,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 marginBottom: '24px',
                 display: 'flex',
                 alignItems: 'center',
-                textAlign: 'center'
+                textAlign: 'center',
+                width: '300px',
+                margin: '0 auto'
               }}>
                 <div style={{
                   flex: 1,
