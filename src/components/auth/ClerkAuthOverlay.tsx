@@ -412,18 +412,71 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         await new Promise(resolve => setTimeout(resolve, 100));
                       }
                       
+                      // Smart OAuth: Try intended flow first, but with better error handling
+                      let oauthSuccess = false;
+                      
                       if (initialView === 'sign_up') {
-                        await signUp?.authenticateWithRedirect({
-                          strategy: 'oauth_google',
-                          redirectUrl: currentPageUrl,
-                          redirectUrlComplete: currentPageUrl,
-                        });
+                        console.log('🔄 Attempting Google signup first...');
+                        try {
+                          await signUp?.authenticateWithRedirect({
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                          });
+                          oauthSuccess = true;
+                        } catch (signUpError: any) {
+                          console.log('🔄 Signup failed, trying signin automatically:', signUpError?.message);
+                          
+                          // If signup fails, automatically try signin
+                          if (signUpError?.message?.includes('already exists') || 
+                              signUpError?.message?.includes('taken') ||
+                              signUpError?.code === 'form_identifier_exists' ||
+                              signUpError?.errors?.[0]?.code === 'form_identifier_exists') {
+                            
+                            console.log('🔑 User exists, switching to signin flow...');
+                            await signIn?.authenticateWithRedirect({
+                              strategy: 'oauth_google',
+                              redirectUrl: currentPageUrl,
+                              redirectUrlComplete: currentPageUrl,
+                            });
+                            oauthSuccess = true;
+                          } else {
+                            throw signUpError;
+                          }
+                        }
                       } else {
-                        await signIn?.authenticateWithRedirect({
-                          strategy: 'oauth_google',
-                          redirectUrl: currentPageUrl,
-                          redirectUrlComplete: currentPageUrl,
-                        });
+                        console.log('🔑 Attempting Google signin first...');
+                        try {
+                          await signIn?.authenticateWithRedirect({
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                          });
+                          oauthSuccess = true;
+                        } catch (signInError: any) {
+                          console.log('🔄 Signin failed, trying signup automatically:', signInError?.message);
+                          
+                          // If signin fails, automatically try signup
+                          if (signInError?.message?.includes('not found') || 
+                              signInError?.message?.includes("doesn't exist") ||
+                              signInError?.code === 'form_identifier_not_found' ||
+                              signInError?.errors?.[0]?.code === 'form_identifier_not_found') {
+                            
+                            console.log('📝 User not found, switching to signup flow...');
+                            await signUp?.authenticateWithRedirect({
+                              strategy: 'oauth_google',
+                              redirectUrl: currentPageUrl,
+                              redirectUrlComplete: currentPageUrl,
+                            });
+                            oauthSuccess = true;
+                          } else {
+                            throw signInError;
+                          }
+                        }
+                      }
+                      
+                      if (!oauthSuccess) {
+                        throw new Error('Both signup and signin OAuth attempts failed');
                       }
                     } catch (error) {
                       console.error('Google OAuth error:', error);
@@ -525,7 +578,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
               {/* Divider */}
               <div style={{ 
                 position: 'relative', 
-                marginBottom: '24px',
+                marginBottom: '32px',
                 display: 'flex',
                 alignItems: 'center',
                 textAlign: 'center',
