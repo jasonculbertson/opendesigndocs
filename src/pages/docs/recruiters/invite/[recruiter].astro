@@ -2,9 +2,17 @@
 import RecruiterAuthWrapper from '../../../../components/auth/RecruiterAuthWrapper';
 import { getClerkConfig } from '../../../../utils/clerkConfig';
 
-// Define recruiter data
+// Function to create URL-friendly slugs (same as main recruiter page)
+function createSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+}
+
+// Define recruiter data with correct slugs
 const recruiters = {
-  'laura': {
+  'laura-hunting': {
     name: 'Laura Hunting',
     email: 'laura@foundby.co',
     agency: 'Found By',
@@ -12,7 +20,7 @@ const recruiters = {
     image: '/images/laura.jpeg',
     profileUrl: '/docs/recruiters/laura-hunting'
   },
-  'garrett': {
+  'garrett-fowler': {
     name: 'Garrett Fowler', 
     email: 'garrett@off.site',
     agency: 'Offsite',
@@ -20,7 +28,7 @@ const recruiters = {
     image: '/images/garrett.jpeg',
     profileUrl: '/docs/recruiters/garrett-fowler'
   },
-  'dirk': {
+  'dirk-cleveland': {
     name: 'Dirk Cleveland',
     email: 'dirk@fusiontalent.com', 
     agency: 'Fusion',
@@ -28,7 +36,7 @@ const recruiters = {
     image: '/images/dirk.jpeg',
     profileUrl: '/docs/recruiters/dirk-cleveland'
   },
-  'jared': {
+  'jared-tredly': {
     name: 'Jared Tredly',
     email: 'jared@bamboocrowd.com',
     agency: 'Bamboo X',
