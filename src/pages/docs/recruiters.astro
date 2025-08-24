@@ -235,9 +235,36 @@ if (Astro.locals.auth?.user) {
       'mj@off.site'
     ];
     
+    async function waitForClerk() {
+      console.log('⏳ Waiting for Clerk to be ready...');
+      
+      // Wait for Clerk to be available
+      let attempts = 0;
+      const maxAttempts = 50; // 5 seconds max
+      
+      while (attempts < maxAttempts) {
+        if (typeof window !== 'undefined' && window.Clerk) {
+          try {
+            await window.Clerk.load();
+            console.log('✅ Clerk is ready!');
+            return true;
+          } catch (error) {
+            console.log('⏳ Clerk loading...', error);
+          }
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+      
+      console.log('❌ Clerk failed to load after 5 seconds');
+      return false;
+    }
+    
     async function checkAndShowContent() {
-      if (typeof window !== 'undefined' && window.Clerk) {
-        await window.Clerk.load();
+      const clerkReady = await waitForClerk();
+      
+      if (clerkReady && window.Clerk) {
         const user = window.Clerk.user;
         const userEmail = user?.primaryEmailAddress?.emailAddress;
         
@@ -270,11 +297,11 @@ if (Astro.locals.auth?.user) {
           console.log('❌ Access denied for email:', userEmail);
         }
       } else {
-        console.log('❌ Clerk not available');
+        console.log('❌ Clerk not available after waiting');
       }
     }
     
-    // Check auth when page loads
+    // Start checking when page loads
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', checkAndShowContent);
     } else {
