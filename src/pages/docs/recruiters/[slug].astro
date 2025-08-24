@@ -1,6 +1,14 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
 
+// Redirect old access URLs to clean URLs
+const url = new URL(Astro.request.url);
+const accessKey = url.searchParams.get('access');
+if (accessKey === 'recruit2024') {
+  const cleanUrl = url.pathname; // Remove query parameters
+  return Astro.redirect(cleanUrl);
+}
+
 // Check if user has access (admin or recruiter)
 const ADMIN_EMAIL = 'jculbertson@gmail.com';
 const RECRUITER_EMAILS = [

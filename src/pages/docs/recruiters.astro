@@ -97,6 +97,13 @@ function createSlug(name: string): string {
     .replace(/(^-|-$)+/g, '');
 }
 
+// Redirect old access URLs to clean URLs
+const url = new URL(Astro.request.url);
+const accessKey = url.searchParams.get('access');
+if (accessKey === 'recruit2024') {
+  return Astro.redirect('/docs/recruiters');
+}
+
 // Check if user has access (admin or recruiter)
 const ADMIN_EMAIL = 'jculbertson@gmail.com';
 const RECRUITER_EMAILS = [
