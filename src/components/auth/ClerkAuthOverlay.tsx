@@ -605,7 +605,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 }} />
               </div>
 
-              <div style={{ position: 'relative', marginBottom: '24px' }}>
+              <div style={{ position: 'relative', marginBottom: '24px', marginTop: '24px' }}>
                 <input
                   type="email"
                   placeholder="Enter your email"
