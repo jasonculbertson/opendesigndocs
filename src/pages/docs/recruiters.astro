@@ -114,23 +114,9 @@ const RECRUITER_EMAILS = [
   'mj@off.site'
 ];
 
-// Get user email from Clerk auth
-let userEmail = null;
-let hasAccess = false;
-
-console.log('🔍 Auth Debug - Astro.locals.auth:', Astro.locals.auth);
-console.log('🔍 Auth Debug - User object:', Astro.locals.auth?.user);
-
-if (Astro.locals.auth?.user) {
-  userEmail = Astro.locals.auth.user.primaryEmailAddress?.emailAddress;
-  console.log('📧 Detected user email:', userEmail);
-  console.log('🎯 Admin email:', ADMIN_EMAIL);
-  console.log('📋 Recruiter emails:', RECRUITER_EMAILS);
-  hasAccess = userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail);
-  console.log('✅ Access granted:', hasAccess);
-} else {
-  console.log('❌ No authenticated user found');
-}
+// Always assume access initially for better performance
+// Client-side script will hide content if user is not authorized
+let hasAccess = true;
 ---
 
 <WideLayout title={title} description={description}>
@@ -164,34 +150,24 @@ if (Astro.locals.auth?.user) {
       </div>
     </div>
 
-    <!-- Loading/Access Check Message (shown by default, hidden by client-side script if authorized) -->
-    <div id="auth-loading" class="flex flex-col items-center justify-center min-h-[400px] text-center">
+    <!-- Access Denied Message (hidden by default, shown by client-side script if not authorized) -->
+    <div id="access-denied" class="flex flex-col items-center justify-center min-h-[400px] text-center" style="display: none;">
       <div class="max-w-md mx-auto">
-        <!-- Loading State (shown initially) -->
-        <div id="loading-state">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <h2 class="text-xl font-medium text-gray-900 mb-2">Loading Directory...</h2>
-          <p class="text-gray-600">Checking access permissions</p>
-        </div>
-        
-        <!-- Access Denied State (shown if not authorized) -->
-        <div id="access-denied-state" style="display: none;">
-          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
-          <p class="text-gray-600 mb-6">
-            This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
-          </p>
-          <a 
-            href="/docs" 
-            class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
-          >
-            Back to Documentation
-          </a>
-        </div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
+        <p class="text-gray-600 mb-6">
+          This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
+        </p>
+        <a 
+          href="/docs" 
+          class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
+        >
+          Back to Documentation
+        </a>
       </div>
     </div>
 
-    <!-- Recruiters Grid (hidden by default, shown by client-side script if authorized) -->
-    <div style="display: none;">
+    <!-- Recruiters Grid (shown by default, hidden by client-side script if not authorized) -->
+    <div id="recruiters-container">
       <div id="recruiters-grid" class="grid grid-cols-2 lg:!grid-cols-4 gap-8 mb-12">
       {recruiters.map(recruiter => (
         <div key={recruiter.id} class="recruiter-card w-full" data-recruiter-id={recruiter.id}>
@@ -232,10 +208,8 @@ if (Astro.locals.auth?.user) {
   <!-- Modal Components -->
   {hasAccess && (<RecruiterSubmissionModal client:load />)}
 
-  <!-- Client-side authentication override -->
+  <!-- Fast client-side authentication check -->
   <script>
-    console.log('🔍 Client-side authentication check');
-    
     const ADMIN_EMAIL = 'jculbertson@gmail.com';
     const RECRUITER_EMAILS = [
       'laura@foundby.co',
@@ -245,115 +219,63 @@ if (Astro.locals.auth?.user) {
       'mj@off.site'
     ];
     
-    let isCheckingAuth = false;
-    
-    async function waitForClerk() {
-      console.log('⏳ Waiting for Clerk to be ready...');
-      
-      // Wait for Clerk to be available
-      let attempts = 0;
-      const maxAttempts = 20; // 2 seconds max (reduced from 5)
-      
-      while (attempts < maxAttempts) {
-        if (typeof window !== 'undefined' && window.Clerk) {
-          try {
-            await window.Clerk.load();
-            console.log('✅ Clerk is ready!');
-            return true;
-          } catch (error) {
-            console.log('⏳ Clerk loading...', error);
-          }
-        }
-        
-        await new Promise(resolve => setTimeout(resolve, 50)); // Reduced from 100ms to 50ms
-        attempts++;
-      }
-      
-      console.log('❌ Clerk failed to load after 2 seconds');
-      return false;
-    }
-    
-    async function checkAndShowContent() {
-      if (isCheckingAuth) {
-        console.log('🔄 Authentication check already in progress, skipping...');
-        return;
-      }
-      
-      isCheckingAuth = true;
-      const clerkReady = await waitForClerk();
-      
-      if (clerkReady && window.Clerk) {
-        const user = window.Clerk.user;
-        const userEmail = user?.primaryEmailAddress?.emailAddress;
-        
-        console.log('📧 User email:', userEmail);
-        console.log('🎯 Checking access...');
+    function quickAuthCheck() {
+      // Quick check - if Clerk is already loaded and user is available
+      if (window.Clerk?.user) {
+        const userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
         
         if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
-          console.log('✅ Access granted! Showing recruiter content...');
-          
-          // Hide the loading/access check message
-          const authLoading = document.getElementById('auth-loading');
-          if (authLoading) {
-            authLoading.style.display = 'none';
-          }
-          
-          // Show the recruiters grid
-          const recruitersGrid = document.getElementById('recruiters-grid');
-          if (recruitersGrid) {
-            recruitersGrid.style.display = 'grid';
-            recruitersGrid.parentElement.style.display = 'block';
-          }
-          
+          console.log('✅ Instant access granted for:', userEmail);
+          return; // Content is already visible, nothing to do
         } else {
-          console.log('❌ Access denied for email:', userEmail);
-          
-          // Show access denied state
-          const loadingState = document.getElementById('loading-state');
-          const accessDeniedState = document.getElementById('access-denied-state');
-          
-          if (loadingState) loadingState.style.display = 'none';
-          if (accessDeniedState) accessDeniedState.style.display = 'block';
+          console.log('❌ Access denied for:', userEmail);
+          hideContent();
         }
       } else {
-        console.log('❌ Clerk not available after waiting');
-        
-        // Show access denied state if Clerk fails to load
-        const loadingState = document.getElementById('loading-state');
-        const accessDeniedState = document.getElementById('access-denied-state');
-        
-        if (loadingState) loadingState.style.display = 'none';
-        if (accessDeniedState) accessDeniedState.style.display = 'block';
+        // Clerk not ready yet, wait a bit and try again
+        setTimeout(delayedAuthCheck, 100);
       }
+    }
+    
+    async function delayedAuthCheck() {
+      try {
+        if (window.Clerk) {
+          await window.Clerk.load();
+          const user = window.Clerk.user;
+          const userEmail = user?.primaryEmailAddress?.emailAddress;
+          
+          if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
+            console.log('✅ Access granted for:', userEmail);
+            return; // Content is already visible
+          } else {
+            console.log('❌ Access denied for:', userEmail);
+            hideContent();
+          }
+        } else {
+          console.log('❌ Clerk not available');
+          hideContent();
+        }
+      } catch (error) {
+        console.log('❌ Auth check failed:', error);
+        hideContent();
+      }
+    }
+    
+    function hideContent() {
+      const recruitersContainer = document.getElementById('recruiters-container');
+      const accessDenied = document.getElementById('access-denied');
       
-      isCheckingAuth = false;
+      if (recruitersContainer) recruitersContainer.style.display = 'none';
+      if (accessDenied) accessDenied.style.display = 'flex';
     }
     
-    // Start checking when page loads
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', checkAndShowContent);
-    } else {
-      checkAndShowContent();
-    }
+    // Run immediately
+    quickAuthCheck();
     
-    // Also check when page becomes visible (handles client-side navigation)
+    // Also check on navigation events
+    window.addEventListener('pageshow', quickAuthCheck);
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        console.log('🔄 Page became visible, re-checking authentication...');
-        checkAndShowContent();
-      }
-    });
-    
-    // Check when navigating back to this page
-    window.addEventListener('pageshow', (event) => {
-      console.log('🔄 Page show event, re-checking authentication...');
-      checkAndShowContent();
-    });
-    
-    // Also listen for focus events (when user returns to tab)
-    window.addEventListener('focus', () => {
-      console.log('🔄 Window focused, re-checking authentication...');
-      checkAndShowContent();
+      if (!document.hidden) quickAuthCheck();
     });
   </script>
 </WideLayout>
