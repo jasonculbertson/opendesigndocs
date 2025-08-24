@@ -190,6 +190,7 @@ export default function HomeHeaderAuth() {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
     const redirectTo = currentPath === '/' ? '/docs/levels/levels-titles' : currentPath;
     
+    // Start with sign_in view but Clerk will handle existing vs new users intelligently
     dispatchAuthEvent({
       view: 'sign_in',
       redirectTo,
@@ -201,6 +202,7 @@ export default function HomeHeaderAuth() {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
     const redirectTo = currentPath === '/' ? '/docs/levels/levels-titles' : currentPath;
     
+    // Start with sign_up view but Clerk will handle existing vs new users intelligently  
     dispatchAuthEvent({
       view: 'sign_up',
       redirectTo,

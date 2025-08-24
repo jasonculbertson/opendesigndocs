@@ -39,7 +39,14 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const [initialView, setInitialView] = useState<'sign_in' | 'sign_up'>('sign_up');
   const [redirectTo, setRedirectTo] = useState<string>(typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/');
   const [email, setEmail] = useState('');
-  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(() => {
+    // Check if user came from recruiter invitation and wants email auth
+    if (typeof window !== 'undefined') {
+      const authMethod = localStorage.getItem('recruiter_auth_method');
+      return authMethod === 'email';
+    }
+    return false;
+  });
   const [emailSent, setEmailSent] = useState(false);
   const [isManualRedirect, setIsManualRedirect] = useState(() => {
     // Check if we recently completed a manual redirect
@@ -204,11 +211,22 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
         return;
       }
       
-      // Determine appropriate redirect URL for other cases
+      // Check for recruiter redirect URL first
+      const recruiterRedirectUrl = typeof window !== 'undefined' ? localStorage.getItem('recruiter_redirect_url') : null;
+      
+      // Determine appropriate redirect URL
       const currentPath = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/';
       let finalRedirect;
       
-      if (redirectTo && redirectTo !== currentPath) {
+      if (recruiterRedirectUrl) {
+        // Prioritize recruiter redirect if present
+        finalRedirect = recruiterRedirectUrl;
+        console.log('🎯 Using recruiter redirect URL:', finalRedirect);
+        
+        // Clean up recruiter localStorage flags
+        localStorage.removeItem('recruiter_redirect_url');
+        localStorage.removeItem('recruiter_auth_method');
+      } else if (redirectTo && redirectTo !== currentPath) {
         // Use the specified redirectTo if it's different from current path
         finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
       } else if (currentPath === '/') {
@@ -473,6 +491,34 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 </button>
               </div>
 
+              {/* Divider */}
+              <div style={{ 
+                position: 'relative', 
+                marginBottom: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  flex: 1,
+                  height: '1px',
+                  backgroundColor: '#e0e0e0'
+                }} />
+                <span style={{
+                  padding: '0 16px',
+                  fontSize: '14px',
+                  color: '#666',
+                  backgroundColor: '#FAFAFA'
+                }}>
+                  or
+                </span>
+                <div style={{
+                  flex: 1,
+                  height: '1px',
+                  backgroundColor: '#e0e0e0'
+                }} />
+              </div>
+
               <div style={{ position: 'relative', marginBottom: '24px' }}>
                 <input
                   type="email"
@@ -504,55 +550,133 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
               <button
                 onClick={async () => {
                   try {
-                    console.log('🔄 Starting email verification for:', { email, initialView });
+                    console.log('🔄 Starting smart email authentication for:', { email, initialView });
+                    
+                    // Smart unified flow: Try the user's intended action first, but fall back intelligently
+                    let authSuccess = false;
                     
                     if (initialView === 'sign_up') {
-                      console.log('📝 Creating signup attempt...');
-                      // Create signup attempt first
-                      const signUpAttempt = await signUp?.create({
-                        emailAddress: email,
-                      });
-                      console.log('✅ Signup attempt created:', signUpAttempt?.id);
-                      
-                      // Send email verification code
-                      console.log('📧 Preparing email verification...');
-                      await signUp?.prepareEmailAddressVerification({
-                        strategy: 'email_code',
-                      });
-                      console.log('✅ Email verification code sent');
-                      
-                      setEmailSent(true);
-                      setShowCodeInput(true);
-                    } else {
-                      console.log('🔑 Creating signin attempt...');
-                      // For sign in, create the attempt first to get supported factors
-                      const signInAttempt = await signIn?.create({
-                        identifier: email,
-                      });
-                      console.log('✅ Signin attempt created:', signInAttempt?.id);
-                      console.log('🔍 Supported factors:', signInAttempt?.supportedFirstFactors);
+                      console.log('📝 Attempting signup first (user clicked Get Started)...');
+                      try {
+                        // Try signup first since user clicked "Get Started"
+                        const signUpAttempt = await signUp?.create({
+                          emailAddress: email,
+                        });
+                        console.log('✅ Signup attempt created:', signUpAttempt?.id);
+                        
+                        // Send email verification code
+                        console.log('📧 Preparing email verification...');
+                        await signUp?.prepareEmailAddressVerification({
+                          strategy: 'email_code',
+                        });
+                        console.log('✅ Email verification code sent for signup');
+                        
+                        setEmailSent(true);
+                        setShowCodeInput(true);
+                        authSuccess = true;
+                      } catch (signUpError: any) {
+                        console.log('🔄 Signup failed, trying signin (user might already exist):', signUpError?.message);
+                        
+                        // If signup fails because user exists, automatically try signin
+                        if (signUpError?.message?.includes('already exists') || 
+                            signUpError?.message?.includes('taken') ||
+                            signUpError?.code === 'form_identifier_exists') {
+                          console.log('🔑 User exists, switching to signin automatically...');
+                          
+                          // Automatically switch to signin
+                          const signInAttempt = await signIn?.create({
+                            identifier: email,
+                          });
+                          console.log('✅ Signin attempt created:', signInAttempt?.id);
 
-                      // Find email code factor from supported first factors
-                      const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
-                        (factor: any) => factor.strategy === 'email_code'
-                      ) as any;
+                          // Find email code factor
+                          const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
+                            (factor: any) => factor.strategy === 'email_code'
+                          ) as any;
 
-                      if (!emailCodeFactor) {
-                        console.error('❌ No email code factor found');
-                        throw new Error('Email code sign-in is not available for this user');
+                          if (emailCodeFactor) {
+                            await signIn?.prepareFirstFactor({
+                              strategy: 'email_code',
+                              emailAddressId: emailCodeFactor.emailAddressId,
+                            });
+                            console.log('✅ Email verification code sent for signin');
+                            
+                            // Update UI to reflect we switched to signin
+                            setInitialView('sign_in');
+                            setAuthTitle('Welcome back!');
+                            setEmailSent(true);
+                            setShowCodeInput(true);
+                            authSuccess = true;
+                          } else {
+                            throw new Error('Email signin not available for this user');
+                          }
+                        } else {
+                          // Re-throw if it's not a "user exists" error
+                          throw signUpError;
+                        }
                       }
-                      console.log('✅ Email code factor found:', emailCodeFactor);
+                    } else {
+                      console.log('🔑 Attempting signin first (user clicked Sign In)...');
+                      try {
+                        // Try signin first since user clicked "Sign In"
+                        const signInAttempt = await signIn?.create({
+                          identifier: email,
+                        });
+                        console.log('✅ Signin attempt created:', signInAttempt?.id);
 
-                      // Prepare the email code verification
-                      console.log('📧 Preparing email verification...');
-                      await signIn?.prepareFirstFactor({
-                        strategy: 'email_code',
-                        emailAddressId: emailCodeFactor.emailAddressId,
-                      });
-                      console.log('✅ Email verification code sent');
-                      
-                      setEmailSent(true);
-                      setShowCodeInput(true);
+                        // Find email code factor
+                        const emailCodeFactor = signInAttempt?.supportedFirstFactors?.find(
+                          (factor: any) => factor.strategy === 'email_code'
+                        ) as any;
+
+                        if (emailCodeFactor) {
+                          await signIn?.prepareFirstFactor({
+                            strategy: 'email_code',
+                            emailAddressId: emailCodeFactor.emailAddressId,
+                          });
+                          console.log('✅ Email verification code sent for signin');
+                          
+                          setEmailSent(true);
+                          setShowCodeInput(true);
+                          authSuccess = true;
+                        } else {
+                          throw new Error('Email signin not available');
+                        }
+                      } catch (signInError: any) {
+                        console.log('🔄 Signin failed, trying signup (user might be new):', signInError?.message);
+                        
+                        // If signin fails because user doesn't exist, automatically try signup
+                        if (signInError?.message?.includes('not found') || 
+                            signInError?.message?.includes("doesn't exist") ||
+                            signInError?.code === 'form_identifier_not_found') {
+                          console.log('📝 User not found, switching to signup automatically...');
+                          
+                          // Automatically switch to signup
+                          const signUpAttempt = await signUp?.create({
+                            emailAddress: email,
+                          });
+                          console.log('✅ Signup attempt created:', signUpAttempt?.id);
+                          
+                          await signUp?.prepareEmailAddressVerification({
+                            strategy: 'email_code',
+                          });
+                          console.log('✅ Email verification code sent for signup');
+                          
+                          // Update UI to reflect we switched to signup
+                          setInitialView('sign_up');
+                          setAuthTitle('Get unlimited free access');
+                          setEmailSent(true);
+                          setShowCodeInput(true);
+                          authSuccess = true;
+                        } else {
+                          // Re-throw if it's not a "user not found" error
+                          throw signInError;
+                        }
+                      }
+                    }
+                    
+                    if (!authSuccess) {
+                      throw new Error('Authentication flow failed');
                     }
                   } catch (error) {
                     console.error('❌ Email authentication error:', error);

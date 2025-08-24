@@ -1,5 +1,6 @@
 ---
-import WideLayout from '../../../../layouts/WideLayout.astro';
+import RecruiterAuthWrapper from '../../../../components/auth/RecruiterAuthWrapper';
+import { getClerkConfig } from '../../../../utils/clerkConfig';
 
 // Define recruiter data
 const recruiters = {
@@ -59,114 +60,108 @@ if (!recruiterData) {
   return Astro.redirect('/docs/recruiters');
 }
 
-const title = `Welcome ${recruiterData.name} - Open Design Docs`;
-const description = `Personal invitation for ${recruiterData.name} to join Open Design Docs`;
+const clerkConfig = getClerkConfig();
+
+if (!clerkConfig.isConfigured) {
+  return new Response('Authentication service not configured', { status: 500 });
+}
 ---
 
-<WideLayout title={title} description={description}>
-  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <!-- Profile Photo -->
-      <div class="flex justify-center mb-6">
-        <img
-          src={recruiterData.image}
-          alt={`${recruiterData.name} profile`}
-          class="w-24 h-24 rounded-full object-cover"
-        />
-      </div>
-      
-      <!-- Welcome Message -->
-      <h2 class="text-center text-3xl font-bold tracking-tight text-gray-900 mb-2">
-        Welcome, {recruiterData.name}!
-      </h2>
-      <p class="text-center text-sm text-gray-600 mb-2">
-        {recruiterData.title} at {recruiterData.agency}
-      </p>
-      <p class="text-center text-sm text-gray-500 mb-8">
-        You've been invited to manage your recruiter profile on Open Design Docs
-      </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Invitation - {recruiterData.name} | Open Design Docs</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      background: #FAFAFA; 
+      min-height: 100vh; 
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="
+    min-height: 100vh;
+    width: 100%;
+    background-color: #FAFAFA;
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+  ">
+    <!-- Profile Photo -->
+    <div style="margin-bottom: 24px;">
+      <img 
+        style="
+          height: 96px; 
+          width: 96px; 
+          border-radius: 50%; 
+          object-fit: cover; 
+          border: 4px solid white; 
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          margin: 0 auto;
+          display: block;
+        " 
+        src={recruiterData.image} 
+        alt={recruiterData.name}
+      />
+    </div>
+    
+    <!-- Welcome Message -->
+    <h1 style="
+      text-align: center; 
+      font-size: 32px; 
+      font-family: 'Fraunces', serif; 
+      color: #111827; 
+      margin-bottom: 16px;
+      font-weight: 400;
+      margin-top: 0;
+      line-height: 1.1;
+    ">
+      Welcome, {recruiterData.name.split(' ')[0]}!
+    </h1>
+    
+    <p style="
+      text-align: center; 
+      font-size: 18px; 
+      color: #6B7280; 
+      margin-bottom: 48px;
+      line-height: 1.5;
+      margin-top: 0;
+      max-width: 500px;
+    ">
+      You've been invited to manage your recruiter profile<br/>on Open Design Docs
+    </p>
+
+    <!-- Auth Component Container -->
+    <div style="width: 100%; max-width: 300px; margin-bottom: 24px;">
+      <RecruiterAuthWrapper 
+        client:load 
+        recruiterProfileUrl={recruiterData.profileUrl}
+        publishableKey={clerkConfig.publishableKey}
+      />
     </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-        <div class="space-y-4">
-          <!-- Sign Up Button -->
-          <button
-            onclick="handleSignUp()"
-            class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
-          >
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-            </svg>
-            Sign Up
-          </button>
-
-          <!-- Divider -->
-          <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-300" />
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-2 bg-white text-gray-500">Already have an account?</span>
-            </div>
-          </div>
-
-          <!-- Sign In Button -->
-          <button
-            onclick="handleSignIn()"
-            class="w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-            </svg>
-            Sign In
-          </button>
-        </div>
-
-        <!-- Email reminder -->
-        <div class="mt-6 text-center">
-          <p class="text-xs text-gray-500">
-            Use your email: <span class="font-mono font-medium">{recruiterData.email}</span>
-          </p>
-        </div>
-      </div>
+    <!-- Email reminder -->
+    <div style="text-align: center; margin-top: 24px;">
+      <p style="
+        font-size: 14px; 
+        color: #6B7280;
+        margin: 0;
+      ">
+        Use your email: <span style="font-family: monospace; font-weight: 500; color: #111827;">{recruiterData.email}</span>
+      </p>
     </div>
   </div>
-
-  <script>
-    function handleSignUp() {
-      // Store the recruiter's profile URL for redirect after signup
-      const profileUrl = '{recruiterData.profileUrl}';
-      localStorage.setItem('recruiter_redirect_url', profileUrl);
-      localStorage.setItem('recruiter_auth_mode', 'sign-up');
-      
-      // Redirect to login page (Clerk will handle signup flow)
-      window.location.href = '/login';
-    }
-
-    function handleSignIn() {
-      // Store the recruiter's profile URL for redirect after signin
-      const profileUrl = '{recruiterData.profileUrl}';
-      localStorage.setItem('recruiter_redirect_url', profileUrl);
-      localStorage.setItem('recruiter_auth_mode', 'sign-in');
-      
-      // Redirect to login page (Clerk will handle signin flow)
-      window.location.href = '/login';
-    }
-
-    // Check if user just logged in and redirect to their profile
-    document.addEventListener('DOMContentLoaded', function() {
-      const redirectUrl = localStorage.getItem('recruiter_redirect_url');
-      if (redirectUrl && typeof window !== 'undefined' && window.Clerk) {
-        window.Clerk.load().then(() => {
-          if (window.Clerk.user) {
-            // User is logged in, redirect to their profile
-            localStorage.removeItem('recruiter_redirect_url');
-            localStorage.removeItem('recruiter_auth_mode');
-            window.location.href = redirectUrl;
-          }
-        });
-      }
-    });
-  </script>
-</WideLayout>
+</body>
+</html>
