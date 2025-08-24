@@ -68,35 +68,32 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
         button.style.cursor = 'wait';
       }
       
-      if (authMode === 'sign_up') {
-        await signUp?.authenticateWithRedirect({
-          strategy: 'oauth_google',
-          redirectUrl: currentPageUrl,
-          redirectUrlComplete: currentPageUrl,
-        });
-      } else {
+      // Universal Google OAuth: Always try signin first (most common case)
+      console.log('🔄 Attempting universal Google authentication for recruiter...');
+      
+      try {
+        // Try signin first since most users already have accounts
         await signIn?.authenticateWithRedirect({
           strategy: 'oauth_google',
           redirectUrl: currentPageUrl,
           redirectUrlComplete: currentPageUrl,
         });
+        console.log('✅ Recruiter Google signin successful');
+      } catch (signInError: any) {
+        console.log('🔄 Recruiter signin failed, trying signup as fallback:', signInError?.message);
+        
+        // If signin fails, try signup as fallback
+        await signUp?.authenticateWithRedirect({
+          strategy: 'oauth_google',
+          redirectUrl: currentPageUrl,
+          redirectUrlComplete: currentPageUrl,
+        });
+        console.log('✅ Recruiter Google signup successful');
       }
     } catch (error) {
-      console.error('Google auth error:', error);
+      console.error('❌ Both Google signin and signup failed for recruiter:', error);
       setIsLoading(false);
-      
-      // If signup fails because user exists, try signin
-      if (authMode === 'sign_up' && error instanceof Error && 
-          (error.message.includes('already exists') || error.message.includes('taken'))) {
-        setAuthMode('sign_in');
-        alert('You already have an account. Please try signing in instead.');
-      } else if (authMode === 'sign_in' && error instanceof Error &&
-                 (error.message.includes('not found') || error.message.includes("doesn't exist"))) {
-        setAuthMode('sign_up');
-        alert('No account found. Please try signing up instead.');
-      } else {
-        alert('Authentication failed. Please try again.');
-      }
+      alert('Google authentication failed. Please try again or use email authentication.');
     }
   };
 
