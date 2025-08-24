@@ -9,6 +9,32 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
   const { isSignedIn, user } = useUser();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
+
+  // OAuth callback error detection for recruiter pages
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+    
+    if (error) {
+      console.log('🚨 Recruiter OAuth callback error:', { error, errorDescription });
+      
+      // Clean up URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      window.history.replaceState({}, '', url.toString());
+      
+      // Handle account linking errors
+      if (errorDescription?.includes('account') || errorDescription?.includes('exists')) {
+        alert('It looks like you already have an account. Please try signing in with your email instead.');
+        setAuthMode('sign_in');
+        setShowEmailForm(true);
+      }
+    }
+  }, []);
   
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -43,19 +69,17 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
       }
       
       if (authMode === 'sign_up') {
-        const result = await signUp?.authenticate({
+        await signUp?.authenticateWithRedirect({
           strategy: 'oauth_google',
           redirectUrl: currentPageUrl,
           redirectUrlComplete: currentPageUrl,
         });
-        console.log('🔄 Recruiter SignUp authenticate result:', result);
       } else {
-        const result = await signIn?.authenticate({
+        await signIn?.authenticateWithRedirect({
           strategy: 'oauth_google',
           redirectUrl: currentPageUrl,
           redirectUrlComplete: currentPageUrl,
         });
-        console.log('🔄 Recruiter SignIn authenticate result:', result);
       }
     } catch (error) {
       console.error('Google auth error:', error);

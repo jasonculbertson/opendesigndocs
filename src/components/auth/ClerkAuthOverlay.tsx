@@ -76,6 +76,28 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
 
+  // Monitor signUp and signIn status for OAuth errors
+  useEffect(() => {
+    if (!isLoaded) return;
+    
+    // Check for OAuth errors in signUp status
+    if (signUp?.status === 'complete' && !isSignedIn) {
+      console.log('🚨 SignUp completed but user not signed in - possible account linking issue');
+      handleOAuthAccountLinkingError('Account creation completed but sign-in failed');
+    }
+    
+    // Check for OAuth errors in signIn status  
+    if (signIn?.status === 'complete' && !isSignedIn) {
+      console.log('🚨 SignIn completed but user not signed in - possible session issue');
+      // Try to refresh the page to complete the session
+      setTimeout(() => {
+        if (!isSignedIn) {
+          window.location.reload();
+        }
+      }, 1000);
+    }
+  }, [signUp?.status, signIn?.status, isSignedIn, isLoaded]);
+
   // Preload Clerk initialization on component mount
   useEffect(() => {
     if (typeof window !== 'undefined' && window.Clerk && !isLoaded) {
@@ -198,6 +220,57 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
     
     return cleanup;
   }, [isLoaded, isSignedIn]); // No dependencies - set up once and keep
+
+  // OAuth callback error detection
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Check for OAuth callback errors in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+    
+    if (error) {
+      console.log('🚨 OAuth callback error detected:', { error, errorDescription });
+      
+      // Handle specific OAuth errors
+      if (error === 'access_denied') {
+        console.log('🔄 User denied OAuth access');
+        // User cancelled OAuth - just close overlay
+        setIsOpen(false);
+      } else if (errorDescription?.includes('account') || errorDescription?.includes('exists')) {
+        console.log('🔄 Account linking issue detected, showing smart fallback');
+        // Account linking failed - show appropriate message and options
+        handleOAuthAccountLinkingError(errorDescription);
+      }
+    }
+  }, []);
+
+  const handleOAuthAccountLinkingError = (errorDescription: string) => {
+    console.log('🔧 Handling OAuth account linking error:', errorDescription);
+    
+    // Clean up URL parameters to avoid repeated error detection
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      window.history.replaceState({}, '', url.toString());
+    }
+    
+    // Show user-friendly message and suggest signin instead
+    const shouldTrySignIn = confirm(
+      'It looks like you already have an account with this email. Would you like to sign in instead?'
+    );
+    
+    if (shouldTrySignIn) {
+      setInitialView('sign_in');
+      setAuthTitle('Welcome back');
+      setIsOpen(true);
+      setShowEmailForm(true); // Show email form for manual signin
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
@@ -418,12 +491,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       if (initialView === 'sign_up') {
                         console.log('🔄 Attempting Google signup first...');
                         try {
-                          const result = await signUp?.authenticate({
+                          await signUp?.authenticateWithRedirect({
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
                           });
-                          console.log('🔄 SignUp authenticate result:', result);
                           oauthSuccess = true;
                         } catch (signUpError: any) {
                           console.log('🔄 Signup failed, trying signin automatically:', signUpError?.message);
@@ -435,12 +507,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                               signUpError?.errors?.[0]?.code === 'form_identifier_exists') {
                             
                             console.log('🔑 User exists, switching to signin flow...');
-                            const fallbackResult = await signIn?.authenticate({
+                            await signIn?.authenticateWithRedirect({
                               strategy: 'oauth_google',
                               redirectUrl: currentPageUrl,
                               redirectUrlComplete: currentPageUrl,
                             });
-                            console.log('🔄 SignIn fallback authenticate result:', fallbackResult);
                             oauthSuccess = true;
                           } else {
                             throw signUpError;
@@ -449,12 +520,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       } else {
                         console.log('🔑 Attempting Google signin first...');
                         try {
-                          const result = await signIn?.authenticate({
+                          await signIn?.authenticateWithRedirect({
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
                           });
-                          console.log('🔄 SignIn authenticate result:', result);
                           oauthSuccess = true;
                         } catch (signInError: any) {
                           console.log('🔄 Signin failed, trying signup automatically:', signInError?.message);
@@ -466,12 +536,11 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                               signInError?.errors?.[0]?.code === 'form_identifier_not_found') {
                             
                             console.log('📝 User not found, switching to signup flow...');
-                            const fallbackResult = await signUp?.authenticate({
+                            await signUp?.authenticateWithRedirect({
                               strategy: 'oauth_google',
                               redirectUrl: currentPageUrl,
                               redirectUrlComplete: currentPageUrl,
                             });
-                            console.log('🔄 SignUp fallback authenticate result:', fallbackResult);
                             oauthSuccess = true;
                           } else {
                             throw signInError;
