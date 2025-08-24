@@ -69,17 +69,19 @@ export default function RecruiterAuth({ recruiterProfileUrl }: RecruiterAuthProp
       }
       
       if (authMode === 'sign_up') {
-        await signUp?.authenticateWithRedirect({
+        await signUp?.authenticateWithPopup({
           strategy: 'oauth_google',
           redirectUrl: currentPageUrl,
           redirectUrlComplete: currentPageUrl,
         });
+        console.log('✅ Recruiter SignUp popup authentication successful');
       } else {
-        await signIn?.authenticateWithRedirect({
+        await signIn?.authenticateWithPopup({
           strategy: 'oauth_google',
           redirectUrl: currentPageUrl,
           redirectUrlComplete: currentPageUrl,
         });
+        console.log('✅ Recruiter SignIn popup authentication successful');
       }
     } catch (error) {
       console.error('Google auth error:', error);
