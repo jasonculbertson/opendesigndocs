@@ -578,7 +578,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
               {/* Divider */}
               <div style={{ 
                 position: 'relative', 
-                marginBottom: '32px',
+                marginBottom: '40px',
                 display: 'flex',
                 alignItems: 'center',
                 textAlign: 'center',
