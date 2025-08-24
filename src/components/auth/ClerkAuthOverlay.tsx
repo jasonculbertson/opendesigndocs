@@ -514,75 +514,35 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         await new Promise(resolve => setTimeout(resolve, 100));
                       }
                       
-                      // Smart OAuth: Try intended flow first, but with better error handling
-                      let oauthSuccess = false;
+                      // Universal Google OAuth: Always try signin first (most common case)
+                      console.log('🔄 Attempting universal Google authentication...');
                       
-                      if (initialView === 'sign_up') {
-                        console.log('🔄 Attempting Google signup first...');
+                      try {
+                        // Try signin first since most users already have accounts
+                        await signIn?.authenticateWithRedirect({
+                          strategy: 'oauth_google',
+                          redirectUrl: currentPageUrl,
+                          redirectUrlComplete: currentPageUrl,
+                        });
+                        console.log('✅ Google signin successful');
+                      } catch (signInError: any) {
+                        console.log('🔄 Signin failed, trying signup as fallback:', signInError?.message);
+                        
+                        // If signin fails, try signup as fallback
                         try {
-                          await signUp?.authenticateWithPopup({
+                          await signUp?.authenticateWithRedirect({
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
                           });
-                          console.log('✅ SignUp popup authentication successful');
-                          oauthSuccess = true;
+                          console.log('✅ Google signup successful');
                         } catch (signUpError: any) {
-                          console.log('🔄 Signup failed, trying signin automatically:', signUpError?.message);
-                          
-                          // If signup fails, automatically try signin
-                          if (signUpError?.message?.includes('already exists') || 
-                              signUpError?.message?.includes('taken') ||
-                              signUpError?.code === 'form_identifier_exists' ||
-                              signUpError?.errors?.[0]?.code === 'form_identifier_exists') {
-                            
-                            console.log('🔑 User exists, switching to signin flow...');
-                            await signIn?.authenticateWithPopup({
-                              strategy: 'oauth_google',
-                              redirectUrl: currentPageUrl,
-                              redirectUrlComplete: currentPageUrl,
-                            });
-                            console.log('✅ SignIn fallback popup authentication successful');
-                            oauthSuccess = true;
-                          } else {
-                            throw signUpError;
-                          }
-                        }
-                      } else {
-                        console.log('🔑 Attempting Google signin first...');
-                        try {
-                          await signIn?.authenticateWithPopup({
-                            strategy: 'oauth_google',
-                            redirectUrl: currentPageUrl,
-                            redirectUrlComplete: currentPageUrl,
+                          console.error('❌ Both Google signin and signup failed:', {
+                            signInError: signInError?.message,
+                            signUpError: signUpError?.message
                           });
-                          console.log('✅ SignIn popup authentication successful');
-                          oauthSuccess = true;
-                        } catch (signInError: any) {
-                          console.log('🔄 Signin failed, trying signup automatically:', signInError?.message);
-                          
-                          // If signin fails, automatically try signup
-                          if (signInError?.message?.includes('not found') || 
-                              signInError?.message?.includes("doesn't exist") ||
-                              signInError?.code === 'form_identifier_not_found' ||
-                              signInError?.errors?.[0]?.code === 'form_identifier_not_found') {
-                            
-                            console.log('📝 User not found, switching to signup flow...');
-                            await signUp?.authenticateWithPopup({
-                              strategy: 'oauth_google',
-                              redirectUrl: currentPageUrl,
-                              redirectUrlComplete: currentPageUrl,
-                            });
-                            console.log('✅ SignUp fallback popup authentication successful');
-                            oauthSuccess = true;
-                          } else {
-                            throw signInError;
-                          }
+                          throw new Error('Google authentication failed. Please try again or use email.');
                         }
-                      }
-                      
-                      if (!oauthSuccess) {
-                        throw new Error('Both signup and signin OAuth attempts failed');
                       }
                     } catch (error) {
                       console.error('Google OAuth error:', error);
