@@ -48,8 +48,8 @@ function AppShellInner({ currentPath, showSidebar = true }: AppShellProps) {
       {/* Mobile Header with integrated profile and hamburger menu */}
       {!isHomepage && <MobileHeader />}
 
-      {/* Auth Guard for non-homepage routes - ENABLED FOR TESTING */}
-      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={true} gracePeriodMs={500} />}
+      {/* Auth Guard for non-homepage routes - DISABLED TO ALLOW PUBLIC ACCESS */}
+      {!isHomepage && <AutoAuthGuard currentPath={actualPath} enabled={false} gracePeriodMs={500} />}
       
       {/* Auth Overlay - responds to AutoAuthGuard events */}
       <ClerkAuthOverlay allowClose={true} />
