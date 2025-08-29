@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Recruiter Invitations via EmailJS</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        body { 
+            font-family: system-ui, sans-serif; 
+            padding: 40px; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: #f9fafb;
+        }
+        .container {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .send-btn { 
+            background: #059669; 
+            color: white; 
+            padding: 16px 32px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin: 10px 5px;
+            min-width: 200px;
+        }
+        .send-btn:hover { background: #047857; }
+        .send-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+        .recruiter { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 8px; 
+            background: #f8fafc;
+        }
+        .status { 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            margin-left: 10px;
+        }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        .status.sending { background: #dbeafe; color: #1e40af; }
+        .status.success { background: #d1fae5; color: #065f46; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+        .log { 
+            background: #1f2937; 
+            color: #f9fafb; 
+            padding: 16px; 
+            border-radius: 8px; 
+            font-family: 'Courier New', monospace; 
+            margin: 20px 0;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Send Recruiter Invitations via EmailJS</h1>
+        <p>This will send personalized invitation emails to all 4 recruiters using EmailJS.</p>
+        
+        <div style="margin: 20px 0;">
+            <button class="send-btn" id="sendAllBtn" onclick="sendAllEmails()">🚀 Send All 4 Emails</button>
+            <button class="send-btn" id="testBtn" onclick="sendTestEmail()" style="background: #4f46e5;">🧪 Send Test Email</button>
+        </div>
+
+        <div class="log" id="log"></div>
+        
+        <div class="recruiter">
+            <h3>1. Laura Hunting (Found By) <span class="status pending" id="status-laura">Pending</span></h3>
+            <p>Email: laura@foundby.co</p>
+            <button class="send-btn" onclick="sendSingleEmail('laura')" style="background: #4f46e5; font-size: 14px; padding: 8px 16px;">Send Individual Email</button>
+        </div>
+        
+        <div class="recruiter">
+            <h3>2. Garrett Fowler (Offsite) <span class="status pending" id="status-garrett">Pending</span></h3>
+            <p>Email: garrett@off.site</p>
+            <button class="send-btn" onclick="sendSingleEmail('garrett')" style="background: #4f46e5; font-size: 14px; padding: 8px 16px;">Send Individual Email</button>
+        </div>
+        
+        <div class="recruiter">
+            <h3>3. Dirk Cleveland (Fusion) <span class="status pending" id="status-dirk">Pending</span></h3>
+            <p>Email: dirk@fusiontalent.com</p>
+            <button class="send-btn" onclick="sendSingleEmail('dirk')" style="background: #4f46e5; font-size: 14px; padding: 8px 16px;">Send Individual Email</button>
+        </div>
+        
+        <div class="recruiter">
+            <h3>4. MJ (Offsite) <span class="status pending" id="status-mj">Pending</span></h3>
+            <p>Email: mj@off.site</p>
+            <button class="send-btn" onclick="sendSingleEmail('mj')" style="background: #4f46e5; font-size: 14px; padding: 8px 16px;">Send Individual Email</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // EmailJS configuration (from your existing setup)
+        const EMAILJS_SERVICE_ID = 'service_eh90d7s';
+        const EMAILJS_PUBLIC_KEY = 'CNMjB2Shpf0Cd5Zn1';
+        
+        // Using the new recruiter invitation template
+        const EMAILJS_TEMPLATE_ID = 'template_kvdplaa'; // Your new recruiter invitation template
+
+        // Initialize EmailJS
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        // Recruiter data
+        const recruiters = {
+            laura: {
+                name: 'Laura Hunting',
+                email: 'laura@foundby.co',
+                agency: 'Found By',
+                inviteUrl: 'https://opendesigndocs.com/docs/recruiters/invite/laura-hunting'
+            },
+            garrett: {
+                name: 'Garrett Fowler',
+                email: 'garrett@off.site', 
+                agency: 'Offsite',
+                inviteUrl: 'https://opendesigndocs.com/docs/recruiters/invite/garrett-fowler'
+            },
+            dirk: {
+                name: 'Dirk Cleveland',
+                email: 'dirk@fusiontalent.com',
+                agency: 'Fusion',
+                inviteUrl: 'https://opendesigndocs.com/docs/recruiters/invite/dirk-cleveland'
+            },
+            mj: {
+                name: 'MJ',
+                email: 'mj@off.site',
+                agency: 'Offsite', 
+                inviteUrl: 'https://opendesigndocs.com/docs/recruiters/invite/mj'
+            }
+        };
+
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function updateStatus(recruiterId, status, message = '') {
+            const statusElement = document.getElementById(`status-${recruiterId}`);
+            statusElement.className = `status ${status}`;
+            statusElement.textContent = message || status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        async function sendSingleEmail(recruiterId) {
+            const recruiter = recruiters[recruiterId];
+            if (!recruiter) {
+                log(`❌ Recruiter ${recruiterId} not found`);
+                return false;
+            }
+
+            updateStatus(recruiterId, 'sending', 'Sending...');
+            log(`📧 Sending invite to ${recruiter.name} (${recruiter.email})...`);
+
+            try {
+                const firstName = recruiter.name.split(' ')[0];
+                
+                // Generate unique tracking ID for this email
+                const trackingId = `${recruiterId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                
+                // Add tracking parameters to invite URL
+                const trackedInviteUrl = `${recruiter.inviteUrl}?utm_source=email&utm_medium=invitation&utm_campaign=recruiter_onboarding&tracking_id=${trackingId}`;
+                
+                // Format email data to match your new recruiter invitation template
+                const emailData = {
+                    to_email: recruiter.email,
+                    to_name: firstName,
+                    invite_url: trackedInviteUrl,
+                    agency_name: recruiter.agency,
+                    tracking_pixel: `https://opendesigndocs.com/api/email-tracking?t=${trackingId}&e=email_opened`,
+                    tracking_id: trackingId
+                };
+
+                const result = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    emailData
+                );
+
+                // Track email sent event
+                try {
+                    await fetch('/api/email-tracking', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            eventType: 'email_sent',
+                            recruiterEmail: recruiter.email,
+                            recruiterName: recruiter.name,
+                            trackingId: trackingId,
+                            metadata: {
+                                agency: recruiter.agency,
+                                emailjs_status: result.status,
+                                invite_url: trackedInviteUrl
+                            }
+                        })
+                    });
+                    log(`📊 Tracked email sent event for ${recruiter.name}`);
+                } catch (trackingError) {
+                    log(`⚠️ Failed to track email event: ${trackingError.message}`);
+                }
+
+                log(`✅ Email sent successfully to ${recruiter.name} (${result.status}) - Tracking ID: ${trackingId}`);
+                updateStatus(recruiterId, 'success', 'Sent ✅');
+                return true;
+
+            } catch (error) {
+                log(`❌ Failed to send email to ${recruiter.name}: ${error.message || error}`);
+                updateStatus(recruiterId, 'error', 'Failed ❌');
+                return false;
+            }
+        }
+
+        async function sendAllEmails() {
+            const sendAllBtn = document.getElementById('sendAllBtn');
+            sendAllBtn.disabled = true;
+            sendAllBtn.textContent = 'Sending...';
+
+            log('🚀 Starting bulk email send...');
+            
+            let successCount = 0;
+            const totalCount = Object.keys(recruiters).length;
+
+            for (const recruiterId of Object.keys(recruiters)) {
+                const success = await sendSingleEmail(recruiterId);
+                if (success) successCount++;
+                
+                // Wait 2 seconds between sends to be respectful
+                if (recruiterId !== Object.keys(recruiters)[Object.keys(recruiters).length - 1]) {
+                    log('⏳ Waiting 2 seconds before next email...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+
+            log(`\n📊 Summary: ${successCount}/${totalCount} emails sent successfully`);
+            
+            sendAllBtn.disabled = false;
+            sendAllBtn.textContent = '🚀 Send All 4 Emails';
+        }
+
+        async function sendTestEmail() {
+            const testBtn = document.getElementById('testBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = 'Sending Test...';
+
+            log('🧪 Sending test email to your own address...');
+
+            try {
+                const emailData = {
+                    to_email: 'jculbertson@gmail.com',
+                    to_name: 'Jason',
+                    invite_url: 'https://opendesigndocs.com/docs/recruiters/invite/laura-hunting',
+                    agency_name: 'Test Agency'
+                };
+
+                const result = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    emailData
+                );
+
+                log(`✅ Test email sent successfully (${result.status})`);
+
+            } catch (error) {
+                log(`❌ Test email failed: ${error.message || error}`);
+            }
+
+            testBtn.disabled = false;
+            testBtn.textContent = '🧪 Send Test Email';
+        }
+
+        // Initialize
+        log('🎯 EmailJS Recruiter Invitation System Ready');
+        log(`📋 Service ID: ${EMAILJS_SERVICE_ID}`);
+        log(`📧 Template ID: ${EMAILJS_TEMPLATE_ID} (Recruiter Invitation Template)`);
+        log('✅ Updated with your new invitation template!');
+        log('Click "Send Test Email" first to verify the setup works');
+    </script>
+</body>
+</html>

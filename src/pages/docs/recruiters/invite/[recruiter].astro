@@ -161,5 +161,37 @@ if (!clerkConfig.isConfigured) {
 
 
   </div>
+
+  <!-- Email Tracking Script -->
+  <script>
+    // Track page visit
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const trackingId = urlParams.get('tracking_id');
+      
+      if (trackingId) {
+        // Track page visit with tracking ID
+        fetch('/api/email-tracking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventType: 'page_visited',
+            recruiterEmail: '{recruiterData.email}',
+            recruiterName: '{recruiterData.name}',
+            trackingId: trackingId,
+            metadata: {
+              page: 'invite',
+              agency: '{recruiterData.agency}',
+              utm_source: urlParams.get('utm_source'),
+              utm_medium: urlParams.get('utm_medium'),
+              utm_campaign: urlParams.get('utm_campaign')
+            }
+          })
+        }).catch(err => console.error('Tracking error:', err));
+        
+        console.log('📊 Tracked invite page visit for {recruiterData.name}');
+      }
+    });
+  </script>
 </body>
 </html>

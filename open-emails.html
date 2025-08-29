@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Recruiter Invitations</title>
+    <style>
+        body { font-family: system-ui, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+        .email-button { 
+            display: block; 
+            background: #4F46E5; 
+            color: white; 
+            padding: 12px 24px; 
+            margin: 10px 0; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            text-align: center;
+            font-weight: 500;
+        }
+        .email-button:hover { background: #3730A3; }
+        .recruiter { margin: 20px 0; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .send-all-btn { 
+            background: #059669; 
+            color: white; 
+            padding: 16px 32px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin: 20px 0;
+        }
+        .send-all-btn:hover { background: #047857; }
+    </style>
+</head>
+<body>
+    <h1>📧 Send Recruiter Invitations</h1>
+    <p>Click the buttons below to open pre-filled emails in your default email client:</p>
+    
+    <button class="send-all-btn" onclick="sendAllEmails()">🚀 Send All 4 Emails</button>
+    
+    <div class="recruiter">
+        <h3>1. Laura Hunting (Found By)</h3>
+        <a href="mailto:laura@foundby.co?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Laura%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/laura-hunting%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason" class="email-button">✉️ Email Laura</a>
+    </div>
+    
+    <div class="recruiter">
+        <h3>2. Garrett Fowler (Offsite)</h3>
+        <a href="mailto:garrett@off.site?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Garrett%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/garrett-fowler%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason" class="email-button">✉️ Email Garrett</a>
+    </div>
+    
+    <div class="recruiter">
+        <h3>3. Dirk Cleveland (Fusion)</h3>
+        <a href="mailto:dirk@fusiontalent.com?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Dirk%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/dirk-cleveland%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason" class="email-button">✉️ Email Dirk</a>
+    </div>
+    
+    <div class="recruiter">
+        <h3>4. MJ (Offsite)</h3>
+        <a href="mailto:mj@off.site?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20MJ%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/mj%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason" class="email-button">✉️ Email MJ</a>
+    </div>
+
+    <script>
+        function sendAllEmails() {
+            const emails = [
+                "mailto:laura@foundby.co?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Laura%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/laura-hunting%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason",
+                "mailto:garrett@off.site?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Garrett%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/garrett-fowler%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason",
+                "mailto:dirk@fusiontalent.com?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20Dirk%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/dirk-cleveland%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason",
+                "mailto:mj@off.site?subject=Your%20Open%20Design%20Docs%20Profile%20-%20Ready%20to%20Edit&body=Hi%20MJ%2C%0A%0AI%27ve%20set%20up%20your%20recruiter%20profile%20on%20Open%20Design%20Docs%21%20You%20can%20now%20access%20and%20edit%20your%20profile%20using%20this%20personalized%20link%3A%0A%0Ahttps%3A//opendesigndocs.com/docs/recruiters/invite/mj%0A%0AThis%20link%20will%20guide%20you%20through%3A%0A%E2%80%A2%20Creating%20your%20account%20%28using%20your%20professional%20email%29%0A%E2%80%A2%20Accessing%20your%20profile%20page%0A%E2%80%A2%20Editing%20your%20information%2C%20specialties%2C%20and%20approach%0A%0AThe%20whole%20process%20takes%20just%20a%20few%20minutes.%20Let%20me%20know%20if%20you%20have%20any%20questions%21%0A%0ABest%2C%0AJason"
+            ];
+            
+            emails.forEach((email, index) => {
+                setTimeout(() => {
+                    window.open(email);
+                }, index * 1000); // 1 second delay between each email
+            });
+        }
+    </script>
+</body>
+</html>
