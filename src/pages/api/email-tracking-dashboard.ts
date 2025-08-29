@@ -4,14 +4,24 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
-export async function GET({ request }: APIContext) {
+export async function GET({ request, locals }: APIContext) {
   try {
-    // Simple admin check (you might want to make this more robust)
-    const url = new URL(request.url);
-    const adminKey = url.searchParams.get('admin');
+    // Check for proper admin access via Clerk authentication
+    const ADMIN_EMAIL = 'jculbertson@gmail.com';
+    const ADMIN_USER_IDS = [
+      'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
+      'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
+    ];
+
+    let isAdmin = false;
+    if (locals.auth?.user) {
+      const userEmail = locals.auth.user.primaryEmailAddress?.emailAddress;
+      const userId = locals.auth.user.id;
+      isAdmin = userEmail === ADMIN_EMAIL || ADMIN_USER_IDS.includes(userId);
+    }
     
-    if (adminKey !== 'jason2024') {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    if (!isAdmin) {
+      return new Response(JSON.stringify({ error: 'Unauthorized - Admin access required' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' }
       });

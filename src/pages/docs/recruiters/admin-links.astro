@@ -1,14 +1,28 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
 
-// Check for admin access
-const url = new URL(Astro.request.url);
-const adminKey = url.searchParams.get('admin');
-const isAdmin = adminKey === 'jason2024';
+// Check for proper admin access via Clerk authentication
+const ADMIN_EMAIL = 'jculbertson@gmail.com';
+const ADMIN_USER_IDS = [
+  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
+];
+
+// Get user from Clerk auth
+let isAdmin = false;
+let userEmail = null;
+
+if (Astro.locals.auth?.user) {
+  userEmail = Astro.locals.auth.user.primaryEmailAddress?.emailAddress;
+  const userId = Astro.locals.auth.user.id;
+  isAdmin = userEmail === ADMIN_EMAIL || ADMIN_USER_IDS.includes(userId);
+}
 
 if (!isAdmin) {
   return Astro.redirect('/docs/recruiters');
 }
+
+const url = new URL(Astro.request.url);
 
 const recruiters = [
   {
