@@ -23,10 +23,22 @@ if (Astro.locals.auth?.user) {
   isAdmin = userEmail === ADMIN_EMAIL || ADMIN_USER_IDS.includes(userId);
 }
 
+// Debug info for troubleshooting
+console.log('🔍 Email tracking page auth debug:', {
+  hasUrlAccess,
+  isAdmin,
+  userEmail,
+  authUser: Astro.locals.auth?.user ? 'exists' : 'missing',
+  adminKey
+});
+
 // Allow access if either authenticated properly OR using admin URL (temporary)
 if (!isAdmin && !hasUrlAccess) {
+  console.log('❌ Access denied - redirecting to recruiters page');
   return Astro.redirect('/docs/recruiters');
 }
+
+console.log('✅ Access granted to email tracking dashboard');
 
 const title = "Email Tracking Dashboard";
 const description = "Monitor recruiter email engagement and onboarding progress";
