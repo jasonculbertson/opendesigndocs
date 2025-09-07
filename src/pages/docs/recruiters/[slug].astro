@@ -518,10 +518,22 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
 </WideLayout>
 
 <script define:vars={{ validRecruiterData, displayName }}>
+// AGGRESSIVE CLEANUP: Remove all old recruiter page scripts from DOM
+const oldScripts = document.querySelectorAll('script[data-recruiter-page]');
+oldScripts.forEach(script => {
+  console.log('Removing old recruiter script:', script.dataset.recruiterId);
+  script.remove();
+});
+
 // CLEANUP: Remove any existing recruiter page scripts to prevent conflicts
 if (window.recruiterPageCleanup) {
   window.recruiterPageCleanup();
 }
+
+// Clear any existing global variables from previous pages
+delete window.currentRecruiterData;
+delete window.displayName;
+delete window.currentPageId;
 
 // Clear any existing event listeners that might be attached to edit buttons
 const existingEditBtn = document.getElementById('edit-profile-btn');
@@ -534,6 +546,10 @@ if (existingEditBtn) {
 // Create unique namespace for this page
 const pageId = `recruiter-${validRecruiterData.id}`;
 console.log(`=== INITIALIZING PAGE: ${pageId} ===`);
+
+// Mark this script element for future cleanup
+document.currentScript.setAttribute('data-recruiter-page', 'true');
+document.currentScript.setAttribute('data-recruiter-id', validRecruiterData.id);
 
 // Make recruiter data globally available - ALWAYS update for current page
 window.currentRecruiterData = validRecruiterData;
@@ -1148,6 +1164,14 @@ window.recruiterPageCleanup = function() {
   if (window.recruiterPageInterval) {
     clearInterval(window.recruiterPageInterval);
   }
+  
+  // Clear global variables
+  delete window.currentRecruiterData;
+  delete window.displayName;
+  delete window.currentPageId;
+  
+  // Remove this cleanup function itself
+  delete window.recruiterPageCleanup;
 };
 
 // Main initialization function
