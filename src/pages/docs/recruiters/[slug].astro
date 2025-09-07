@@ -1097,6 +1097,17 @@ function setupEventListeners() {
   const uploadBtn = document.getElementById('upload-button');
   const imageInput = document.getElementById('image-upload');
   
+  // CRITICAL FIX: Update button attributes to match current page data
+  if (editBtn && window.currentRecruiterData) {
+    editBtn.setAttribute('data-recruiter-id', window.currentRecruiterData.id);
+    editBtn.setAttribute('data-recruiter-email', window.currentRecruiterData.email);
+    console.log('✅ Updated button attributes for current page:', {
+      id: editBtn.getAttribute('data-recruiter-id'),
+      email: editBtn.getAttribute('data-recruiter-email'),
+      currentData: window.currentRecruiterData.id
+    });
+  }
+  
   console.log('Setting up event listeners - Edit button found:', editBtn);
   console.log('Close button found:', closeBtn);
   console.log('Recruiter data:', validRecruiterData);
