@@ -518,9 +518,12 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
 </WideLayout>
 
 <script define:vars={{ validRecruiterData, displayName }}>
-// Make recruiter data globally available
+// Make recruiter data globally available - ALWAYS update for current page
 window.currentRecruiterData = validRecruiterData;
 window.displayName = displayName;
+
+// Debug: Log when data is set
+console.log('Setting recruiter data for page:', displayName, validRecruiterData);
 
 // Image handling functions
 function populateCurrentImage(recruiterData) {
@@ -632,14 +635,24 @@ function openEditModal() {
   const modal = document.getElementById('editModal');
   if (!modal || !validRecruiterData) return;
 
-  // Use the current (potentially updated) recruiter data
-  const currentData = window.currentRecruiterData || validRecruiterData;
+  // ALWAYS use the page's validRecruiterData as the source of truth
+  // Only fall back to window.currentRecruiterData if it matches the current page
+  let currentData = validRecruiterData;
+  
+  // If window.currentRecruiterData exists and matches current page, use it (for any updates)
+  if (window.currentRecruiterData && window.currentRecruiterData.id === validRecruiterData.id) {
+    currentData = window.currentRecruiterData;
+  } else {
+    // Reset window data to match current page
+    window.currentRecruiterData = validRecruiterData;
+    currentData = validRecruiterData;
+  }
   
   // Debug: Log what data we're using
   console.log('Opening edit modal for:', currentData.name);
   console.log('Current data:', currentData);
-  console.log('validRecruiterData:', validRecruiterData);
-  console.log('window.currentRecruiterData:', window.currentRecruiterData);
+  console.log('Page validRecruiterData:', validRecruiterData);
+  console.log('Window currentRecruiterData:', window.currentRecruiterData);
 
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
@@ -1085,8 +1098,23 @@ function handleEscapeKey(e) {
   }
 }
 
+// Function to refresh recruiter data for current page
+function refreshRecruiterData() {
+  console.log('Refreshing recruiter data for current page');
+  window.currentRecruiterData = validRecruiterData;
+  window.displayName = displayName;
+  console.log('Updated to:', displayName, validRecruiterData);
+}
+
 // Set up event listeners for both initial load and Astro View Transitions
-document.addEventListener('DOMContentLoaded', setupEventListeners);
-document.addEventListener('astro:page-load', setupEventListeners);
+document.addEventListener('DOMContentLoaded', function() {
+  refreshRecruiterData();
+  setupEventListeners();
+});
+
+document.addEventListener('astro:page-load', function() {
+  refreshRecruiterData();
+  setupEventListeners();
+});
 
 </script>
