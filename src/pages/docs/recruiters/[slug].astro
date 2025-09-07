@@ -532,13 +532,7 @@ window.currentRecruiterData = validRecruiterData;
 window.displayName = displayName;
 window.currentPageId = pageId;
 
-// Debug: Log when data is set
-console.log('=== PAGE LOAD DEBUG ===');
-console.log('Setting recruiter data for page:', displayName);
-console.log('Recruiter ID:', validRecruiterData.id);
-console.log('Page ID:', pageId);
-console.log('Current URL:', window.location.pathname);
-console.log('========================');
+console.log(`Initializing page: ${displayName} (ID: ${validRecruiterData.id})`);
 
 // Image handling functions
 function populateCurrentImage(recruiterData) {
@@ -648,40 +642,33 @@ function updateUploadProgress(percent) {
 // Modal functions
 function openEditModal() {
   const modal = document.getElementById('editModal');
-  if (!modal || !validRecruiterData) return;
+  if (!modal) return;
 
-  // SECURITY: Only allow modal opening if this is the current page
-  const expectedPageId = `recruiter-${validRecruiterData.id}`;
-  if (window.currentPageId !== expectedPageId) {
-    console.error(`Modal blocked - page mismatch. Expected: ${expectedPageId}, Current: ${window.currentPageId}`);
+  // Get the current page's recruiter data from the edit button's data attributes
+  const editBtn = document.getElementById('edit-profile-btn');
+  if (!editBtn) {
+    console.error('Edit button not found');
     return;
   }
 
-  // ALWAYS use the page's validRecruiterData as the source of truth
-  // Only fall back to window.currentRecruiterData if it matches the current page
-  let currentData = validRecruiterData;
+  const recruiterId = editBtn.getAttribute('data-recruiter-id');
+  const recruiterEmail = editBtn.getAttribute('data-recruiter-email');
   
-  // If window.currentRecruiterData exists and matches current page, use it (for any updates)
-  if (window.currentRecruiterData && window.currentRecruiterData.id === validRecruiterData.id) {
-    currentData = window.currentRecruiterData;
-  } else {
-    // Reset window data to match current page
-    window.currentRecruiterData = validRecruiterData;
-    currentData = validRecruiterData;
+  if (!recruiterId) {
+    console.error('Recruiter ID not found in edit button');
+    return;
+  }
+
+  // Use window.currentRecruiterData if it matches the current page's recruiter ID
+  let currentData = window.currentRecruiterData;
+  
+  // Validate that we have the right data for this page
+  if (!currentData || currentData.id.toString() !== recruiterId) {
+    console.error(`Data mismatch: Expected ID ${recruiterId}, got ${currentData?.id}`);
+    return;
   }
   
-  // Debug: Log what data we're using
-  console.log('=== MODAL OPEN DEBUG ===');
-  console.log('Current URL:', window.location.pathname);
-  console.log('Opening edit modal for:', currentData.name);
-  console.log('Current data ID:', currentData.id);
-  console.log('Page validRecruiterData ID:', validRecruiterData.id);
-  console.log('Window currentRecruiterData ID:', window.currentRecruiterData?.id);
-  console.log('Data match check:', window.currentRecruiterData?.id === validRecruiterData.id);
-  console.log('Full current data:', currentData);
-  console.log('Full page validRecruiterData:', validRecruiterData);
-  console.log('Full window currentRecruiterData:', window.currentRecruiterData);
-  console.log('========================');
+  console.log('Opening edit modal for:', currentData.name, '(ID:', currentData.id, ')');
 
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
@@ -1129,24 +1116,14 @@ function handleEscapeKey(e) {
 
 // Function to refresh recruiter data for current page
 function refreshRecruiterData() {
-  console.log('=== REFRESH DEBUG ===');
-  console.log('Refreshing recruiter data for current page');
-  console.log('Current URL:', window.location.pathname);
-  console.log('Before - window.currentRecruiterData:', window.currentRecruiterData);
-  console.log('Before - window.displayName:', window.displayName);
-  
   window.currentRecruiterData = validRecruiterData;
   window.displayName = displayName;
-  
-  console.log('After - window.currentRecruiterData:', window.currentRecruiterData);
-  console.log('After - window.displayName:', window.displayName);
-  console.log('validRecruiterData (source):', validRecruiterData);
-  console.log('====================');
+  console.log(`Refreshed data for: ${displayName} (ID: ${validRecruiterData.id})`);
 }
 
 // Cleanup function for this page
 window.recruiterPageCleanup = function() {
-  console.log(`=== CLEANING UP PAGE: ${window.currentPageId || 'unknown'} ===`);
+  console.log(`Cleaning up page: ${window.currentPageId || 'unknown'}`);
   
   // Remove event listeners
   document.removeEventListener('DOMContentLoaded', initializePage);
@@ -1156,8 +1133,6 @@ window.recruiterPageCleanup = function() {
   if (window.recruiterPageInterval) {
     clearInterval(window.recruiterPageInterval);
   }
-  
-  console.log('Page cleanup completed');
 };
 
 // Main initialization function
@@ -1169,7 +1144,7 @@ function initializePage() {
     return;
   }
   
-  console.log(`=== INITIALIZING LISTENERS FOR: ${expectedPageId} ===`);
+  console.log(`Initializing listeners for: ${expectedPageId}`);
   refreshRecruiterData();
   setupEventListeners();
 }
