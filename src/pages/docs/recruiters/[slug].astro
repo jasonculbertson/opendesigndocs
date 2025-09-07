@@ -523,7 +523,13 @@ window.currentRecruiterData = validRecruiterData;
 window.displayName = displayName;
 
 // Debug: Log when data is set
-console.log('Setting recruiter data for page:', displayName, validRecruiterData);
+console.log('=== PAGE LOAD DEBUG ===');
+console.log('Setting recruiter data for page:', displayName);
+console.log('Recruiter ID:', validRecruiterData.id);
+console.log('Recruiter Name:', validRecruiterData.name);
+console.log('Current URL:', window.location.pathname);
+console.log('validRecruiterData:', validRecruiterData);
+console.log('========================');
 
 // Image handling functions
 function populateCurrentImage(recruiterData) {
@@ -649,10 +655,17 @@ function openEditModal() {
   }
   
   // Debug: Log what data we're using
+  console.log('=== MODAL OPEN DEBUG ===');
+  console.log('Current URL:', window.location.pathname);
   console.log('Opening edit modal for:', currentData.name);
-  console.log('Current data:', currentData);
-  console.log('Page validRecruiterData:', validRecruiterData);
-  console.log('Window currentRecruiterData:', window.currentRecruiterData);
+  console.log('Current data ID:', currentData.id);
+  console.log('Page validRecruiterData ID:', validRecruiterData.id);
+  console.log('Window currentRecruiterData ID:', window.currentRecruiterData?.id);
+  console.log('Data match check:', window.currentRecruiterData?.id === validRecruiterData.id);
+  console.log('Full current data:', currentData);
+  console.log('Full page validRecruiterData:', validRecruiterData);
+  console.log('Full window currentRecruiterData:', window.currentRecruiterData);
+  console.log('========================');
 
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
@@ -1100,10 +1113,19 @@ function handleEscapeKey(e) {
 
 // Function to refresh recruiter data for current page
 function refreshRecruiterData() {
+  console.log('=== REFRESH DEBUG ===');
   console.log('Refreshing recruiter data for current page');
+  console.log('Current URL:', window.location.pathname);
+  console.log('Before - window.currentRecruiterData:', window.currentRecruiterData);
+  console.log('Before - window.displayName:', window.displayName);
+  
   window.currentRecruiterData = validRecruiterData;
   window.displayName = displayName;
-  console.log('Updated to:', displayName, validRecruiterData);
+  
+  console.log('After - window.currentRecruiterData:', window.currentRecruiterData);
+  console.log('After - window.displayName:', window.displayName);
+  console.log('validRecruiterData (source):', validRecruiterData);
+  console.log('====================');
 }
 
 // Set up event listeners for both initial load and Astro View Transitions
