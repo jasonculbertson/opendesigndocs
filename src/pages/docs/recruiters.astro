@@ -208,6 +208,10 @@ let hasAccess = true;
       if (window.Clerk?.user) {
         const userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
         
+        console.log('🔍 Checking access for email:', userEmail);
+        console.log('🔍 Admin email:', ADMIN_EMAIL);
+        console.log('🔍 Recruiter emails:', RECRUITER_EMAILS);
+        
         if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
           console.log('✅ Instant access granted for:', userEmail);
           return; // Content is already visible, nothing to do
@@ -216,6 +220,7 @@ let hasAccess = true;
           hideContent();
         }
       } else {
+        console.log('⏳ Clerk not ready yet, waiting...');
         // Clerk not ready yet, wait a bit and try again
         setTimeout(delayedAuthCheck, 100);
       }
@@ -223,24 +228,28 @@ let hasAccess = true;
     
     async function delayedAuthCheck() {
       try {
+        console.log('🔍 Running delayed auth check...');
         if (window.Clerk) {
           await window.Clerk.load();
           const user = window.Clerk.user;
           const userEmail = user?.primaryEmailAddress?.emailAddress;
           
+          console.log('🔍 Delayed check - User email:', userEmail);
+          console.log('🔍 Delayed check - User object:', user ? 'exists' : 'missing');
+          
           if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
-            console.log('✅ Access granted for:', userEmail);
+            console.log('✅ Delayed access granted for:', userEmail);
             return; // Content is already visible
           } else {
-            console.log('❌ Access denied for:', userEmail);
+            console.log('❌ Delayed access denied for:', userEmail);
             hideContent();
           }
         } else {
-          console.log('❌ Clerk not available');
+          console.log('❌ Clerk not available in delayed check');
           hideContent();
         }
       } catch (error) {
-        console.log('❌ Auth check failed:', error);
+        console.log('❌ Delayed auth check failed:', error);
         hideContent();
       }
     }
