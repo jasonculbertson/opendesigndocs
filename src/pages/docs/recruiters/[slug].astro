@@ -634,6 +634,12 @@ function openEditModal() {
 
   // Use the current (potentially updated) recruiter data
   const currentData = window.currentRecruiterData || validRecruiterData;
+  
+  // Debug: Log what data we're using
+  console.log('Opening edit modal for:', currentData.name);
+  console.log('Current data:', currentData);
+  console.log('validRecruiterData:', validRecruiterData);
+  console.log('window.currentRecruiterData:', window.currentRecruiterData);
 
   // Populate form fields with current data (including any updates)
   document.getElementById('edit-name').value = currentData.displayName || currentData.name || '';
