@@ -9,44 +9,49 @@
     </style>
 </head>
 <body>
-    <h1>Debug Dirk's Database Data</h1>
-    <button onclick="checkDirk()">Check Dirk's Data</button>
+    <h1>Debug All Recruiters' Database Data</h1>
+    <button onclick="checkAllRecruiters()">Check All Recruiters</button>
     <div id="results"></div>
 
     <script>
-        async function checkDirk() {
+        async function checkAllRecruiters() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<p>Loading...</p>';
             
             try {
-                // Check Dirk specifically by slug
-                const response = await fetch('/api/recruiters.json?slug=dirk-cleveland');
+                // Get all recruiters
+                const response = await fetch('/api/recruiters.json');
                 const data = await response.json();
                 
-                let html = '<h2>Dirk Cleveland Database Data:</h2>';
+                let html = '<h2>All Recruiters Database Data:</h2>';
                 
                 if (data.success && data.data) {
-                    const dirk = data.data;
+                    const recruiters = data.data;
+                    
+                    recruiters.forEach(recruiter => {
+                        const emailMatch = recruiter.email === recruiter.login_email;
+                        html += `
+                            <div class="data">
+                                <h3>${recruiter.name} (ID: ${recruiter.id})</h3>
+                                <p><strong>Email:</strong> ${recruiter.email}</p>
+                                <p><strong>Login Email:</strong> ${recruiter.login_email}</p>
+                                <p><strong>Slug:</strong> ${recruiter.slug}</p>
+                                <p><strong>Agency:</strong> ${recruiter.agency}</p>
+                                <p><strong>Is Active:</strong> ${recruiter.is_active}</p>
+                                <p><strong>Email Match:</strong> ${emailMatch ? '✅ Match' : '❌ MISMATCH'}</p>
+                                ${!emailMatch ? `<p style="color: red;"><strong>⚠️ ISSUE:</strong> Login email should be ${recruiter.email}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    // Summary
+                    const mismatches = recruiters.filter(r => r.email !== r.login_email);
                     html += `
-                        <div class="data">
-                            <h3>Raw Database Record:</h3>
-                            <pre>${JSON.stringify(dirk, null, 2)}</pre>
-                        </div>
-                        <div class="data">
-                            <h3>Key Fields:</h3>
-                            <p><strong>ID:</strong> ${dirk.id}</p>
-                            <p><strong>Name:</strong> ${dirk.name}</p>
-                            <p><strong>Email:</strong> ${dirk.email}</p>
-                            <p><strong>Login Email:</strong> ${dirk.login_email}</p>
-                            <p><strong>Slug:</strong> ${dirk.slug}</p>
-                            <p><strong>Agency:</strong> ${dirk.agency}</p>
-                            <p><strong>Is Active:</strong> ${dirk.is_active}</p>
-                        </div>
-                        <div class="data">
-                            <h3>Potential Issues:</h3>
-                            <p><strong>Email vs Login Email Match:</strong> ${dirk.email === dirk.login_email ? '✅ Match' : '❌ Mismatch'}</p>
-                            <p><strong>Expected Login Email:</strong> dirk@fusiontalent.com</p>
-                            <p><strong>Actual Login Email:</strong> ${dirk.login_email}</p>
+                        <div class="data" style="background: ${mismatches.length > 0 ? '#ffe6e6' : '#e6ffe6'};">
+                            <h3>Summary</h3>
+                            <p><strong>Total Recruiters:</strong> ${recruiters.length}</p>
+                            <p><strong>Email Mismatches:</strong> ${mismatches.length}</p>
+                            ${mismatches.length > 0 ? `<p><strong>Affected:</strong> ${mismatches.map(r => r.name).join(', ')}</p>` : ''}
                         </div>
                     `;
                 } else {
