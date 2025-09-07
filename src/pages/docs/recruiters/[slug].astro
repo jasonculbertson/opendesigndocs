@@ -523,6 +523,14 @@ if (window.recruiterPageCleanup) {
   window.recruiterPageCleanup();
 }
 
+// Clear any existing event listeners that might be attached to edit buttons
+const existingEditBtn = document.getElementById('edit-profile-btn');
+if (existingEditBtn) {
+  // Clone the button to remove all event listeners
+  const newEditBtn = existingEditBtn.cloneNode(true);
+  existingEditBtn.parentNode.replaceChild(newEditBtn, existingEditBtn);
+}
+
 // Create unique namespace for this page
 const pageId = `recruiter-${validRecruiterData.id}`;
 console.log(`=== INITIALIZING PAGE: ${pageId} ===`);
@@ -665,6 +673,13 @@ function openEditModal() {
   // Validate that we have the right data for this page
   if (!currentData || currentData.id.toString() !== recruiterId) {
     console.error(`Data mismatch: Expected ID ${recruiterId}, got ${currentData?.id}`);
+    return;
+  }
+
+  // Double-check that this script belongs to the current page
+  const expectedPageId = `recruiter-${recruiterId}`;
+  if (window.currentPageId !== expectedPageId) {
+    console.error(`Script mismatch: Expected page ${expectedPageId}, current page ${window.currentPageId}`);
     return;
   }
   
