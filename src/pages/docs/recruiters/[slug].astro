@@ -718,12 +718,14 @@ function openEditModal() {
     return;
   }
 
-  // Use window.currentRecruiterData if it matches the current page's recruiter ID
-  let currentData = window.currentRecruiterData;
+  // CRITICAL FIX: Always use the current script's data, not the global variable
+  let currentData = validRecruiterData; // Use the script-scoped data, not window.currentRecruiterData
   
   // Validate that we have the right data for this page
   if (!currentData || currentData.id.toString() !== recruiterId) {
     console.error(`Data mismatch: Expected ID ${recruiterId}, got ${currentData?.id}`);
+    console.error('Script-scoped data:', validRecruiterData);
+    console.error('Global data:', window.currentRecruiterData);
     return;
   }
 
