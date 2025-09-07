@@ -117,7 +117,7 @@ let hasAccess = true;
       </div>
       <div class="flex flex-col md:flex-row md:justify-between md:items-baseline">
         <p class="mt-2 text-[15px] text-[#3c4257] mb-4 md:mb-6">
-          Design recruiters personally vetted by me for exceptional results.
+          Design recruiters vetted for exceptional results.
         </p>
         {false && hasAccess && (
           <div class="flex-shrink-0 md:ml-8">
@@ -135,21 +135,7 @@ let hasAccess = true;
       </div>
     </div>
 
-    <!-- Access Denied Message (hidden by default, shown by client-side script if not authorized) -->
-    <div id="access-denied" class="flex flex-col items-center justify-center min-h-[400px] text-center" style="display: none;">
-      <div class="max-w-md mx-auto">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Private Directory</h2>
-        <p class="text-gray-600 mb-6">
-          This recruiter directory is currently private. If you're a recruiter looking to be listed, please contact me directly.
-        </p>
-        <a 
-          href="/docs" 
-          class="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition-colors"
-        >
-          Back to Documentation
-        </a>
-      </div>
-    </div>
+    <!-- Removed access denied message - directory is now public -->
 
     <!-- Recruiters Grid (shown by default, hidden by client-side script if not authorized) -->
     <div id="recruiters-container">
@@ -193,83 +179,9 @@ let hasAccess = true;
   <!-- Modal Components -->
   {hasAccess && (<RecruiterSubmissionModal client:load />)}
 
-  <!-- Fast client-side authentication check -->
+  <!-- Directory is now public - no authentication required -->
   <script>
-    const ADMIN_EMAIL = 'jculbertson@gmail.com';
-    const RECRUITER_EMAILS = [
-      'laura@foundby.co',
-      'garrett@off.site', 
-      'dirk@fusiontalent.com',
-      'mj@off.site'
-    ];
-    
-    function quickAuthCheck() {
-      // Quick check - if Clerk is already loaded and user is available
-      if (window.Clerk?.user) {
-        const userEmail = window.Clerk.user.primaryEmailAddress?.emailAddress;
-        
-        console.log('🔍 Checking access for email:', userEmail);
-        console.log('🔍 Admin email:', ADMIN_EMAIL);
-        console.log('🔍 Recruiter emails:', RECRUITER_EMAILS);
-        
-        if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
-          console.log('✅ Instant access granted for:', userEmail);
-          return; // Content is already visible, nothing to do
-        } else {
-          console.log('❌ Access denied for:', userEmail);
-          hideContent();
-        }
-      } else {
-        console.log('⏳ Clerk not ready yet, waiting...');
-        // Clerk not ready yet, wait a bit and try again
-        setTimeout(delayedAuthCheck, 100);
-      }
-    }
-    
-    async function delayedAuthCheck() {
-      try {
-        console.log('🔍 Running delayed auth check...');
-        if (window.Clerk) {
-          await window.Clerk.load();
-          const user = window.Clerk.user;
-          const userEmail = user?.primaryEmailAddress?.emailAddress;
-          
-          console.log('🔍 Delayed check - User email:', userEmail);
-          console.log('🔍 Delayed check - User object:', user ? 'exists' : 'missing');
-          
-          if (userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail)) {
-            console.log('✅ Delayed access granted for:', userEmail);
-            return; // Content is already visible
-          } else {
-            console.log('❌ Delayed access denied for:', userEmail);
-            hideContent();
-          }
-        } else {
-          console.log('❌ Clerk not available in delayed check');
-          hideContent();
-        }
-      } catch (error) {
-        console.log('❌ Delayed auth check failed:', error);
-        hideContent();
-      }
-    }
-    
-    function hideContent() {
-      const recruitersContainer = document.getElementById('recruiters-container');
-      const accessDenied = document.getElementById('access-denied');
-      
-      if (recruitersContainer) recruitersContainer.style.display = 'none';
-      if (accessDenied) accessDenied.style.display = 'flex';
-    }
-    
-    // Run immediately
-    quickAuthCheck();
-    
-    // Also check on navigation events
-    window.addEventListener('pageshow', quickAuthCheck);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) quickAuthCheck();
-    });
+    console.log('📂 Recruiter directory is now publicly accessible');
   </script>
 </WideLayout>
 

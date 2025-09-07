@@ -144,12 +144,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
           href: '/docs/team',
           icon: Users
         }] : []),
-        // Conditionally add Recruiters menu item based on access parameter
-        ...(hasRecruiterAccess ? [{
-          name: 'Recruiter Directory',
-          href: '/docs/recruiters?access=recruit2024',
-          icon: Book
-        }] : []),
+        // Recruiter Directory removed from navigation (still accessible via direct link)
         {
           name: 'Reviews AI',
           href: '/docs/reviews-ai',
