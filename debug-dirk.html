@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Dirk's Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .data { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Debug Dirk's Database Data</h1>
+    <button onclick="checkDirk()">Check Dirk's Data</button>
+    <div id="results"></div>
+
+    <script>
+        async function checkDirk() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                // Check Dirk specifically by slug
+                const response = await fetch('/api/recruiters.json?slug=dirk-cleveland');
+                const data = await response.json();
+                
+                let html = '<h2>Dirk Cleveland Database Data:</h2>';
+                
+                if (data.success && data.data) {
+                    const dirk = data.data;
+                    html += `
+                        <div class="data">
+                            <h3>Raw Database Record:</h3>
+                            <pre>${JSON.stringify(dirk, null, 2)}</pre>
+                        </div>
+                        <div class="data">
+                            <h3>Key Fields:</h3>
+                            <p><strong>ID:</strong> ${dirk.id}</p>
+                            <p><strong>Name:</strong> ${dirk.name}</p>
+                            <p><strong>Email:</strong> ${dirk.email}</p>
+                            <p><strong>Login Email:</strong> ${dirk.login_email}</p>
+                            <p><strong>Slug:</strong> ${dirk.slug}</p>
+                            <p><strong>Agency:</strong> ${dirk.agency}</p>
+                            <p><strong>Is Active:</strong> ${dirk.is_active}</p>
+                        </div>
+                        <div class="data">
+                            <h3>Potential Issues:</h3>
+                            <p><strong>Email vs Login Email Match:</strong> ${dirk.email === dirk.login_email ? '✅ Match' : '❌ Mismatch'}</p>
+                            <p><strong>Expected Login Email:</strong> dirk@fusiontalent.com</p>
+                            <p><strong>Actual Login Email:</strong> ${dirk.login_email}</p>
+                        </div>
+                    `;
+                } else {
+                    html += `<p>❌ Error: ${data.error || 'No data found'}</p>`;
+                }
+                
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
