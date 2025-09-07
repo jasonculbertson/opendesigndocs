@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Recruiter Database</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .recruiter { border: 1px solid #ccc; margin: 10px 0; padding: 15px; }
+        .field { margin: 5px 0; }
+        .label { font-weight: bold; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Recruiter Database Check</h1>
+    <button onclick="checkDatabase()">Check Current Database</button>
+    <div id="results"></div>
+
+    <script>
+        async function checkDatabase() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch('/api/recruiters.json');
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    let html = '<h2>Current Recruiters in Database:</h2>';
+                    
+                    data.data.forEach(recruiter => {
+                        html += `
+                            <div class="recruiter">
+                                <div class="field"><span class="label">ID:</span> ${recruiter.id}</div>
+                                <div class="field"><span class="label">Name:</span> ${recruiter.name}</div>
+                                <div class="field"><span class="label">Agency:</span> ${recruiter.agency}</div>
+                                <div class="field"><span class="label">Title:</span> ${recruiter.title}</div>
+                                <div class="field"><span class="label">Email:</span> ${recruiter.email}</div>
+                                <div class="field"><span class="label">Login Email:</span> ${recruiter.login_email}</div>
+                                <div class="field"><span class="label">Slug:</span> ${recruiter.slug}</div>
+                                <div class="field"><span class="label">About:</span> ${recruiter.about ? recruiter.about.substring(0, 100) + '...' : 'N/A'}</div>
+                                <div class="field"><span class="label">Specialties:</span> ${recruiter.specialties || 'N/A'}</div>
+                                <div class="field"><span class="label">Philosophy:</span> ${recruiter.philosophy ? recruiter.philosophy.substring(0, 100) + '...' : 'N/A'}</div>
+                                <div class="field"><span class="label">Approach:</span> ${recruiter.approach ? recruiter.approach.substring(0, 100) + '...' : 'N/A'}</div>
+                                <div class="field"><span class="label">Notable Clients:</span> ${recruiter.notable_clients || 'N/A'}</div>
+                                <div class="field"><span class="label">Updated At:</span> ${recruiter.updated_at}</div>
+                                <div class="field"><span class="label">Is Active:</span> ${recruiter.is_active}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `<p>Error: ${data.error || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -50,90 +50,7 @@ function createSlug(name: string): string {
     .replace(/(^-|-$)+/g, '');
 }
 
-// Define recruiters data - we'll use this for fast loading and reading, but save to database
-const recruitersData = [
-  {
-    id: 1,
-    name: "Laura Hunting",
-    agency: "Found By",
-    title: "Founding Partner",
-    image: "/images/laura.jpeg",
-    linkedin: "https://www.linkedin.com/in/laurahunting/",
-    website: "https://www.foundby.co/",
-    email: "laura@foundby.co",
-    loginEmail: "laura@foundby.co",
-    about: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace.",
-    specialties: "Design Leadership, Executive Search, UX Design, Product Design",
-    philosophy: "I focus on building diverse teams thoughtfully and effectively, understanding that great design teams are built on a foundation of varied perspectives and complementary skills.",
-    approach: "My approach involves deep discovery sessions with both clients and candidates to understand cultural fit, growth trajectory, and long-term career goals. I believe in transparent communication and building lasting relationships rather than just filling positions.",
-    notableClients: "Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, Squarespace",
-  },
-  {
-    id: 2,
-    name: "Garrett Fowler",
-    agency: "Offsite",
-    title: "Founder",
-    image: "/images/garrett.jpeg",
-    linkedin: "https://www.linkedin.com/in/garrettfowler/",
-    website: "https://www.off.site",
-    email: "garrett@off.site",
-    loginEmail: "garrett@off.site",
-    about: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals.",
-    specialties: "Product Design, UX Design, Design Leadership",
-    philosophy: "I believe in going beyond traditional recruiting to build meaningful relationships within the creative community. Design talent deserves more than just job placement—they deserve career partnership.",
-    approach: "My approach centers on understanding both the creative and business sides of design roles. I focus on long-term career trajectory matching rather than quick placements, ensuring both candidates and companies find the right cultural and skill alignment.",
-    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
-  },
-  {
-    id: 4,
-    name: "Dirk Cleveland",
-    agency: "Fusion",
-    title: "Executive Recruiter",
-    image: "/images/dirk.jpeg",
-    linkedin: "https://www.linkedin.com/in/dirkcleveland/",
-    website: "https://www.fusiontalent.com",
-    email: "dirk@fusiontalent.com",
-    loginEmail: "dirk@fusiontalent.com",
-    about: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
-    specialties: "UX Design, Product Design, Design Systems, Design Leadership",
-    philosophy: "I believe in the power of referral-based recruiting and building long-term relationships. Great design leaders aren't just found—they're cultivated through trust and understanding of their career aspirations.",
-    approach: "My approach is exclusively referral-based, focusing on quality over quantity. I invest time in understanding both the cultural dynamics of client organizations and the career motivations of design leaders to ensure sustainable, long-term placements.",
-    notableClients: "Uber, Airbnb, Atlassian, and other leading SaaS, Enterprise Software, FinTech, and Healthcare Tech companies",
-  },
-  {
-    id: 6,
-    name: "Jared Tredly",
-    agency: "Bamboo X",
-    title: "Design Recruiter",
-    image: "/images/jared.jpeg",
-    linkedin: "https://www.linkedin.com/in/jaredtredly/",
-    website: "https://bamboo-x.com",
-    email: "jared@jaredtredly.design",
-    loginEmail: "jared@jaredtredly.design",
-    about: "Jared is a Design Recruiter at Bamboo X, a recruiting partner for disruptive startups and companies building what's next. Since 2013, Bamboo X has been supporting VC-backed startups from pre-seed to IPO in acquiring top design talent. They specialize in recruiting for AI, fintech, health-tech, and other innovative sectors.",
-    specialties: "Product Design, UX Design, UI Design, Design Leadership",
-    philosophy: "I believe in supporting disruptive startups and innovative companies that are building the future. Great design talent thrives in environments where they can make meaningful impact and drive product innovation.",
-    approach: "I focus on understanding the unique challenges and opportunities that come with startup environments. My approach involves matching design talent not just with roles, but with companies where they can grow alongside revolutionary products and teams.",
-    notableClients: "200+ VC-backed startups across AI & Machine Learning, FinTech, HealthTech, B2B SaaS, and Consumer Tech sectors",
-  },
-  {
-    id: 7,
-    name: "MJ", // Keep this for URL slug generation
-    displayName: "Monica (MJ) Jin", // Use this for display
-    agency: "Offsite",
-    title: "Talent Director",
-    image: "/images/mj.jpeg",
-    linkedin: "https://www.linkedin.com/in/monjin/",
-    website: "https://www.off.site",
-    email: "mj@off.site",
-    loginEmail: "mj@off.site",
-    about: "Monica (MJ) Jin is the Talent Director at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise in talent acquisition and team building across multiple design disciplines, Monica helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.",
-    specialties: "Design Talent Acquisition, Team Building, Creative Recruiting, Design Leadership",
-    philosophy: "I believe in empowering design professionals across all disciplines to find their ideal career paths. Great design happens when talented individuals are matched with the right opportunities and teams.",
-    approach: "My approach is holistic, considering not just design skills but also career aspirations, creative growth, and cultural fit. I work closely with both candidates and companies to ensure sustainable, long-term placements that benefit everyone involved.",
-    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
-  }
-];
+// Removed hardcoded data - now using database only
 
 // Remove static generation - we'll fetch data at runtime to get latest updates
 // export async function getStaticPaths() {
@@ -169,6 +86,10 @@ let recruiterData: RecruiterData | null = null;
 // First try to fetch from database
 if (slug) {
   try {
+    console.log('Attempting to fetch recruiter with slug:', slug);
+    console.log('Supabase URL available:', !!supabaseUrl);
+    console.log('Supabase Service Key available:', !!supabaseServiceKey);
+    
     const { data: dbRecruiter, error } = await supabase
       .from('recruiters')
       .select('*')
@@ -176,7 +97,14 @@ if (slug) {
       .eq('is_active', true)
       .single();
 
+    console.log('Database query result:', { dbRecruiter, error });
+
+    if (error) {
+      console.error('Supabase error:', error);
+    }
+
     if (!error && dbRecruiter) {
+      console.log('Successfully fetched recruiter from database:', dbRecruiter);
       // Map database fields to our expected format
       recruiterData = {
         id: dbRecruiter.id,
@@ -195,16 +123,16 @@ if (slug) {
         approach: dbRecruiter.approach,
         notableClients: dbRecruiter.notable_clients,
       };
+      console.log('Mapped recruiter data:', recruiterData);
+    } else {
+      console.log('No recruiter found in database or error occurred, falling back to hardcoded data');
     }
   } catch (error) {
     console.error('Error fetching recruiter from database:', error);
   }
 }
 
-// If no data from database, fall back to hardcoded data (for development/backup)
-if (!recruiterData && slug) {
-  recruiterData = recruitersData.find(r => createSlug(r.name) === slug) || null;
-}
+// No fallback data - database is the single source of truth
 
 // If still no recruiter found, redirect
 if (!recruiterData) {
@@ -216,6 +144,10 @@ const validRecruiterData: RecruiterData = recruiterData;
 const displayName = validRecruiterData.displayName || validRecruiterData.name;
 const title = `${displayName} - ${validRecruiterData.agency}`;
 const description = `Connect with ${displayName} from ${validRecruiterData.agency}. Specializing in ${validRecruiterData.specialties}.`;
+
+// All data now comes from database only
+const dataSource = 'database';
+const lastUpdated = 'from database';
 ---
 
 <WideLayout title={title} description={description}>
@@ -231,6 +163,13 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
         </svg>
         Back to Recruiters
       </a>
+    </div>
+
+    <!-- Debug Info (temporary) -->
+    <div class="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded text-sm">
+      <strong>Debug Info:</strong> 
+      Data source: <span id="data-source">Loading...</span> | 
+      Updated: <span id="last-updated">Unknown</span>
     </div>
 
     <!-- Main Content -->
@@ -1152,4 +1091,13 @@ function handleEscapeKey(e) {
 // Set up event listeners for both initial load and Astro View Transitions
 document.addEventListener('DOMContentLoaded', setupEventListeners);
 document.addEventListener('astro:page-load', setupEventListeners);
+
+// Update debug info
+document.addEventListener('DOMContentLoaded', function() {
+  const dataSourceEl = document.getElementById('data-source');
+  const lastUpdatedEl = document.getElementById('last-updated');
+  
+  if (dataSourceEl) dataSourceEl.textContent = '${dataSource}';
+  if (lastUpdatedEl) lastUpdatedEl.textContent = '${lastUpdated}';
+});
 </script>
