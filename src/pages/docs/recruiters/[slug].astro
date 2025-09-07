@@ -145,9 +145,6 @@ const displayName = validRecruiterData.displayName || validRecruiterData.name;
 const title = `${displayName} - ${validRecruiterData.agency}`;
 const description = `Connect with ${displayName} from ${validRecruiterData.agency}. Specializing in ${validRecruiterData.specialties}.`;
 
-// All data now comes from database only
-const dataSource = 'database';
-const lastUpdated = 'from database';
 ---
 
 <WideLayout title={title} description={description}>
@@ -165,12 +162,6 @@ const lastUpdated = 'from database';
       </a>
     </div>
 
-    <!-- Debug Info (temporary) -->
-    <div class="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded text-sm">
-      <strong>Debug Info:</strong> 
-      Data source: <span id="data-source">Loading...</span> | 
-      Updated: <span id="last-updated">Unknown</span>
-    </div>
 
     <!-- Main Content -->
     <div class="grid grid-cols-1 lg:grid-cols-8 gap-16">
@@ -1092,12 +1083,4 @@ function handleEscapeKey(e) {
 document.addEventListener('DOMContentLoaded', setupEventListeners);
 document.addEventListener('astro:page-load', setupEventListeners);
 
-// Update debug info
-document.addEventListener('DOMContentLoaded', function() {
-  const dataSourceEl = document.getElementById('data-source');
-  const lastUpdatedEl = document.getElementById('last-updated');
-  
-  if (dataSourceEl) dataSourceEl.textContent = '${dataSource}';
-  if (lastUpdatedEl) lastUpdatedEl.textContent = '${lastUpdated}';
-});
 </script>
