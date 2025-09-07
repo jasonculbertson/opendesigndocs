@@ -1,5 +1,15 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Missing Supabase configuration');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Redirect old access URLs to clean URLs
 const url = new URL(Astro.request.url);
@@ -23,7 +33,9 @@ const RECRUITER_EMAILS = [
 let userEmail = null;
 let hasAccess = false;
 
+// @ts-ignore - Clerk auth types issue
 if (Astro.locals.auth?.user) {
+  // @ts-ignore
   userEmail = Astro.locals.auth.user.primaryEmailAddress?.emailAddress;
   hasAccess = userEmail === ADMIN_EMAIL || RECRUITER_EMAILS.includes(userEmail);
 }
@@ -123,12 +135,13 @@ const recruitersData = [
   }
 ];
 
-export async function getStaticPaths() {
-  return recruitersData.map((recruiter) => ({
-    params: { slug: createSlug(recruiter.name) },
-    props: { recruiter },
-  }));
-}
+// Remove static generation - we'll fetch data at runtime to get latest updates
+// export async function getStaticPaths() {
+//   return recruitersData.map((recruiter) => ({
+//     params: { slug: createSlug(recruiter.name) },
+//     props: { recruiter },
+//   }));
+// }
 
 // Define types for recruiter data
 type RecruiterData = {
@@ -151,9 +164,44 @@ type RecruiterData = {
 
 // Get the slug from the URL params
 const { slug } = Astro.params;
-let recruiterData: RecruiterData | null = Astro.props.recruiter || null;
+let recruiterData: RecruiterData | null = null;
 
-// If no recruiter from props (dev mode), look it up by slug
+// First try to fetch from database
+if (slug) {
+  try {
+    const { data: dbRecruiter, error } = await supabase
+      .from('recruiters')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
+
+    if (!error && dbRecruiter) {
+      // Map database fields to our expected format
+      recruiterData = {
+        id: dbRecruiter.id,
+        name: dbRecruiter.name,
+        displayName: dbRecruiter.display_name || dbRecruiter.name,
+        agency: dbRecruiter.agency,
+        title: dbRecruiter.title,
+        image: dbRecruiter.image,
+        linkedin: dbRecruiter.linkedin,
+        website: dbRecruiter.website,
+        email: dbRecruiter.email,
+        loginEmail: dbRecruiter.login_email,
+        about: dbRecruiter.about,
+        specialties: dbRecruiter.specialties,
+        philosophy: dbRecruiter.philosophy,
+        approach: dbRecruiter.approach,
+        notableClients: dbRecruiter.notable_clients,
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching recruiter from database:', error);
+  }
+}
+
+// If no data from database, fall back to hardcoded data (for development/backup)
 if (!recruiterData && slug) {
   recruiterData = recruitersData.find(r => createSlug(r.name) === slug) || null;
 }
