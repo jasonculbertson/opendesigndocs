@@ -518,6 +518,18 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
 </WideLayout>
 
 <script define:vars={{ validRecruiterData, displayName }}>
+// ULTIMATE CLEANUP: Kill all previous recruiter page scripts
+if (window.activeRecruiterScripts) {
+  window.activeRecruiterScripts.forEach(scriptId => {
+    console.log('Killing active script:', scriptId);
+    if (window[`cleanup_${scriptId}`]) {
+      window[`cleanup_${scriptId}`]();
+      delete window[`cleanup_${scriptId}`];
+    }
+  });
+}
+window.activeRecruiterScripts = [];
+
 // AGGRESSIVE CLEANUP: Remove all old recruiter page scripts from DOM
 const oldScripts = document.querySelectorAll('script[data-recruiter-page]');
 oldScripts.forEach(script => {
@@ -547,9 +559,32 @@ if (existingEditBtn) {
 const pageId = `recruiter-${validRecruiterData.id}`;
 console.log(`=== INITIALIZING PAGE: ${pageId} ===`);
 
+// Register this script in the global registry
+if (!window.activeRecruiterScripts) {
+  window.activeRecruiterScripts = [];
+}
+window.activeRecruiterScripts.push(pageId);
+
 // Mark this script element for future cleanup
 document.currentScript.setAttribute('data-recruiter-page', 'true');
 document.currentScript.setAttribute('data-recruiter-id', validRecruiterData.id);
+
+// Create a cleanup function specific to this script
+window[`cleanup_${pageId}`] = function() {
+  console.log(`Cleaning up script: ${pageId}`);
+  
+  // Remove event listeners
+  document.removeEventListener('DOMContentLoaded', initializePage);
+  document.removeEventListener('astro:page-load', initializePage);
+  
+  // Clear any intervals or timeouts if they exist
+  if (window.recruiterPageInterval) {
+    clearInterval(window.recruiterPageInterval);
+  }
+  
+  // Mark this script as inactive
+  window.currentPageId = null;
+};
 
 // Make recruiter data globally available - ALWAYS update for current page
 window.currentRecruiterData = validRecruiterData;
@@ -1133,8 +1168,8 @@ function handleImageChange(e) {
 function handleModalClick(e) {
   const modal = document.getElementById('editModal');
   if (e.target === modal) {
-    console.log('Clicked outside modal, closing... - DISABLED FOR TESTING');
-    // closeEditModal(); // TEMPORARILY DISABLED
+    console.log('Clicked outside modal, closing...');
+    closeEditModal();
   }
 }
 
@@ -1176,10 +1211,16 @@ window.recruiterPageCleanup = function() {
 
 // Main initialization function
 function initializePage() {
-  // Only initialize if this is the current page
+  // Only initialize if this is the current page AND this script is still active
   const expectedPageId = `recruiter-${validRecruiterData.id}`;
   if (window.currentPageId !== expectedPageId) {
     console.log(`Skipping initialization - page mismatch. Expected: ${expectedPageId}, Current: ${window.currentPageId}`);
+    return;
+  }
+  
+  // Check if this script is still in the active registry
+  if (!window.activeRecruiterScripts || !window.activeRecruiterScripts.includes(expectedPageId)) {
+    console.log(`Script ${expectedPageId} is no longer active. Skipping initialization.`);
     return;
   }
   
