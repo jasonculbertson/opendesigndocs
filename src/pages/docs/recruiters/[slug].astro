@@ -518,17 +518,26 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
 </WideLayout>
 
 <script define:vars={{ validRecruiterData, displayName }}>
+// CLEANUP: Remove any existing recruiter page scripts to prevent conflicts
+if (window.recruiterPageCleanup) {
+  window.recruiterPageCleanup();
+}
+
+// Create unique namespace for this page
+const pageId = `recruiter-${validRecruiterData.id}`;
+console.log(`=== INITIALIZING PAGE: ${pageId} ===`);
+
 // Make recruiter data globally available - ALWAYS update for current page
 window.currentRecruiterData = validRecruiterData;
 window.displayName = displayName;
+window.currentPageId = pageId;
 
 // Debug: Log when data is set
 console.log('=== PAGE LOAD DEBUG ===');
 console.log('Setting recruiter data for page:', displayName);
 console.log('Recruiter ID:', validRecruiterData.id);
-console.log('Recruiter Name:', validRecruiterData.name);
+console.log('Page ID:', pageId);
 console.log('Current URL:', window.location.pathname);
-console.log('validRecruiterData:', validRecruiterData);
 console.log('========================');
 
 // Image handling functions
@@ -640,6 +649,13 @@ function updateUploadProgress(percent) {
 function openEditModal() {
   const modal = document.getElementById('editModal');
   if (!modal || !validRecruiterData) return;
+
+  // SECURITY: Only allow modal opening if this is the current page
+  const expectedPageId = `recruiter-${validRecruiterData.id}`;
+  if (window.currentPageId !== expectedPageId) {
+    console.error(`Modal blocked - page mismatch. Expected: ${expectedPageId}, Current: ${window.currentPageId}`);
+    return;
+  }
 
   // ALWAYS use the page's validRecruiterData as the source of truth
   // Only fall back to window.currentRecruiterData if it matches the current page
@@ -1128,15 +1144,38 @@ function refreshRecruiterData() {
   console.log('====================');
 }
 
-// Set up event listeners for both initial load and Astro View Transitions
-document.addEventListener('DOMContentLoaded', function() {
-  refreshRecruiterData();
-  setupEventListeners();
-});
+// Cleanup function for this page
+window.recruiterPageCleanup = function() {
+  console.log(`=== CLEANING UP PAGE: ${window.currentPageId || 'unknown'} ===`);
+  
+  // Remove event listeners
+  document.removeEventListener('DOMContentLoaded', initializePage);
+  document.removeEventListener('astro:page-load', initializePage);
+  
+  // Clear any intervals or timeouts if they exist
+  if (window.recruiterPageInterval) {
+    clearInterval(window.recruiterPageInterval);
+  }
+  
+  console.log('Page cleanup completed');
+};
 
-document.addEventListener('astro:page-load', function() {
+// Main initialization function
+function initializePage() {
+  // Only initialize if this is the current page
+  const expectedPageId = `recruiter-${validRecruiterData.id}`;
+  if (window.currentPageId !== expectedPageId) {
+    console.log(`Skipping initialization - page mismatch. Expected: ${expectedPageId}, Current: ${window.currentPageId}`);
+    return;
+  }
+  
+  console.log(`=== INITIALIZING LISTENERS FOR: ${expectedPageId} ===`);
   refreshRecruiterData();
   setupEventListeners();
-});
+}
+
+// Set up event listeners for both initial load and Astro View Transitions
+document.addEventListener('DOMContentLoaded', initializePage);
+document.addEventListener('astro:page-load', initializePage);
 
 </script>
