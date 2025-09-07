@@ -1,77 +1,44 @@
 ---
 import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
+import { createClient } from '@supabase/supabase-js';
 
 const title = "Recruiter Directory";
 const description = "Find specialized design recruiters to help build your team";
 
-// Sample recruiter data - this would come from a database in production
-const recruiters = [
-  {
-    id: 1,
-    name: "Laura Hunting",
-    agency: "Found By",
-    image: "/images/laura.jpeg",
-    linkedin: "https://www.linkedin.com/in/laurahunting/",
-    website: "https://www.foundby.co/",
-    email: "laura@foundby.co",
-    loginEmail: "laura@foundby.co",
-    about: "Laura is a founding partner at Found By, a boutique talent agency and executive search firm specialized in design. With over a decade of experience building design leadership teams, Found By has placed talent at industry leaders including Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, and Squarespace.",
-    specialties: "Design Leadership, Executive Search, UX Design, Product Design",
-    philosophy: "I focus on building diverse teams thoughtfully and effectively, understanding that great design teams are built on a foundation of varied perspectives and complementary skills.",
-    approach: "My approach involves deep discovery sessions with both clients and candidates to understand cultural fit, growth trajectory, and long-term career goals. I believe in transparent communication and building lasting relationships rather than just filling positions.",
-    notableClients: "Airbnb, Zillow, Square, Yahoo, Nike, Calendly, GoodRx, Pinterest, Duolingo, Squarespace",
-  },
-  {
-    id: 2,
-    name: "Garrett Fowler",
-    agency: "Offsite",
-    image: "/images/garrett.jpeg",
-    linkedin: "https://www.linkedin.com/in/garrettfowler/",
-    website: "https://www.off.site",
-    email: "garrett@off.site",
-    loginEmail: "garrett@off.site",
-    about: "Garrett is the Founder of Offsite, a new kind of creative talent community focused on the intersection of career and creative practice. As a Design & Executive Talent Agent, he specializes in connecting exceptional design professionals with opportunities that align with their creative vision and career goals.",
-    specialties: "Product Design, UX Design, Design Leadership",
-    philosophy: "I believe in going beyond traditional recruiting to build meaningful relationships within the creative community. Design talent deserves more than just job placement—they deserve career partnership.",
-    approach: "My approach centers on understanding both the creative and business sides of design roles. I focus on long-term career trajectory matching rather than quick placements, ensuring both candidates and companies find the right cultural and skill alignment.",
-    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
-  },
+// Load recruiters from database
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  {
-    id: 4,
-    name: "Dirk Cleveland",
-    agency: "Fusion",
-    image: "/images/dirk.jpeg",
-    linkedin: "https://www.linkedin.com/in/dirkcleveland/",
-    website: "https://www.fusiontalent.com",
-    email: "dirk@fusiontalent.com",
-    loginEmail: "dirk@fusiontalent.com",
-    about: "Dirk specializes in Design Leadership Recruiting at Fusion, a 100% referral-based executive search firm focused exclusively on Engineering, Product, and Design leadership roles. With extensive experience placing executives at companies like Uber, Airbnb, Atlassian, and many more, Dirk focuses on long-term career growth and cultural alignment for senior design positions.",
-    specialties: "UX Design, Product Design, Design Systems, Design Leadership",
-    philosophy: "I believe in the power of referral-based recruiting and building long-term relationships. Great design leaders aren't just found—they're cultivated through trust and understanding of their career aspirations.",
-    approach: "My approach is exclusively referral-based, focusing on quality over quantity. I invest time in understanding both the cultural dynamics of client organizations and the career motivations of design leaders to ensure sustainable, long-term placements.",
-    notableClients: "Uber, Airbnb, Atlassian, and other leading SaaS, Enterprise Software, FinTech, and Healthcare Tech companies",
-  },
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Missing Supabase configuration');
+}
 
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-  {
-    id: 7,
-    name: "MJ",
-    agency: "Offsite",
-    image: "/images/mj.jpeg",
-    linkedin: "https://www.linkedin.com/in/monjin/",
-    website: "https://www.off.site",
-    email: "mj@off.site",
-    loginEmail: "mj@off.site",
-    about: "MJ leads IC Product Design, Content Design, UX Research, and Design Ops at Offsite, a creative talent community focused on the intersection of career and creative practice. With expertise across multiple design disciplines, MJ helps connect exceptional design professionals with opportunities that align with their creative vision and career goals.",
-    specialties: "Product Design, Content Design, UX Research, Design Ops",
-    philosophy: "I believe in empowering design professionals across all disciplines to find their ideal career paths. Great design happens when talented individuals are matched with the right opportunities and teams.",
-    approach: "My approach is holistic, considering not just design skills but also career aspirations, creative growth, and cultural fit. I work closely with both candidates and companies to ensure sustainable, long-term placements that benefit everyone involved.",
-    notableClients: "Various SaaS, FinTech, E-commerce, and Enterprise Software companies",
-  },
+// Fetch recruiters from database
+let recruiters = [];
+try {
+  const { data: dbRecruiters, error } = await supabase
+    .from('recruiters')
+    .select('*')
+    .eq('is_active', true)
+    .order('name');
 
-];
+  if (error) {
+    console.error('Error fetching recruiters:', error);
+  } else {
+    recruiters = dbRecruiters || [];
+    console.log('Loaded recruiters from database:', recruiters.length);
+  }
+} catch (error) {
+  console.error('Database connection error:', error);
+}
+
+// If no recruiters loaded, use minimal fallback
+if (recruiters.length === 0) {
+  console.warn('No recruiters loaded from database, using empty array');
+}
 
 // Note: Filtering has been simplified since recruiters now have text-based categories
 
