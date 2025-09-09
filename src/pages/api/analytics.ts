@@ -13,12 +13,10 @@ console.log('Analytics API Environment Check:', {
   serviceRoleKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing'
 });
 
-// Authorized user IDs who can access analytics data
+// Authorized user IDs who can access analytics data (only your Clerk user IDs)
 const AUTHORIZED_USER_IDS = [
   'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ', // Development
-  'admin', // Development admin access
-  'dev'    // Development access
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
 ];
 
 export const POST: APIRoute = async ({ request }) => {

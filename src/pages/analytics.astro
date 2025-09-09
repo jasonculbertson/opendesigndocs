@@ -1,5 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Check if user is authorized to view analytics
+const ADMIN_EMAIL = 'jculbertson@gmail.com';
+const ADMIN_USER_IDS = [
+  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
+  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
+];
+
+let isAuthorized = false;
+let userInfo = null;
+
+if (Astro.locals.auth?.user) {
+  const user = Astro.locals.auth.user;
+  userInfo = {
+    id: user.id,
+    email: user.emailAddresses?.[0]?.emailAddress
+  };
+  
+  // Check if user is authorized
+  isAuthorized = userInfo.email === ADMIN_EMAIL || ADMIN_USER_IDS.includes(user.id);
+  
+  console.log('Analytics access check:', {
+    userId: user.id,
+    email: userInfo.email,
+    isAuthorized
+  });
+}
+
+// If not authorized, redirect to login or show access denied
+if (!isAuthorized) {
+  return Astro.redirect('/login');
+}
 ---
 
 <Layout title="Analytics Dashboard">
@@ -20,6 +52,12 @@ import Layout from '../layouts/Layout.astro';
   </div>
 </Layout>
 
+<!-- Pass user ID to client-side script -->
+<script define:vars={{ userId: userInfo?.id }}>
+  // Make user ID available to analytics script
+  window.analyticsUserId = userId;
+</script>
+
 <script>
   // Simple analytics dashboard loader
   async function loadAnalytics() {
@@ -27,9 +65,8 @@ import Layout from '../layouts/Layout.astro';
     if (!container) return;
     
     try {
-      // For now, use a hardcoded authorized user ID
-      // In production, you'd get this from your auth system
-      const userId = 'dev'; // Use simple dev user ID for development
+      // Get the actual user ID from Clerk auth (passed from server-side)
+      const userId = window.analyticsUserId || 'anonymous';
       
       const response = await fetch(`/api/analytics?user_id=${userId}`);
       const result = await response.json();
