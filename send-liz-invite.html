@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Liz Luce Recruiter Invitation</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .email-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .preview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+        }
+        .tracking-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Send Liz Luce Recruiter Invitation</h1>
+        
+        <div class="email-form">
+            <div class="form-group">
+                <label for="to_email">To Email:</label>
+                <input type="email" id="to_email" value="liz@off.site" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="to_name">To Name:</label>
+                <input type="text" id="to_name" value="Liz Luce" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="invite_url">Invitation URL:</label>
+                <input type="url" id="invite_url" value="https://www.opendesigndocs.com/docs/recruiters/invite/liz-luce" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="agency_name">Agency:</label>
+                <input type="text" id="agency_name" value="Offsite" readonly>
+            </div>
+            
+            <div class="tracking-info">
+                <strong>📊 Email Tracking:</strong> This email includes tracking pixels and UTM parameters to monitor engagement in your analytics dashboard.
+            </div>
+            
+            <button id="sendEmail" class="btn">Send Invitation Email</button>
+            
+            <div id="status"></div>
+        </div>
+
+        <div class="preview">
+            <h3>📋 Email Preview:</h3>
+            <div id="emailPreview">
+                <strong>Subject:</strong> Invitation to Join Open Design Docs Recruiter Directory<br><br>
+                
+                <strong>Body:</strong><br>
+                Hi Liz,<br><br>
+                
+                You've been invited to join the Open Design Docs recruiter directory!<br><br>
+                
+                I've created a personalized profile page for you at Offsite. Please visit your invitation link to complete your profile:<br><br>
+                
+                <a href="https://www.opendesigndocs.com/docs/recruiters/invite/liz-luce">https://www.opendesigndocs.com/docs/recruiters/invite/liz-luce</a><br><br>
+                
+                You can fill in:<br>
+                • Your professional details<br>
+                • About section<br>
+                • Specialties and approach<br>
+                • Notable clients<br>
+                • Upload your own photo<br><br>
+                
+                Once you complete and save your profile, it will automatically appear in the main recruiter directory for design professionals to discover.<br><br>
+                
+                Best regards,<br>
+                Jason<br><br>
+                
+                ---<br>
+                Open Design Docs<br>
+                https://www.opendesigndocs.com
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Initialize EmailJS with your public key
+        const EMAILJS_PUBLIC_KEY = 'CNMjB2Shpf0Cd5Zn1'; // Your EmailJS public key
+        const EMAILJS_SERVICE_ID = 'service_eh90d7s'; // Replace with your service ID  
+        const EMAILJS_TEMPLATE_ID = 'template_kvdplaa'; // Your invitation template ID
+        
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+        
+        document.getElementById('sendEmail').addEventListener('click', async function() {
+            const button = this;
+            const status = document.getElementById('status');
+            
+            // Disable button and show loading
+            button.disabled = true;
+            button.textContent = 'Sending...';
+            status.innerHTML = '';
+            
+            try {
+                // Generate tracking ID for this email
+                const trackingId = 'liz-luce-' + Date.now();
+                
+                // Prepare email data with tracking
+                const inviteUrl = document.getElementById('invite_url').value;
+                const inviteUrlWithTracking = `${inviteUrl}?tracking_id=${trackingId}&utm_source=email&utm_medium=invitation&utm_campaign=recruiter_invite`;
+                
+                const emailData = {
+                    to_email: document.getElementById('to_email').value,
+                    to_name: document.getElementById('to_name').value,
+                    invite_url: inviteUrlWithTracking,
+                    agency_name: document.getElementById('agency_name').value,
+                    tracking_pixel: `https://www.opendesigndocs.com/api/email-tracking?event=email_opened&tracking_id=${trackingId}&type=pixel`
+                };
+                
+                console.log('Sending email with data:', emailData);
+                
+                // Send email via EmailJS
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    emailData
+                );
+                
+                console.log('EmailJS Response:', response);
+                
+                if (response.status === 200) {
+                    // Log email sent event to analytics
+                    try {
+                        await fetch('/api/email-tracking', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                event: 'email_sent',
+                                tracking_id: trackingId,
+                                recruiter_email: emailData.to_email,
+                                recruiter_name: emailData.to_name,
+                                invite_url: inviteUrlWithTracking,
+                                timestamp: new Date().toISOString()
+                            })
+                        });
+                        console.log('Email sent event logged to analytics');
+                    } catch (analyticsError) {
+                        console.error('Failed to log email sent event:', analyticsError);
+                    }
+                    
+                    status.innerHTML = `
+                        <div class="status success">
+                            ✅ <strong>Email sent successfully to Liz Luce!</strong><br>
+                            📊 Tracking ID: ${trackingId}<br>
+                            🔗 Invite URL: <a href="${inviteUrlWithTracking}" target="_blank">${inviteUrlWithTracking}</a>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`EmailJS returned status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error sending email:', error);
+                status.innerHTML = `
+                    <div class="status error">
+                        ❌ <strong>Failed to send email:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Send Invitation Email';
+            }
+        });
+        
+        // Test email functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Email sender ready');
+            console.log('📧 Recipient: liz@off.site');
+            console.log('🔗 Invite URL: https://www.opendesigndocs.com/docs/recruiters/invite/liz-luce');
+        });
+    </script>
+</body>
+</html>
+
