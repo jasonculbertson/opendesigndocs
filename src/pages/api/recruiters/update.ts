@@ -62,7 +62,8 @@ export const PUT: APIRoute = async ({ request }) => {
         specialties: updateData.specialties || '',
         philosophy: updateData.philosophy || '',
         approach: updateData.approach || '',
-        notable_clients: updateData.notable_clients || ''
+        notable_clients: updateData.notable_clients || '',
+        profile_completed: true
       })
       .eq('id', id)
       .select()

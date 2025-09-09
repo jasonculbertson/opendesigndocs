@@ -23,6 +23,7 @@ try {
     .from('recruiters')
     .select('*')
     .eq('is_active', true)
+    .eq('profile_completed', true)
     .order('display_order', { ascending: true })
     .order('name', { ascending: true }); // Fallback to name for any without display_order
 
