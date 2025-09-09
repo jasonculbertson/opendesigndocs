@@ -166,3 +166,51 @@ const featuredResources = [
 </HomeLayout>
 
 <!-- Authentication temporarily disabled - buttons now go directly to pages -->
+
+<!-- Homepage Analytics Tracking -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Track homepage view
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'page_view',
+        properties: {
+          page: '/',
+          page_title: 'Open Design Docs - Homepage',
+          page_category: 'homepage',
+          visitor_type: 'public',
+          timestamp: new Date().toISOString()
+        }
+      })
+    }).catch(err => console.error('Analytics tracking error:', err));
+    
+    // Track featured resource clicks
+    document.querySelectorAll('a[href^="/docs/"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        const linkText = this.textContent.trim();
+        
+        fetch('/api/analytics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'homepage_link_click',
+            properties: {
+              link_url: href,
+              link_text: linkText,
+              page: '/',
+              page_category: 'homepage',
+              timestamp: new Date().toISOString()
+            }
+          })
+        }).catch(err => console.error('Link tracking error:', err));
+        
+        console.log(`📊 Tracked homepage link click: ${linkText} -> ${href}`);
+      });
+    });
+    
+    console.log('📊 Tracked homepage view');
+  });
+</script>

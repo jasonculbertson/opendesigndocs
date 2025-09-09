@@ -109,6 +109,29 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
   ];
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const linkElement = e.currentTarget;
+    const linkText = linkElement.textContent?.trim() || '';
+    const section = linkElement.closest('[data-section]')?.getAttribute('data-section') || '';
+    
+    // Track navigation click
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'navigation_click',
+        properties: {
+          link_url: href,
+          link_text: linkText,
+          section: section,
+          current_page: window.location.pathname,
+          page_category: 'navigation',
+          timestamp: new Date().toISOString()
+        }
+      })
+    }).catch(err => console.error('Navigation tracking error:', err));
+    
+    console.log(`📊 Tracked navigation click: ${linkText} (${section}) -> ${href}`);
+    
     // Only handle mobile menu closing on mobile devices
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
       e.preventDefault(); // Prevent immediate navigation
@@ -155,7 +178,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
         </div>
         <div className="flex-1">
           {links.map(section => (
-            <div className="mb-8" key={section.header}>
+            <div className="mb-8" key={section.header} data-section={section.header}>
               <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
                 {section.header}
               </h2>

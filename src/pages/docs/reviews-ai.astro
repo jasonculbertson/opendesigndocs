@@ -18,6 +18,31 @@ const description = "AI-powered assistant for creating comprehensive annual perf
   </div>
 </Layout>
 
+<!-- Reviews AI Page Tracking -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Track Reviews AI page view
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'page_view',
+        properties: {
+          page: window.location.pathname,
+          page_title: document.title,
+          page_category: 'reviews-ai',
+          doc_type: 'tool',
+          visitor_type: 'public',
+          timestamp: new Date().toISOString(),
+          referrer: document.referrer || null
+        }
+      })
+    }).catch(err => console.error('Reviews AI tracking error:', err));
+    
+    console.log('📊 Tracked Reviews AI page view');
+  });
+</script>
+
 <style>
   .chat-container {
     height: calc(100vh - 200px);
