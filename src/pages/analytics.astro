@@ -43,14 +43,14 @@ if (!isAuthorized) {
       </div>
       
       <!-- Tab Navigation -->
-      <div class="mb-6">
+      <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
         <div class="border-b border-gray-200">
           <nav class="-mb-px flex space-x-8">
-            <button id="general-tab" class="tab-button active border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600">
-              General Analytics
+            <button id="general-tab" class="tab-button active border-b-2 border-blue-500 py-3 px-4 text-sm font-medium text-blue-600 bg-blue-50 rounded-t-md">
+              📊 General Analytics
             </button>
-            <button id="recruiter-tab" class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-              Recruiter Performance
+            <button id="recruiter-tab" class="tab-button border-b-2 border-transparent py-3 px-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50 rounded-t-md cursor-pointer">
+              👥 Recruiter Performance
             </button>
           </nav>
         </div>
@@ -58,10 +58,10 @@ if (!isAuthorized) {
 
       <!-- General Analytics Tab -->
       <div id="general-analytics" class="tab-content">
-        <div id="analytics-container">
-          <div class="text-center py-8">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-2 text-gray-600">Loading analytics...</p>
+      <div id="analytics-container">
+        <div class="text-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p class="mt-2 text-gray-600">Loading analytics...</p>
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@ if (!isAuthorized) {
       `;
     }
   }
-
+  
   // Recruiter analytics loader
   async function loadRecruiterAnalytics() {
     const container = document.getElementById('recruiter-container');
@@ -366,11 +366,32 @@ if (!isAuthorized) {
 
   // Initialize page
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Initializing analytics dashboard...');
+    
+    // Check if tab elements exist
+    const generalTab = document.getElementById('general-tab');
+    const recruiterTab = document.getElementById('recruiter-tab');
+    
+    if (!generalTab || !recruiterTab) {
+      console.error('❌ Tab elements not found!', { generalTab, recruiterTab });
+      return;
+    }
+    
+    console.log('✅ Tab elements found, setting up event listeners...');
+    
     // Set up tab switching
-    document.getElementById('general-tab').addEventListener('click', () => switchTab('general'));
-    document.getElementById('recruiter-tab').addEventListener('click', () => switchTab('recruiter'));
+    generalTab.addEventListener('click', () => {
+      console.log('🔄 Switching to general tab');
+      switchTab('general');
+    });
+    
+    recruiterTab.addEventListener('click', () => {
+      console.log('🔄 Switching to recruiter tab');
+      switchTab('recruiter');
+    });
     
     // Load initial tab (general analytics)
+    console.log('🚀 Loading initial general analytics tab...');
     switchTab('general');
   });
   
