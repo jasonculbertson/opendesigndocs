@@ -150,6 +150,27 @@ let hasAccess = true;
   <!-- Directory is now public - no authentication required -->
   <script>
     console.log('📂 Recruiter directory is now publicly accessible');
+    
+    // Track page view for visitor analytics
+    document.addEventListener('DOMContentLoaded', function() {
+      // Track directory page view
+      fetch('/api/analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'page_view',
+          properties: {
+            page: '/docs/recruiters',
+            page_title: 'Recruiter Directory',
+            page_category: 'recruiters',
+            visitor_type: 'public',
+            timestamp: new Date().toISOString()
+          }
+        })
+      }).catch(err => console.error('Analytics tracking error:', err));
+      
+      console.log('📊 Tracked recruiter directory page view');
+    });
   </script>
 </WideLayout>
 

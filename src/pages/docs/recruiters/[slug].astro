@@ -205,8 +205,11 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
               href={validRecruiterData.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+              class="contact-button flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
               style="background-color: #f9fafb"
+              data-contact-type="linkedin"
+              data-recruiter-name={validRecruiterData.name}
+              data-recruiter-id={validRecruiterData.id}
             >
               <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -218,8 +221,11 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
                 href={validRecruiterData.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+                class="contact-button flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
                 style="background-color: #f9fafb"
+                data-contact-type="website"
+                data-recruiter-name={validRecruiterData.name}
+                data-recruiter-id={validRecruiterData.id}
               >
                 Visit Website
               </a>
@@ -227,8 +233,11 @@ const description = `Connect with ${displayName} from ${validRecruiterData.agenc
             {validRecruiterData.email && (
               <a
                 href={`mailto:${validRecruiterData.email}`}
-                class="flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+                class="contact-button flex items-center justify-center w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
                 style="background-color: #f9fafb"
+                data-contact-type="email"
+                data-recruiter-name={validRecruiterData.name}
+                data-recruiter-id={validRecruiterData.id}
               >
                 Send Email
               </a>
@@ -1238,8 +1247,63 @@ function initializePage() {
   }
   
   console.log(`Initializing listeners for: ${expectedPageId}`);
+  
+  // Track profile page view for visitor analytics
+  fetch('/api/analytics', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event: 'profile_view',
+      properties: {
+        page: window.location.pathname,
+        page_title: `${validRecruiterData.name} - ${validRecruiterData.agency}`,
+        page_category: 'recruiter_profile',
+        recruiter_name: validRecruiterData.name,
+        recruiter_agency: validRecruiterData.agency,
+        recruiter_id: validRecruiterData.id,
+        visitor_type: 'public',
+        timestamp: new Date().toISOString()
+      }
+    })
+  }).catch(err => console.error('Analytics tracking error:', err));
+  
+  console.log(`📊 Tracked profile view for: ${validRecruiterData.name}`);
+  
   refreshRecruiterData();
   setupEventListeners();
+  setupContactTracking();
+}
+
+// Set up contact button click tracking
+function setupContactTracking() {
+  const contactButtons = document.querySelectorAll('.contact-button');
+  
+  contactButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      const contactType = this.dataset.contactType;
+      const recruiterName = this.dataset.recruiterName;
+      const recruiterId = this.dataset.recruiterId;
+      
+      // Track contact button click
+      fetch('/api/analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'contact_click',
+          properties: {
+            contact_type: contactType,
+            recruiter_name: recruiterName,
+            recruiter_id: recruiterId,
+            page: window.location.pathname,
+            page_category: 'recruiter_profile',
+            timestamp: new Date().toISOString()
+          }
+        })
+      }).catch(err => console.error('Contact tracking error:', err));
+      
+      console.log(`📊 Tracked ${contactType} click for ${recruiterName}`);
+    });
+  });
 }
 
 // Set up event listeners for both initial load and Astro View Transitions
