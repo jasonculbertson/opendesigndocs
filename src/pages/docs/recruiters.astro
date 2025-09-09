@@ -23,7 +23,8 @@ try {
     .from('recruiters')
     .select('*')
     .eq('is_active', true)
-    .order('name');
+    .order('display_order', { ascending: true })
+    .order('name', { ascending: true }); // Fallback to name for any without display_order
 
   if (error) {
     console.error('Error fetching recruiters:', error);
