@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import React from 'react';
 import {
   Clock,
   Users,
@@ -23,66 +22,8 @@ interface Props {
   id?: string;
 }
 
-// Authorized user IDs for both development and production environments
-const AUTHORIZED_USER_IDS = [
-  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
-];
 
 const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
-  const [showRecruiters, setShowRecruiters] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(0);
-  const [hasRecruiterAccess, setHasRecruiterAccess] = useState(false);
-
-  // Try to get user info with fallback
-  let user: any = null;
-  let isSignedIn: boolean = false;
-  let isLoaded: boolean = false;
-
-  try {
-    const result = useUser();
-    user = result.user;
-    isSignedIn = result.isSignedIn || false;
-    isLoaded = result.isLoaded || false;
-  } catch (err) {
-    // Fallback to window.Clerk if available
-    if (typeof window !== 'undefined' && (window as any).Clerk?.user) {
-      user = (window as any).Clerk.user;
-      isSignedIn = true;
-      isLoaded = true;
-    }
-  }
-
-  // Force re-render periodically if not loaded
-  useEffect(() => {
-    if (!isLoaded) {
-      const timer = setTimeout(() => {
-        setForceUpdate(prev => prev + 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoaded, forceUpdate]);
-
-  // Check for recruiter access parameter
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessKey = urlParams.get('access');
-      setHasRecruiterAccess(accessKey === 'recruit2024');
-    }
-  }, []);
-
-  // Check if user is authorized for special menu items
-  const isAuthorized = isLoaded && isSignedIn && user && AUTHORIZED_USER_IDS.includes(user.id);
-
-  // Check if user should see recruiters menu
-  useEffect(() => {
-    if (isLoaded && isSignedIn && user?.id === AUTHORIZED_USER_IDS[0]) { // Assuming the first authorized ID is the primary one for recruiters
-      setShowRecruiters(true);
-    } else {
-      setShowRecruiters(false);
-    }
-  }, [isLoaded, isSignedIn, user?.id]);
 
   const links = [
     {
@@ -138,13 +79,11 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
     {
       header: 'RESOURCES',
       items: [
-        // Conditionally add My Team menu item
-        ...(isAuthorized ? [{
-          name: 'My Team',
-          href: '/docs/team',
-          icon: Users
-        }] : []),
-        // Recruiter Directory removed from navigation (still accessible via direct link)
+        {
+          name: 'Recruiter Directory',
+          href: '/docs/recruiters',
+          icon: Search
+        },
         {
           name: 'Reviews AI',
           href: '/docs/reviews-ai',
