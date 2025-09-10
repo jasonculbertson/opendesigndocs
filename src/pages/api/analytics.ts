@@ -123,14 +123,14 @@ export const GET: APIRoute = async ({ request, url }) => {
     const startDate = url.searchParams.get('start_date') || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
     const endDate = url.searchParams.get('end_date') || new Date().toISOString();
 
-    // Fetch analytics data from Supabase (remove default limit)
+    // Fetch analytics data from Supabase (set high limit to get all events)
     const { data: events, error } = await supabase
       .from('analytics_events')
       .select('*')
       .gte('created_at', startDate)
       .lte('created_at', endDate)
       .order('created_at', { ascending: false })
-      .limit(10000); // Increase limit to 10,000 events
+      .limit(100000); // Set very high limit to ensure we get all events
 
     if (error) {
       console.error('Error fetching analytics data:', error);
@@ -143,6 +143,9 @@ export const GET: APIRoute = async ({ request, url }) => {
         }
       });
     }
+
+    // Log the number of events fetched for debugging
+    console.log(`📊 Analytics API: Fetched ${events?.length || 0} events from ${startDate} to ${endDate}`);
 
     // Process and aggregate the data
     const totalEvents = events?.length || 0;

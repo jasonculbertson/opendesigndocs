@@ -44,7 +44,8 @@ export const GET: APIRoute = async ({ request, url }) => {
       .gte('created_at', startDate)
       .lte('created_at', endDate)
       .or('event_name.eq.profile_view,event_name.eq.contact_click,page_url.ilike.%/recruiters%')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(100000); // Set very high limit to ensure we get all events
 
     if (error) {
       console.error('Error fetching recruiter analytics data:', error);
@@ -57,6 +58,9 @@ export const GET: APIRoute = async ({ request, url }) => {
         }
       });
     }
+
+    // Log the number of recruiter events fetched for debugging
+    console.log(`👥 Recruiter Analytics API: Fetched ${events?.length || 0} recruiter events from ${startDate} to ${endDate}`);
 
     // Also get recruiter data for enrichment
     const { data: recruiters, error: recruitersError } = await supabase
