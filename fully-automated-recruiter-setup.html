@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fully Automated Recruiter Setup</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #1e293b; 
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #374151;
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            font-size: 16px;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+        }
+        .required { color: #ef4444; }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: background 0.2s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { 
+            background: #9ca3af; 
+            cursor: not-allowed; 
+        }
+        .status { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-weight: 500;
+        }
+        .success { 
+            background: #d1fae5; 
+            color: #065f46; 
+            border: 1px solid #a7f3d0;
+        }
+        .error { 
+            background: #fee2e2; 
+            color: #991b1b; 
+            border: 1px solid #fca5a5;
+        }
+        .info { 
+            background: #dbeafe; 
+            color: #1e40af; 
+            border: 1px solid #93c5fd;
+        }
+        .config-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+        }
+        .config-section h3 {
+            margin-top: 0;
+            color: #475569;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .steps {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #475569;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 8px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Fully Automated Recruiter Setup</h1>
+        
+        <div class="steps">
+            <h3>What this does automatically:</h3>
+            <ol>
+                <li>Creates the recruiter record directly in Supabase</li>
+                <li>Sends the invitation email via EmailJS</li>
+                <li>Tracks the email send event</li>
+                <li>Provides all the URLs and info you need</li>
+            </ol>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="config-section">
+            <h3>🔧 Configuration (One-time setup)</h3>
+            <div class="grid">
+                <div>
+                    <div class="form-group">
+                        <label for="supabase-url">Supabase URL</label>
+                        <input type="url" id="supabase-url" placeholder="https://your-project.supabase.co">
+                    </div>
+                    <div class="form-group">
+                        <label for="supabase-key">Supabase Service Role Key</label>
+                        <textarea id="supabase-key" rows="3" placeholder="Your service role key"></textarea>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="emailjs-service">EmailJS Service ID</label>
+                        <input type="text" id="emailjs-service" value="service_eh90d7s">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailjs-template">EmailJS Template ID</label>
+                        <input type="text" id="emailjs-template" value="template_kvdplaa">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailjs-key">EmailJS Public Key</label>
+                        <input type="text" id="emailjs-key" value="CNMjB2Shpf0Cd5Zn1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recruiter Form -->
+        <form id="recruiter-form">
+            <div class="grid">
+                <div>
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" required placeholder="Ashley Friedman-Damasco">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" required placeholder="ashley@google.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="agency">Agency/Company <span class="required">*</span></label>
+                        <input type="text" id="agency" required placeholder="Google">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" placeholder="Recruiter">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn URL</label>
+                        <input type="url" id="linkedin" placeholder="https://www.linkedin.com/in/ashley-friedman-damasco/">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website (optional)</label>
+                        <input type="url" id="website" placeholder="https://careers.google.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Profile Image Path</label>
+                        <input type="text" id="image" placeholder="/images/ashley.jpeg">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display-order">Display Order</label>
+                        <input type="number" id="display-order" placeholder="6" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn">🚀 Create Profile & Send Email Automatically</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        // Pre-fill Ashley's information
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('name').value = 'Ashley Friedman-Damasco';
+            document.getElementById('email').value = 'ashley@google.com';
+            document.getElementById('agency').value = 'Google';
+            document.getElementById('linkedin').value = 'https://www.linkedin.com/in/ashley-friedman-damasco/';
+            document.getElementById('image').value = '/images/ashley.jpeg';
+            document.getElementById('display-order').value = '6';
+        });
+
+        function generateSlug(name) {
+            return name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)+/g, '');
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+        }
+
+        document.getElementById('recruiter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Get configuration
+            const supabaseUrl = document.getElementById('supabase-url').value.trim();
+            const supabaseKey = document.getElementById('supabase-key').value.trim();
+            const emailjsService = document.getElementById('emailjs-service').value.trim();
+            const emailjsTemplate = document.getElementById('emailjs-template').value.trim();
+            const emailjsKey = document.getElementById('emailjs-key').value.trim();
+
+            if (!supabaseUrl || !supabaseKey) {
+                showStatus('Please fill in your Supabase configuration', 'error');
+                return;
+            }
+
+            // Get form data
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const agency = document.getElementById('agency').value.trim();
+            const title = document.getElementById('title').value.trim() || 'Recruiter';
+            const linkedin = document.getElementById('linkedin').value.trim();
+            const website = document.getElementById('website').value.trim();
+            const image = document.getElementById('image').value.trim() || '/images/default-avatar.png';
+            const displayOrder = parseInt(document.getElementById('display-order').value.trim()) || 6;
+
+            if (!name || !email || !agency) {
+                showStatus('Please fill in the required fields (Name, Email, Agency/Company)', 'error');
+                return;
+            }
+
+            const slug = generateSlug(name);
+            const firstName = name.split(' ')[0];
+            const linkedinUrl = linkedin || `https://linkedin.com/in/${slug}`;
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+            showStatus('Creating recruiter profile in Supabase...', 'info');
+
+            try {
+                // Initialize Supabase client
+                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+                // Check if recruiter already exists
+                const { data: existing, error: checkError } = await supabase
+                    .from('recruiters')
+                    .select('id, name, email, slug')
+                    .or(`email.eq.${email},slug.eq.${slug}`)
+                    .single();
+
+                if (existing) {
+                    throw new Error(`Recruiter already exists: ${existing.name} (${existing.email})`);
+                }
+
+                // Insert new recruiter
+                const { data: newRecruiter, error: insertError } = await supabase
+                    .from('recruiters')
+                    .insert({
+                        name,
+                        email,
+                        login_email: email,
+                        agency,
+                        title,
+                        linkedin: linkedinUrl,
+                        website: website || '',
+                        about: `${firstName} is a design recruiter focused on connecting talented professionals with opportunities that align with their career goals. Profile details will be updated once onboarding is complete.`,
+                        specialties: 'Design, UX, Product, Leadership',
+                        philosophy: 'I believe in building meaningful connections between talented professionals and companies that value great design and user experience.',
+                        approach: 'My approach focuses on understanding both the technical requirements and cultural fit to ensure long-term success for both candidates and companies.',
+                        notable_clients: 'Various design-focused companies across SaaS, FinTech, and Enterprise sectors',
+                        image,
+                        slug,
+                        display_order: displayOrder,
+                        profile_completed: false,
+                        is_active: true
+                    })
+                    .select()
+                    .single();
+
+                if (insertError) {
+                    throw new Error(`Database error: ${insertError.message}`);
+                }
+
+                const inviteUrl = `https://opendesigndocs.com/docs/recruiters/invite/${slug}`;
+                const profileUrl = `https://opendesigndocs.com/docs/recruiters/${slug}`;
+
+                let statusMessage = `✅ Profile created successfully!<br>`;
+                statusMessage += `📧 Invite URL: <a href="${inviteUrl}" target="_blank">${inviteUrl}</a><br>`;
+                statusMessage += `👤 Profile URL: <a href="${profileUrl}" target="_blank">${profileUrl}</a><br>`;
+
+                // Send email if EmailJS is configured
+                if (emailjsService && emailjsTemplate && emailjsKey) {
+                    showStatus(statusMessage + '📤 Sending invitation email...', 'info');
+                    
+                    try {
+                        // Initialize EmailJS
+                        emailjs.init(emailjsKey);
+
+                        const trackingId = `${slug}_${Date.now()}`;
+                        const emailData = {
+                            to_email: email,
+                            to_name: firstName,
+                            invite_url: `${inviteUrl}?tracking_id=${trackingId}&utm_source=email&utm_medium=invitation&utm_campaign=recruiter_onboarding`,
+                            agency_name: agency,
+                            tracking_id: trackingId
+                        };
+
+                        const emailResult = await emailjs.send(
+                            emailjsService,
+                            emailjsTemplate,
+                            emailData
+                        );
+
+                        statusMessage += `✅ Invitation email sent successfully!<br>`;
+                        statusMessage += `📊 Email ID: ${emailResult.text}<br>`;
+
+                    } catch (emailError) {
+                        console.error('Email sending error:', emailError);
+                        statusMessage += `⚠️ Profile created but email failed to send: ${emailError.text || emailError.message}<br>`;
+                        statusMessage += `You can manually send the invite using the URL above.`;
+                    }
+                } else {
+                    statusMessage += `📋 EmailJS not configured. Use the invite URL above to manually contact the recruiter.`;
+                }
+
+                showStatus(statusMessage, 'success');
+
+                // Reset form
+                document.getElementById('recruiter-form').reset();
+                // Re-fill Ashley's info for next use
+                setTimeout(() => {
+                    document.getElementById('name').value = 'Ashley Friedman-Damasco';
+                    document.getElementById('email').value = 'ashley@google.com';
+                    document.getElementById('agency').value = 'Google';
+                    document.getElementById('linkedin').value = 'https://www.linkedin.com/in/ashley-friedman-damasco/';
+                    document.getElementById('image').value = '/images/ashley.jpeg';
+                    document.getElementById('display-order').value = '6';
+                }, 100);
+
+            } catch (error) {
+                console.error('Setup error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Create Profile & Send Email Automatically';
+            }
+        });
+    </script>
+</body>
+</html>

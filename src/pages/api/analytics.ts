@@ -123,13 +123,14 @@ export const GET: APIRoute = async ({ request, url }) => {
     const startDate = url.searchParams.get('start_date') || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
     const endDate = url.searchParams.get('end_date') || new Date().toISOString();
 
-    // Fetch analytics data from Supabase
+    // Fetch analytics data from Supabase (remove default limit)
     const { data: events, error } = await supabase
       .from('analytics_events')
       .select('*')
       .gte('created_at', startDate)
       .lte('created_at', endDate)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10000); // Increase limit to 10,000 events
 
     if (error) {
       console.error('Error fetching analytics data:', error);

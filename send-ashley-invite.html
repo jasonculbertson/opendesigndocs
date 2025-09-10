@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Ashley's Invitation</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 { 
+            color: #1e293b; 
+            margin-bottom: 20px;
+        }
+        .recruiter-info {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: background 0.2s;
+            margin: 10px;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { 
+            background: #9ca3af; 
+            cursor: not-allowed; 
+        }
+        .status { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-weight: 500;
+        }
+        .success { 
+            background: #d1fae5; 
+            color: #065f46; 
+            border: 1px solid #a7f3d0;
+        }
+        .error { 
+            background: #fee2e2; 
+            color: #991b1b; 
+            border: 1px solid #fca5a5;
+        }
+        .info { 
+            background: #dbeafe; 
+            color: #1e40af; 
+            border: 1px solid #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Send Ashley's Invitation</h1>
+        
+        <div class="recruiter-info">
+            <h3>Recruiter Details:</h3>
+            <p><strong>Name:</strong> Ashley Friedman-Damasco</p>
+            <p><strong>Email:</strong> afriedman90@gmail.com</p>
+            <p><strong>Company:</strong> Google</p>
+            <p><strong>Invite URL:</strong> https://opendesigndocs.com/docs/recruiters/invite/ashley-friedman-damasco</p>
+        </div>
+
+        <button onclick="sendInvitation()" id="sendBtn">
+            🚀 Send Invitation Email
+        </button>
+
+        <div id="status"></div>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        // EmailJS configuration
+        const EMAILJS_SERVICE_ID = 'service_eh90d7s';
+        const EMAILJS_TEMPLATE_ID = 'template_kvdplaa';
+        const EMAILJS_PUBLIC_KEY = 'CNMjB2Shpf0Cd5Zn1';
+        
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+        }
+
+        async function sendInvitation() {
+            const sendBtn = document.getElementById('sendBtn');
+            
+            // Disable button and show loading
+            sendBtn.disabled = true;
+            sendBtn.textContent = '⏳ Sending...';
+            showStatus('Sending invitation email to Ashley...', 'info');
+
+            try {
+                // Generate tracking ID
+                const trackingId = 'ashley_friedman_damasco_' + Date.now();
+                
+                // Prepare email data
+                const inviteUrl = 'https://opendesigndocs.com/docs/recruiters/invite/ashley-friedman-damasco';
+                const inviteUrlWithTracking = `${inviteUrl}?tracking_id=${trackingId}&utm_source=email&utm_medium=invitation&utm_campaign=recruiter_invite`;
+                
+                const emailData = {
+                    to_email: 'afriedman90@gmail.com',
+                    to_name: 'Ashley',
+                    invite_url: inviteUrlWithTracking,
+                    agency_name: 'Google',
+                    tracking_pixel: `https://www.opendesigndocs.com/api/email-tracking?event=email_opened&tracking_id=${trackingId}&type=pixel`
+                };
+                
+                console.log('Sending email with data:', emailData);
+                
+                // Send email via EmailJS
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    emailData
+                );
+                
+                console.log('Email sent successfully:', response);
+                
+                // Track email sent event
+                try {
+                    await fetch('https://www.opendesigndocs.com/api/email-tracking', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            event: 'email_sent',
+                            tracking_id: trackingId,
+                            recipient_email: 'afriedman90@gmail.com',
+                            recipient_name: 'Ashley Friedman-Damasco',
+                            email_type: 'recruiter_invitation',
+                            metadata: {
+                                recruiter_slug: 'ashley-friedman-damasco',
+                                invite_url: inviteUrl,
+                                agency: 'Google'
+                            }
+                        })
+                    });
+                } catch (trackingError) {
+                    console.error('Email tracking error:', trackingError);
+                }
+                
+                showStatus(`✅ Invitation email sent successfully to Ashley!<br>📊 Email ID: ${response.text}<br>📧 Sent to: afriedman90@gmail.com`, 'success');
+                
+            } catch (error) {
+                console.error('Email sending error:', error);
+                showStatus(`❌ Failed to send email: ${error.text || error.message}`, 'error');
+            } finally {
+                // Re-enable button
+                sendBtn.disabled = false;
+                sendBtn.textContent = '🚀 Send Invitation Email';
+            }
+        }
+    </script>
+</body>
+</html>

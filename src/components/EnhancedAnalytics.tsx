@@ -510,15 +510,17 @@ const RecruiterAnalyticsTab: React.FC<{
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agency</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile Views</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Clicks</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversion Rate</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top Contact Type</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversion Rate</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Types</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {data.recruiterPerformance.map((recruiter: any, index: number) => {
-                const topContactType = Object.entries(recruiter.contactTypes)
-                  .sort(([,a], [,b]) => (b as number) - (a as number))[0];
-                const topContactText = topContactType ? `${topContactType[0]} (${topContactType[1]})` : 'None';
+                // Format all contact types as a breakdown
+                const contactTypesBreakdown = Object.entries(recruiter.contactTypes)
+                  .sort(([,a], [,b]) => (b as number) - (a as number))
+                  .map(([type, count]) => `${type}: ${count}`)
+                  .join(' • ') || 'None';
                 
                 return (
                   <tr key={recruiter.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -538,7 +540,11 @@ const RecruiterAnalyticsTab: React.FC<{
                         {recruiter.conversionRate}%
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{topContactText}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                      <div className="truncate" title={contactTypesBreakdown}>
+                        {contactTypesBreakdown}
+                      </div>
+                    </td>
                   </tr>
                 );
               })}

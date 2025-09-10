@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Recruiter Onboarding</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 800px; 
+            margin: 40px auto; 
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #1e293b; 
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #374151;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+        }
+        .required { color: #ef4444; }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: background 0.2s;
+            width: 100%;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { 
+            background: #9ca3af; 
+            cursor: not-allowed; 
+        }
+        .status { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-weight: 500;
+        }
+        .success { 
+            background: #d1fae5; 
+            color: #065f46; 
+            border: 1px solid #a7f3d0;
+        }
+        .error { 
+            background: #fee2e2; 
+            color: #991b1b; 
+            border: 1px solid #fca5a5;
+        }
+        .info { 
+            background: #dbeafe; 
+            color: #1e40af; 
+            border: 1px solid #93c5fd;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        .email-preview {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .steps {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #475569;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 8px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Automated Recruiter Onboarding</h1>
+        
+        <div class="steps">
+            <h3>What this tool does:</h3>
+            <ol>
+                <li>Creates database record with proper defaults</li>
+                <li>Generates unique invite URL</li>
+                <li>Prepares email data for sending</li>
+                <li>Optionally sends invitation email via EmailJS</li>
+            </ol>
+        </div>
+
+        <form id="onboarding-form">
+            <div class="form-group">
+                <label for="name">Full Name <span class="required">*</span></label>
+                <input type="text" id="name" required placeholder="Ashley Friedman-Damasco">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" required placeholder="ashley@agency.com">
+            </div>
+
+            <div class="form-group">
+                <label for="linkedin">LinkedIn URL</label>
+                <input type="url" id="linkedin" placeholder="https://www.linkedin.com/in/ashley-friedman-damasco/">
+            </div>
+
+            <div class="form-group">
+                <label for="agency">Agency/Company</label>
+                <input type="text" id="agency" placeholder="Google">
+                <small style="color: #6b7280; font-size: 14px;">Required field - can be recruiting agency or company name</small>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" placeholder="Recruiter (default)">
+            </div>
+
+            <div class="form-group">
+                <label for="image">Profile Image Path</label>
+                <input type="text" id="image" placeholder="/images/ashley.jpeg">
+                <small style="color: #6b7280; font-size: 14px;">You mentioned you already added her photo</small>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="send-email" checked>
+                    <label for="send-email" style="margin-bottom: 0;">Send invitation email automatically</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn">🚀 Create Profile & Send Invite</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        // EmailJS configuration
+        const EMAILJS_SERVICE_ID = 'service_eh90d7s';
+        const EMAILJS_TEMPLATE_ID = 'template_kvdplaa';
+        const EMAILJS_PUBLIC_KEY = 'CNMjB2Shpf0Cd5Zn1';
+        
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const status = document.getElementById('status');
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                linkedin: document.getElementById('linkedin').value.trim(),
+                agency: document.getElementById('agency').value.trim(),
+                title: document.getElementById('title').value.trim(),
+                image: document.getElementById('image').value.trim(),
+                sendEmail: document.getElementById('send-email').checked,
+                adminKey: 'jason2024'
+            };
+
+            if (!formData.name || !formData.email) {
+                showStatus('Please fill in the required fields (Name and Email)', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+            showStatus('Creating recruiter profile...', 'info');
+
+            try {
+                // Step 1: Create recruiter profile
+                const response = await fetch('http://localhost:4321/api/recruiters/onboard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Failed to create profile');
+                }
+
+                let statusMessage = `✅ Profile created successfully!<br>`;
+                statusMessage += `📧 Invite URL: <a href="${result.inviteUrl}" target="_blank">${result.inviteUrl}</a><br>`;
+
+                // Step 2: Send email if requested
+                if (formData.sendEmail && result.emailData) {
+                    showStatus(statusMessage + '📤 Sending invitation email...', 'info');
+                    
+                    try {
+                        const emailResult = await emailjs.send(
+                            EMAILJS_SERVICE_ID,
+                            EMAILJS_TEMPLATE_ID,
+                            result.emailData.emailTemplate
+                        );
+
+                        statusMessage += `✅ Invitation email sent successfully!<br>`;
+                        statusMessage += `📊 Email ID: ${emailResult.text}<br>`;
+                        
+                        // Track email sent
+                        await fetch('http://localhost:4321/api/email-tracking', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                event: 'email_sent',
+                                tracking_id: result.emailData.emailTemplate.tracking_id,
+                                recipient_email: formData.email,
+                                recipient_name: formData.name,
+                                email_type: 'recruiter_invitation',
+                                metadata: {
+                                    recruiter_slug: result.recruiter.slug,
+                                    invite_url: result.inviteUrl
+                                }
+                            })
+                        }).catch(err => console.error('Email tracking error:', err));
+
+                    } catch (emailError) {
+                        console.error('Email sending error:', emailError);
+                        statusMessage += `⚠️ Profile created but email failed to send: ${emailError.text || emailError.message}<br>`;
+                        statusMessage += `You can manually send the invite using the URL above.`;
+                    }
+                } else if (!formData.sendEmail) {
+                    statusMessage += `📋 Email sending skipped. Use the invite URL above to manually contact the recruiter.`;
+                }
+
+                showStatus(statusMessage, 'success');
+
+                // Reset form
+                document.getElementById('onboarding-form').reset();
+
+            } catch (error) {
+                console.error('Onboarding error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Create Profile & Send Invite';
+            }
+        });
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+        }
+
+        // Pre-fill Ashley's information
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('name').value = 'Ashley Friedman-Damasco';
+            document.getElementById('linkedin').value = 'https://www.linkedin.com/in/ashley-friedman-damasco/';
+            document.getElementById('agency').value = 'Google';
+            document.getElementById('image').value = '/images/ashley.jpeg';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Recruiter Setup</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #1e293b; 
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #374151;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+        }
+        .required { color: #ef4444; }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: background 0.2s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover { background: #2563eb; }
+        .output { 
+            margin-top: 30px; 
+            padding: 20px; 
+            border-radius: 8px; 
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .sql-output {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+        .email-output {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        .copy-btn {
+            background: #10b981;
+            font-size: 14px;
+            padding: 8px 16px;
+            width: auto;
+            margin: 10px 5px 0 0;
+        }
+        .copy-btn:hover { background: #059669; }
+        .steps {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #475569;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 8px;
+            color: #64748b;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Simple Recruiter Setup</h1>
+        
+        <div class="steps">
+            <h3>Super Simple Process:</h3>
+            <ol>
+                <li>Fill out the form below</li>
+                <li>Copy the generated SQL migration</li>
+                <li>Run the migration in Supabase</li>
+                <li>Copy the email content and send manually (or use EmailJS)</li>
+            </ol>
+        </div>
+
+        <form id="recruiter-form">
+            <div class="grid">
+                <div>
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" required placeholder="Ashley Friedman-Damasco">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" required placeholder="ashley@google.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="agency">Agency/Company <span class="required">*</span></label>
+                        <input type="text" id="agency" required placeholder="Google">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" placeholder="Recruiter">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn URL</label>
+                        <input type="url" id="linkedin" placeholder="https://www.linkedin.com/in/ashley-friedman-damasco/">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website (optional)</label>
+                        <input type="url" id="website" placeholder="https://careers.google.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Profile Image Path</label>
+                        <input type="text" id="image" placeholder="/images/ashley.jpeg">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display-order">Display Order</label>
+                        <input type="number" id="display-order" placeholder="6" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="generateFiles()">📝 Generate SQL & Email</button>
+        </form>
+
+        <div id="outputs" style="display: none;">
+            <h3>🗄️ SQL Migration File</h3>
+            <button class="copy-btn" onclick="copyToClipboard('sql-output')">📋 Copy SQL</button>
+            <div id="sql-output" class="output sql-output"></div>
+
+            <h3>📧 Email Content</h3>
+            <button class="copy-btn" onclick="copyToClipboard('email-output')">📋 Copy Email</button>
+            <div id="email-output" class="output email-output"></div>
+
+            <h3>🔗 Generated URLs</h3>
+            <div id="urls-output" class="output email-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Pre-fill Ashley's information
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('name').value = 'Ashley Friedman-Damasco';
+            document.getElementById('email').value = 'ashley@google.com';
+            document.getElementById('agency').value = 'Google';
+            document.getElementById('linkedin').value = 'https://www.linkedin.com/in/ashley-friedman-damasco/';
+            document.getElementById('image').value = '/images/ashley.jpeg';
+            document.getElementById('display-order').value = '6';
+        });
+
+        function generateSlug(name) {
+            return name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)+/g, '');
+        }
+
+        function generateFiles() {
+            // Get form data
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const agency = document.getElementById('agency').value.trim();
+            const title = document.getElementById('title').value.trim() || 'Recruiter';
+            const linkedin = document.getElementById('linkedin').value.trim();
+            const website = document.getElementById('website').value.trim();
+            const image = document.getElementById('image').value.trim() || '/images/default-avatar.png';
+            const displayOrder = document.getElementById('display-order').value.trim() || '6';
+
+            if (!name || !email || !agency) {
+                alert('Please fill in the required fields (Name, Email, Agency/Company)');
+                return;
+            }
+
+            const slug = generateSlug(name);
+            const firstName = name.split(' ')[0];
+            const linkedinUrl = linkedin || `https://linkedin.com/in/${slug}`;
+
+            // Generate SQL Migration
+            const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            const migrationName = `${timestamp}_add_${slug.replace(/-/g, '_')}_recruiter.sql`;
+            
+            const sqlContent = `-- Add ${name} as a new recruiter
+-- Migration: ${migrationName}
+
+-- Add ${name} as a new recruiter (only if not already exists)
+INSERT INTO recruiters (
+  name,
+  email,
+  login_email,
+  agency,
+  title,
+  linkedin,
+  website,
+  about,
+  specialties,
+  philosophy,
+  approach,
+  notable_clients,
+  image,
+  slug,
+  display_order,
+  profile_completed,
+  is_active,
+  created_at,
+  updated_at
+) 
+SELECT 
+  '${name}',
+  '${email}',
+  '${email}',
+  '${agency}',
+  '${title}',
+  '${linkedinUrl}',
+  ${website ? `'${website}'` : 'NULL'},
+  '${firstName} is a design recruiter focused on connecting talented professionals with opportunities that align with their career goals. Profile details will be updated once onboarding is complete.',
+  'Design, UX, Product, Leadership',
+  'I believe in building meaningful connections between talented professionals and companies that value great design and user experience.',
+  'My approach focuses on understanding both the technical requirements and cultural fit to ensure long-term success for both candidates and companies.',
+  'Various design-focused companies across SaaS, FinTech, and Enterprise sectors',
+  '${image}',
+  '${slug}',
+  ${displayOrder},
+  false, -- Profile not completed yet
+  true, -- Active recruiter
+  NOW(),
+  NOW()
+WHERE NOT EXISTS (
+  SELECT 1 FROM recruiters WHERE email = '${email}' OR slug = '${slug}'
+);
+
+-- Verify the addition
+-- SELECT id, name, email, slug, display_order FROM recruiters WHERE slug = '${slug}';`;
+
+            // Generate Email Content
+            const inviteUrl = `https://opendesigndocs.com/docs/recruiters/invite/${slug}`;
+            const profileUrl = `https://opendesigndocs.com/docs/recruiters/${slug}`;
+
+            const emailContent = `Subject: Your Open Design Docs Profile - Ready to Edit
+
+Hi ${firstName},
+
+I've set up your recruiter profile on Open Design Docs! You can now access and edit your profile using this personalized link:
+
+${inviteUrl}
+
+This link will guide you through:
+- Creating your account (using your professional email: ${email})
+- Accessing your profile page
+- Editing your information, specialties, and approach
+
+The whole process takes just a few minutes. Let me know if you have any questions!
+
+Best,
+Jason
+
+---
+
+For EmailJS Template Variables:
+- to_email: ${email}
+- to_name: ${firstName}
+- invite_url: ${inviteUrl}
+- agency_name: ${agency}
+- tracking_id: ${slug}_${Date.now()}`;
+
+            const urlsContent = `Invite URL: ${inviteUrl}
+Profile URL: ${profileUrl}
+Slug: ${slug}
+Migration File: ${migrationName}`;
+
+            // Display outputs
+            document.getElementById('sql-output').textContent = sqlContent;
+            document.getElementById('email-output').textContent = emailContent;
+            document.getElementById('urls-output').textContent = urlsContent;
+            document.getElementById('outputs').style.display = 'block';
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Visual feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = '#059669';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#10b981';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                alert('Copy failed. Please select and copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>
