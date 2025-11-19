@@ -525,10 +525,17 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                     });
 
                     // Ensure Clerk is fully loaded before attempting OAuth
-                    if (!signUp || !signIn) {
+                    if (!signUp && !signIn) {
                       console.log('⏳ Waiting for Clerk to initialize...');
                       // Wait a bit for Clerk to load
-                      await new Promise(resolve => setTimeout(resolve, 100));
+                      await new Promise(resolve => setTimeout(resolve, 500)); // Increased wait time
+
+                      if (!signUp && !signIn) {
+                        console.error('❌ Clerk not initialized after wait');
+                        setIsRetryingOAuth(false);
+                        alert('Authentication service is initializing. Please try again in a moment.');
+                        return;
+                      }
                     }
 
                     // Universal Google OAuth: Respect user intent (Sign In vs Sign Up)
@@ -538,7 +545,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       // User explicitly wants to sign up
                       try {
                         console.log('📝 Starting with Google Signup...');
-                        await signUp?.authenticateWithRedirect({
+                        if (!signUp) throw new Error('SignUp object not available');
+
+                        await signUp.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: currentPageUrl,
                           redirectUrlComplete: currentPageUrl,
@@ -549,7 +558,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
 
                         // Fallback to signin if signup fails (e.g. account exists)
                         try {
-                          await signIn?.authenticateWithRedirect({
+                          if (!signIn) throw new Error('SignIn object not available for fallback');
+
+                          await signIn.authenticateWithRedirect({
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
@@ -567,7 +578,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       // User explicitly wants to sign in (or default)
                       try {
                         console.log('🔑 Starting with Google Signin...');
-                        await signIn?.authenticateWithRedirect({
+                        if (!signIn) throw new Error('SignIn object not available');
+
+                        await signIn.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: currentPageUrl,
                           redirectUrlComplete: currentPageUrl,
@@ -578,7 +591,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
 
                         // Fallback to signup if signin fails (e.g. account doesn't exist)
                         try {
-                          await signUp?.authenticateWithRedirect({
+                          if (!signUp) throw new Error('SignUp object not available for fallback');
+
+                          await signUp.authenticateWithRedirect({
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
@@ -595,6 +610,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                     }
                   } catch (error) {
                     console.error('Google OAuth error:', error);
+                    setIsRetryingOAuth(false); // CRITICAL FIX: Reset loading state on error
 
                     // Log detailed error information for debugging
                     if (error && typeof error === 'object') {
