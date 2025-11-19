@@ -156,7 +156,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
       <nav className="p-4 h-full flex flex-col min-h-screen">
         {/* Mobile logo */}
         <div className="flex lg:hidden items-center mb-8 pt-4 pl-2">
-          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center" onClick={(e) => handleLinkClick(e, "https://www.opendesigndocs.com/docs/levels/levels-titles")}>
+          <a href="/" className="flex items-center" onClick={(e) => handleLinkClick(e, "/")}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="3" y1="9" x2="21" y2="9"></line>
@@ -167,7 +167,7 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
         
         {/* Desktop logo */}
         <div className="hidden lg:flex items-center gap-2 mb-8">
-          <a href="https://www.opendesigndocs.com/docs/levels/levels-titles" className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="3" y1="9" x2="21" y2="9"></line>
