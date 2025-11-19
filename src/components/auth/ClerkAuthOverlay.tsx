@@ -531,34 +531,66 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       await new Promise(resolve => setTimeout(resolve, 100));
                     }
 
-                    // Universal Google OAuth: Always try signin first (most common case)
-                    console.log('🔄 Attempting universal Google authentication...');
+                    // Universal Google OAuth: Respect user intent (Sign In vs Sign Up)
+                    console.log('🔄 Attempting universal Google authentication...', { initialView });
 
-                    try {
-                      // Try signin first since most users already have accounts
-                      await signIn?.authenticateWithRedirect({
-                        strategy: 'oauth_google',
-                        redirectUrl: currentPageUrl,
-                        redirectUrlComplete: currentPageUrl,
-                      });
-                      console.log('✅ Google signin successful');
-                    } catch (signInError: any) {
-                      console.log('🔄 Signin failed, trying signup as fallback:', signInError?.message);
-
-                      // If signin fails, try signup as fallback
+                    if (initialView === 'sign_up') {
+                      // User explicitly wants to sign up
                       try {
+                        console.log('📝 Starting with Google Signup...');
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: currentPageUrl,
                           redirectUrlComplete: currentPageUrl,
                         });
-                        console.log('✅ Google signup successful');
+                        console.log('✅ Google signup initiated');
                       } catch (signUpError: any) {
-                        console.error('❌ Both Google signin and signup failed:', {
-                          signInError: signInError?.message,
-                          signUpError: signUpError?.message
+                        console.log('🔄 Signup failed, trying signin as fallback (account might exist):', signUpError?.message);
+
+                        // Fallback to signin if signup fails (e.g. account exists)
+                        try {
+                          await signIn?.authenticateWithRedirect({
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                          });
+                          console.log('✅ Google signin initiated (fallback)');
+                        } catch (signInError: any) {
+                          console.error('❌ Both Google signup and signin failed:', {
+                            signUpError: signUpError?.message,
+                            signInError: signInError?.message
+                          });
+                          throw new Error('Google authentication failed. Please try again or use email.');
+                        }
+                      }
+                    } else {
+                      // User explicitly wants to sign in (or default)
+                      try {
+                        console.log('🔑 Starting with Google Signin...');
+                        await signIn?.authenticateWithRedirect({
+                          strategy: 'oauth_google',
+                          redirectUrl: currentPageUrl,
+                          redirectUrlComplete: currentPageUrl,
                         });
-                        throw new Error('Google authentication failed. Please try again or use email.');
+                        console.log('✅ Google signin initiated');
+                      } catch (signInError: any) {
+                        console.log('🔄 Signin failed, trying signup as fallback (account might be new):', signInError?.message);
+
+                        // Fallback to signup if signin fails (e.g. account doesn't exist)
+                        try {
+                          await signUp?.authenticateWithRedirect({
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                          });
+                          console.log('✅ Google signup initiated (fallback)');
+                        } catch (signUpError: any) {
+                          console.error('❌ Both Google signin and signup failed:', {
+                            signInError: signInError?.message,
+                            signUpError: signUpError?.message
+                          });
+                          throw new Error('Google authentication failed. Please try again or use email.');
+                        }
                       }
                     }
                   } catch (error) {
