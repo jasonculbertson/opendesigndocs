@@ -383,11 +383,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                       });
                       console.log('✅ Email verified! Redirecting...');
                       
-                      // Wait a moment for Clerk session to establish, then redirect
+                      // Quick redirect - Clerk session is ready after verification
                       setTimeout(() => {
                         console.log('🔄 Manual redirect to:', redirectTo);
                         window.location.href = redirectTo;
-                      }, 1000);
+                      }, 200);
                     } else {
                       console.log('Verifying signin code...');
                       await signIn?.attemptFirstFactor({
@@ -396,11 +396,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                       });
                       console.log('✅ Signed in! Redirecting...');
                       
-                      // Wait a moment for Clerk session to establish, then redirect
+                      // Quick redirect - Clerk session is ready after verification
                       setTimeout(() => {
                         console.log('🔄 Manual redirect to:', redirectTo);
                         window.location.href = redirectTo;
-                      }, 1000);
+                      }, 200);
                     }
                   } catch (error) {
                     console.error('Code verification error:', error);
