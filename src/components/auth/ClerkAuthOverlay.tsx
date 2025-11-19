@@ -215,7 +215,6 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       } else {
                         console.log('Starting Google sign-in flow...');
@@ -223,7 +222,6 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       }
                     } catch (error) {
