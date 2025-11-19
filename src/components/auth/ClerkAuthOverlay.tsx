@@ -870,6 +870,25 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
               onClick={async () => {
                 try {
                   console.log('🔄 Starting smart email authentication for:', { email, initialView });
+                  console.log('🔍 Clerk instances available:', { 
+                    hasSignUp: !!signUp, 
+                    hasSignIn: !!signIn,
+                    isLoaded,
+                    signUpId: signUp?.id
+                  });
+
+                  // Check if Clerk is loaded
+                  if (!isLoaded) {
+                    console.error('❌ Clerk not loaded yet!');
+                    alert('Authentication system is not ready. Please wait a moment and try again.');
+                    return;
+                  }
+
+                  if (!signUp || !signIn) {
+                    console.error('❌ Clerk instances not available!', { hasSignUp: !!signUp, hasSignIn: !!signIn });
+                    alert('Authentication system error. Please refresh the page and try again.');
+                    return;
+                  }
 
                   // Smart unified flow: Try the user's intended action first, but fall back intelligently
                   let authSuccess = false;
@@ -878,16 +897,31 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                     console.log('📝 Attempting signup first (user clicked Get Started)...');
                     try {
                       // Try signup first since user clicked "Get Started"
-                      const signUpAttempt = await signUp?.create({
+                      console.log('📝 Calling signUp.create with email:', email);
+                      
+                      // Add timeout to detect hanging API calls
+                      const signUpPromise = signUp.create({
                         emailAddress: email,
                       });
+                      
+                      const timeoutPromise = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Signup API call timed out after 10 seconds')), 10000)
+                      );
+                      
+                      const signUpAttempt = await Promise.race([signUpPromise, timeoutPromise]) as any;
                       console.log('✅ Signup attempt created:', signUpAttempt?.id);
 
                       // Send email verification code
                       console.log('📧 Preparing email verification...');
-                      await signUp?.prepareEmailAddressVerification({
+                      const preparePromise = signUp.prepareEmailAddressVerification({
                         strategy: 'email_code',
                       });
+                      
+                      const prepareTimeoutPromise = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Email preparation timed out after 10 seconds')), 10000)
+                      );
+                      
+                      await Promise.race([preparePromise, prepareTimeoutPromise]);
                       console.log('✅ Email verification code sent for signup');
 
                       setEmailSent(true);
