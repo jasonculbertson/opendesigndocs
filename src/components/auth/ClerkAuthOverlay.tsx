@@ -204,16 +204,10 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                   onClick={async () => {
                     console.log('🚀 Google OAuth clicked:', { initialView, redirectTo });
                     
-                    // Store redirect URL in sessionStorage so we can use it after OAuth completes
-                    if (typeof window !== 'undefined') {
-                      sessionStorage.setItem('clerk_oauth_redirect', redirectTo);
-                    }
-                    
                     try {
                       if (initialView === 'sign_up') {
                         console.log('Starting Google sign-up flow with redirect to:', redirectTo);
-                        // Use BOTH redirectUrl (callback handler) AND redirectUrlComplete (final destination)
-                        // This is how email auth works - direct to target page
+                        // SIMPLE: Just use strategy, Clerk will handle the rest via afterSignUpUrl
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}${redirectTo}`,
@@ -221,8 +215,7 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         });
                       } else {
                         console.log('Starting Google sign-in flow with redirect to:', redirectTo);
-                        // Use BOTH redirectUrl (callback handler) AND redirectUrlComplete (final destination)
-                        // This is how email auth works - direct to target page
+                        // SIMPLE: Just use strategy, Clerk will handle the rest via afterSignInUrl
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}${redirectTo}`,

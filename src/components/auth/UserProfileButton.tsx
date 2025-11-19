@@ -26,11 +26,39 @@ const UserProfileButton = React.memo(function UserProfileButton() {
   const { signOut, openUserProfile } = useClerk();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   // Log auth state for debugging
   useEffect(() => {
-    console.log('🔐 UserProfileButton state:', { isLoaded, isSignedIn, hasUser: !!user });
-  }, [isLoaded, isSignedIn, user]);
+    console.log('🔐 UserProfileButton state:', { isLoaded, isSignedIn, hasUser: !!user, forceUpdate });
+  }, [isLoaded, isSignedIn, user, forceUpdate]);
+
+  // Aggressive polling for OAuth callback - check for session every 500ms for first 5 seconds
+  useEffect(() => {
+    if (!isSignedIn && typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasOAuthCallback = urlParams.has('created_session_id') || urlParams.has('code');
+      
+      if (hasOAuthCallback) {
+        console.log('🔍 UserProfileButton: OAuth callback detected, polling for session...');
+        let attempts = 0;
+        const maxAttempts = 10; // 5 seconds total
+        
+        const pollInterval = setInterval(() => {
+          attempts++;
+          console.log(`🔄 UserProfileButton: Polling attempt ${attempts}/${maxAttempts}`);
+          setForceUpdate(prev => prev + 1); // Force re-render to check auth state again
+          
+          if (attempts >= maxAttempts) {
+            console.log('⏱️ UserProfileButton: Stopped polling after max attempts');
+            clearInterval(pollInterval);
+          }
+        }, 500);
+        
+        return () => clearInterval(pollInterval);
+      }
+    }
+  }, [isSignedIn]);
 
   // Close menu on outside click
   useEffect(() => {
