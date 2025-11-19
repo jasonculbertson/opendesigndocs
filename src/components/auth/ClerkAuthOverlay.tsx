@@ -86,16 +86,27 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
       const clerkStatus = params.get('clerk_status');
       const error = params.get('error');
       const errorDescription = params.get('error_description');
+      const storedOAuthRedirect = sessionStorage.getItem('oauth_redirect_url');
 
-      if (clerkStatus || error) {
+      if (clerkStatus || error || storedOAuthRedirect) {
         console.log('🚨 OAuth Return Detected:', {
           clerkStatus,
           error,
           errorDescription,
           signInStatus: signIn?.status,
           signUpStatus: signUp?.status,
-          isSignedIn
+          isSignedIn,
+          isLoaded,
+          storedOAuthRedirect,
+          currentPath: window.location.pathname
         });
+
+        // If we have a stored OAuth redirect but user isn't signed in yet, wait for sign in
+        if (storedOAuthRedirect && !isSignedIn) {
+          console.log('⏳ OAuth redirect stored but user not signed in yet. Waiting for Clerk to complete authentication...');
+          // Clerk is still processing the OAuth callback - give it more time
+          // The useEffect that handles isSignedIn will pick this up once ready
+        }
       }
     }
 
@@ -184,24 +195,47 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
     }
   };
 
-  // Proactive session check on component load
+  // Proactive session check on component load - especially for OAuth callbacks
   useEffect(() => {
     const checkForExistingSession = async () => {
       if (!isLoaded || isSignedIn || typeof window === 'undefined') return;
+
+      // Check if we're returning from OAuth
+      const storedOAuthRedirect = sessionStorage.getItem('oauth_redirect_url');
+      const hasOAuthRedirect = !!storedOAuthRedirect;
+
+      if (hasOAuthRedirect) {
+        console.log('🔍 Returning from OAuth, checking for session... (redirect stored: ' + storedOAuthRedirect + ')');
+      }
 
       try {
         const clerk = (window as any).Clerk;
         if (clerk && clerk.session && !clerk.user) {
           console.log('🔍 Found orphaned session, attempting to restore...');
           await clerk.setActive({ session: clerk.session });
+        } else if (clerk && !clerk.session && hasOAuthRedirect) {
+          // OAuth callback might still be processing
+          console.log('⏳ OAuth redirect stored but no session yet. Clerk may still be processing callback...');
+          
+          // Wait a bit longer and check again
+          setTimeout(async () => {
+            if (clerk.session && !isSignedIn) {
+              console.log('🔄 Session now available after OAuth, activating...');
+              await clerk.setActive({ session: clerk.session });
+            } else if (!clerk.session) {
+              console.log('❌ OAuth callback did not create a session. User may need to try again.');
+              // Clean up the stored redirect since OAuth failed
+              sessionStorage.removeItem('oauth_redirect_url');
+            }
+          }, 2000); // Wait 2 more seconds for OAuth callback to complete
         }
       } catch (error) {
-        console.log('🔍 No session to restore');
+        console.log('🔍 Session check error:', error);
       }
     };
 
-    // Small delay to ensure Clerk is fully loaded
-    const timer = setTimeout(checkForExistingSession, 1000);
+    // Longer delay for OAuth callbacks to complete
+    const timer = setTimeout(checkForExistingSession, 1500);
     return () => clearTimeout(timer);
   }, [isLoaded, isSignedIn]);
 
@@ -340,9 +374,10 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
     if (isSignedIn && !isManualRedirect) {
-      console.log('✅ User signed in, closing overlay and redirecting to:', redirectTo);
+      console.log('✅ User signed in successfully!');
       console.log('🔍 Current URL:', window.location.href);
       console.log('🔍 Current pathname:', window.location.pathname);
+      console.log('🔍 Redirect target:', redirectTo);
       console.log('🔍 IsManualRedirect:', isManualRedirect);
       setIsOpen(false);
 
