@@ -42,9 +42,9 @@ const showSidebar = path.startsWith('/docs');
     <!-- CSP for OAuth and external services -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://*.clerk.dev https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com;
-      connect-src 'self' https://*.clerk.com https://*.clerk.dev https://accounts.google.com https://apis.google.com https://www.google-analytics.com https://*.supabase.co;
-      frame-src 'self' https://*.clerk.com https://*.clerk.dev https://accounts.google.com;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://*.clerk.dev https://clerk.opendesigndocs.com https://accounts.opendesigndocs.com https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com https://challenges.cloudflare.com;
+      connect-src 'self' https://*.clerk.com https://*.clerk.dev https://clerk.opendesigndocs.com https://accounts.opendesigndocs.com https://accounts.google.com https://apis.google.com https://www.google-analytics.com https://*.supabase.co;
+      frame-src 'self' https://*.clerk.com https://*.clerk.dev https://clerk.opendesigndocs.com https://accounts.opendesigndocs.com https://accounts.google.com https://challenges.cloudflare.com;
       img-src 'self' data: https: blob:;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com;
