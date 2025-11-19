@@ -250,6 +250,9 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                 />
               </div>
 
+              {/* CAPTCHA container for Clerk's bot protection */}
+              <div id="clerk-captcha" style={{ marginBottom: '24px' }}></div>
+
               <button
                 onClick={async () => {
                   console.log('Email button clicked:', { email, initialView });
