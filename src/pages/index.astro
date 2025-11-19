@@ -166,16 +166,27 @@ const featuredResources = [
 </HomeLayout>
 
 <!-- Browse Resources Button Auth Handler -->
-<script>
-  import { dispatchAuthEvent } from '../utils/authEvents';
-  
+<script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Setting up homepage button listeners');
+    
+    function dispatchAuthEvent(detail) {
+      console.log('🚀 Dispatching auth event:', detail);
+      const event = new CustomEvent('openAuthOverlay', { 
+        detail: detail,
+        bubbles: true,
+        composed: true
+      });
+      window.dispatchEvent(event);
+    }
+
     const browseButton = document.getElementById('browse-resources-button');
     
     if (browseButton) {
+      console.log('✅ Found browse button');
       browseButton.addEventListener('click', function() {
         // Check if user is already signed in
-        const clerk = (window as any).Clerk;
+        const clerk = window.Clerk;
         const isSignedIn = clerk && clerk.user;
         
         if (isSignedIn) {
@@ -191,16 +202,20 @@ const featuredResources = [
           });
         }
       });
+    } else {
+      console.error('❌ Browse button not found');
     }
     
     // Handle Featured Resources cards
     const featuredCards = document.querySelectorAll('[id^="featured-resource-"]');
+    console.log(`✅ Found ${featuredCards.length} featured cards`);
+    
     featuredCards.forEach((card) => {
       card.addEventListener('click', function() {
         const targetUrl = this.getAttribute('data-resource-href');
         if (targetUrl) {
           // Check if user is already signed in
-          const clerk = (window as any).Clerk;
+          const clerk = window.Clerk;
           const isSignedIn = clerk && clerk.user;
           
           if (isSignedIn) {
