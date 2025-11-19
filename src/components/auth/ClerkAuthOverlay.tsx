@@ -379,7 +379,12 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         code,
                       });
                       console.log('✅ Email verified! Redirecting...');
-                      // Redirect will happen via the useEffect when isSignedIn becomes true
+                      
+                      // Wait a moment for Clerk session to establish, then redirect
+                      setTimeout(() => {
+                        console.log('🔄 Manual redirect to:', redirectTo);
+                        window.location.href = redirectTo;
+                      }, 1000);
                     } else {
                       console.log('Verifying signin code...');
                       await signIn?.attemptFirstFactor({
@@ -387,7 +392,12 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                         code,
                       });
                       console.log('✅ Signed in! Redirecting...');
-                      // Redirect will happen via the useEffect when isSignedIn becomes true
+                      
+                      // Wait a moment for Clerk session to establish, then redirect
+                      setTimeout(() => {
+                        console.log('🔄 Manual redirect to:', redirectTo);
+                        window.location.href = redirectTo;
+                      }, 1000);
                     }
                   } catch (error) {
                     console.error('Code verification error:', error);
