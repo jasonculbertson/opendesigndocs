@@ -33,6 +33,14 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Check for OAuth completion on mount
+    if (typeof window !== 'undefined') {
+      const storedRedirect = sessionStorage.getItem('clerk_oauth_redirect');
+      if (storedRedirect) {
+        console.log('🔍 OAuth redirect found on mount, waiting for sign-in...', storedRedirect);
+      }
+    }
   }, []);
 
   // Set up event listener regardless of SSR/client state - this is crucial for homepage buttons
@@ -62,6 +70,7 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   // Close overlay if user is signed in (only on client)
   useEffect(() => {
     if (isClient && isSignedIn) {
+      console.log('✅ User is signed in, checking for redirects...', { isSignedIn, currentPath: window.location.pathname });
       setIsOpen(false);
       
       // Check for OAuth redirect in sessionStorage
@@ -73,10 +82,12 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
         console.log('🔄 Found OAuth redirect in storage:', storedRedirect);
         sessionStorage.removeItem('clerk_oauth_redirect');
         setTimeout(() => {
-          window.location.href = storedRedirect;
-        }, 200);
+          console.log('🚀 Redirecting to:', storedRedirect);
+          window.location.replace(storedRedirect);
+        }, 500);
       } else if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
         // Regular redirect (for email auth)
+        console.log('🔄 Regular redirect to:', redirectTo);
         window.location.href = redirectTo;
       }
     }
