@@ -22,6 +22,8 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   const [email, setEmail] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [code, setCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // Only use Clerk hooks on client side
@@ -254,27 +256,32 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                   try {
                     if (initialView === 'sign_up') {
                       console.log('Attempting sign up with email...');
-                      // Sign up with magic link
+                      // Sign up with email code
                       const signUpResult = await signUp?.create({
                         emailAddress: email,
                       });
                       console.log('SignUp create result:', signUpResult);
                       
                       const prepareResult = await signUp?.prepareEmailAddressVerification({
-                        strategy: 'email_link',
-                        redirectUrl: window.location.origin + redirectTo,
+                        strategy: 'email_code',
                       });
                       console.log('Prepare email verification result:', prepareResult);
                       setEmailSent(true);
                     } else {
                       console.log('Attempting sign in with email...');
-                      // Sign in with magic link
+                      // Sign in with email code
                       const signInResult = await signIn?.create({
-                        strategy: 'email_link',
                         identifier: email,
-                        redirectUrl: window.location.origin + redirectTo,
                       });
                       console.log('SignIn create result:', signInResult);
+                      
+                      const prepareResult = await signIn?.prepareFirstFactor({
+                        strategy: 'email_code',
+                        emailAddressId: signInResult?.supportedFirstFactors?.find(
+                          (f: any) => f.strategy === 'email_code'
+                        )?.emailAddressId,
+                      });
+                      console.log('Prepare sign in result:', prepareResult);
                       setEmailSent(true);
                     }
                                       } catch (error) {
@@ -335,18 +342,86 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                 Check your email
               </h2>
               <p style={{ fontSize: '16px', color: '#666', marginBottom: '24px', lineHeight: '1.5' }}>
-                A sign-in link has been sent to <strong>{email}</strong>
+                A verification code has been sent to <strong>{email}</strong>
               </p>
-              <p style={{ fontSize: '14px', color: '#999' }}>
-                Click the link in the email to sign in to your account
-              </p>
+              
+              <div style={{ marginBottom: '24px' }}>
+                <input
+                  type="text"
+                  placeholder="Enter 6-digit code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  style={{
+                    width: '200px',
+                    padding: '14px 16px',
+                    backgroundColor: '#f8f8f8',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '6px',
+                    fontSize: '18px',
+                    textAlign: 'center',
+                    letterSpacing: '0.5em',
+                    outline: 'none',
+                    fontWeight: 600
+                  }}
+                  maxLength={6}
+                  autoFocus
+                />
+              </div>
+
+              <button
+                onClick={async () => {
+                  if (code.length !== 6) return;
+                  setIsVerifying(true);
+                  try {
+                    if (initialView === 'sign_up') {
+                      console.log('Verifying signup code...');
+                      await signUp?.attemptEmailAddressVerification({
+                        code,
+                      });
+                      console.log('✅ Email verified! Redirecting...');
+                      // Redirect will happen via the useEffect when isSignedIn becomes true
+                    } else {
+                      console.log('Verifying signin code...');
+                      await signIn?.attemptFirstFactor({
+                        strategy: 'email_code',
+                        code,
+                      });
+                      console.log('✅ Signed in! Redirecting...');
+                      // Redirect will happen via the useEffect when isSignedIn becomes true
+                    }
+                  } catch (error) {
+                    console.error('Code verification error:', error);
+                    const errorMsg = error instanceof Error ? error.message : 'Invalid code';
+                    alert(`Verification failed: ${errorMsg}`);
+                    setIsVerifying(false);
+                  }
+                }}
+                disabled={code.length !== 6 || isVerifying}
+                style={{
+                  width: '200px',
+                  padding: '14px 20px',
+                  backgroundColor: (code.length === 6 && !isVerifying) ? '#1a1a1a' : '#e2e8f0',
+                  color: (code.length === 6 && !isVerifying) ? 'white' : '#999',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  cursor: (code.length === 6 && !isVerifying) ? 'pointer' : 'not-allowed',
+                  marginBottom: '24px',
+                  opacity: (code.length === 6 && !isVerifying) ? 1 : 0.6
+                }}
+              >
+                {isVerifying ? 'Verifying...' : 'Verify Code'}
+              </button>
+
               <button
                 onClick={() => {
                   setEmailSent(false);
                   setEmail('');
+                  setCode('');
                 }}
                 style={{
-                  marginTop: '32px',
+                  marginTop: '16px',
                   background: 'none',
                   border: 'none',
                   color: '#666',
