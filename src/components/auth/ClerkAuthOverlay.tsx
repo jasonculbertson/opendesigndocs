@@ -80,6 +80,25 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
   useEffect(() => {
     if (!isLoaded) return;
 
+    // Debug logging for OAuth return
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const clerkStatus = params.get('clerk_status');
+      const error = params.get('error');
+      const errorDescription = params.get('error_description');
+
+      if (clerkStatus || error) {
+        console.log('🚨 OAuth Return Detected:', {
+          clerkStatus,
+          error,
+          errorDescription,
+          signInStatus: signIn?.status,
+          signUpStatus: signUp?.status,
+          isSignedIn
+        });
+      }
+    }
+
     // Check for OAuth errors in signUp status
     if (signUp?.status === 'complete' && !isSignedIn) {
       console.log('🚨 SignUp completed but user not signed in - possible account linking issue');
@@ -336,8 +355,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
         // Use setTimeout to ensure overlay closes first
         setTimeout(() => {
           console.log('🔄 AUTO-REDIRECT (OAuth): Executing redirect to stored URL...');
-          window.location.href = storedOAuthRedirect;
-        }, 100);
+          window.location.replace(storedOAuthRedirect);
+        }, 500);
         return;
       }
 
@@ -377,8 +396,9 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
         // Use setTimeout to ensure overlay closes first
         setTimeout(() => {
           console.log('🔄 AUTO-REDIRECT: Executing redirect now...');
-          window.location.href = finalRedirect;
-        }, 100);
+          // Use window.location.replace to avoid back button issues
+          window.location.replace(finalRedirect);
+        }, 500);
       } else {
         console.log('🔄 AUTO-REDIRECT: No redirect needed. Staying on current path:', currentPath);
       }
@@ -498,14 +518,27 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                 onClick={async () => {
                   try {
                     // Immediate visual feedback
-                    const button = document.activeElement as HTMLButtonElement;
+                    const button = event?.target as HTMLButtonElement;
+                    const originalText = button?.textContent || 'Continue with Google';
                     if (button) {
                       button.style.opacity = '0.7';
                       button.style.cursor = 'wait';
                       button.textContent = 'Loading...';
+                      button.disabled = true;
                     }
 
                     setIsRetryingOAuth(true);
+                    
+                    // Auto-reset after timeout to prevent permanent loading state
+                    const resetTimeout = setTimeout(() => {
+                      if (button) {
+                        button.style.opacity = '1';
+                        button.style.cursor = 'pointer';
+                        button.textContent = originalText;
+                        button.disabled = false;
+                      }
+                      setIsRetryingOAuth(false);
+                    }, 12000); // 12 second fallback reset
 
                     // Store the desired redirect URL in sessionStorage for OAuth completion
                     const finalRedirectTo = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
@@ -538,21 +571,46 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                       }
                     }
 
+                    // Helper to prevent infinite hanging
+                    const authenticateWithTimeout = async (authObject: any, params: any) => {
+                      const timeoutMs = 10000; // 10 seconds timeout for network/challenge
+                      const timeoutPromise = new Promise((_, reject) => {
+                        setTimeout(() => reject(new Error('Authentication request timed out - please check your connection or try again')), timeoutMs);
+                      });
+
+                      try {
+                        return await Promise.race([
+                          authObject.authenticateWithRedirect(params),
+                          timeoutPromise
+                        ]);
+                      } catch (error) {
+                        console.error('🚨 OAuth authentication failed:', error);
+                        throw error;
+                      }
+                    };
+
                     // Universal Google OAuth: Respect user intent (Sign In vs Sign Up)
                     console.log('🔄 Attempting universal Google authentication...', { initialView });
 
                     if (initialView === 'sign_up') {
                       // User explicitly wants to sign up
-                      try {
-                        console.log('📝 Starting with Google Signup...');
-                        if (!signUp) throw new Error('SignUp object not available');
+                        try {
+                          console.log('📝 Starting with Google Signup...');
+                          if (!signUp) throw new Error('SignUp object not available');
 
-                        await signUp.authenticateWithRedirect({
-                          strategy: 'oauth_google',
-                          redirectUrl: currentPageUrl,
-                          redirectUrlComplete: currentPageUrl,
-                        });
-                        console.log('✅ Google signup initiated');
+                          console.log('🔧 OAuth params:', {
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                            signUpStatus: signUp.status
+                          });
+
+                          await authenticateWithTimeout(signUp, {
+                            strategy: 'oauth_google',
+                            redirectUrl: currentPageUrl,
+                            redirectUrlComplete: currentPageUrl,
+                          });
+                          console.log('✅ Google signup initiated');
                       } catch (signUpError: any) {
                         console.log('🔄 Signup failed, trying signin as fallback (account might exist):', signUpError?.message);
 
@@ -560,7 +618,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         try {
                           if (!signIn) throw new Error('SignIn object not available for fallback');
 
-                          await signIn.authenticateWithRedirect({
+                          await authenticateWithTimeout(signIn, {
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
@@ -580,7 +638,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         console.log('🔑 Starting with Google Signin...');
                         if (!signIn) throw new Error('SignIn object not available');
 
-                        await signIn.authenticateWithRedirect({
+                        await authenticateWithTimeout(signIn, {
                           strategy: 'oauth_google',
                           redirectUrl: currentPageUrl,
                           redirectUrlComplete: currentPageUrl,
@@ -593,7 +651,7 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         try {
                           if (!signUp) throw new Error('SignUp object not available for fallback');
 
-                          await signUp.authenticateWithRedirect({
+                          await authenticateWithTimeout(signUp, {
                             strategy: 'oauth_google',
                             redirectUrl: currentPageUrl,
                             redirectUrlComplete: currentPageUrl,
@@ -611,6 +669,15 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                   } catch (error) {
                     console.error('Google OAuth error:', error);
                     setIsRetryingOAuth(false); // CRITICAL FIX: Reset loading state on error
+                    
+                    // Clear timeout and reset button state
+                    clearTimeout(resetTimeout);
+                    if (button) {
+                      button.style.opacity = '1';
+                      button.style.cursor = 'pointer';
+                      button.textContent = originalText;
+                      button.disabled = false;
+                    }
 
                     // Log detailed error information for debugging
                     if (error && typeof error === 'object') {
@@ -643,8 +710,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                             setIsOpen(false);
                             const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                             setTimeout(() => {
-                              window.location.href = finalRedirect;
-                            }, 100);
+                              window.location.replace(finalRedirect);
+                            }, 1000);
                             return;
                           } else {
                             // No session found, switch to sign-in mode
@@ -1073,8 +1140,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         setTimeout(() => {
                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                           console.log('🔄 Redirecting after signup:', finalRedirect);
-                          window.location.href = finalRedirect;
-                        }, 500); // Shorter delay since we're preventing the automatic redirect
+                          window.location.replace(finalRedirect);
+                        }, 1000); // Longer delay to ensure Clerk session is fully established
                       } else if (result?.status === 'missing_requirements') {
                         console.log('⚠️ Missing requirements detected, attempting to complete signup...');
 
@@ -1137,8 +1204,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                             setTimeout(() => {
                               const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                               console.log('🔄 Redirecting after completion:', finalRedirect);
-                              window.location.href = finalRedirect;
-                            }, 500);
+                              window.location.replace(finalRedirect);
+                            }, 1000);
                           } else {
                             console.log('⚠️ Still missing requirements after all attempts');
                             console.log('📋 Final signup state:', {
@@ -1209,8 +1276,8 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
                         setTimeout(() => {
                           const finalRedirect = redirectTo === '/' ? '/docs/levels/levels-titles' : redirectTo;
                           console.log('🔄 Redirecting after signin:', finalRedirect);
-                          window.location.href = finalRedirect;
-                        }, 500); // Shorter delay since we're preventing the automatic redirect
+                          window.location.replace(finalRedirect);
+                        }, 1000); // Longer delay to ensure Clerk session is fully established
                       } else {
                         console.log('⚠️ Verification incomplete, status:', result?.status);
                         alert('Verification incomplete. Please try again.');

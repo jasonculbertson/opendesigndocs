@@ -30,7 +30,7 @@ if (Astro.locals.auth?.user) {
 
 // If not authorized, redirect to login or show access denied
 if (!isAuthorized) {
-  return Astro.redirect('/login');
+  return Astro.redirect('/');
 }
 ---
 

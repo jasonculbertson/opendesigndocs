@@ -39,6 +39,17 @@ const showSidebar = path.startsWith('/docs');
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
     
+    <!-- CSP for OAuth and external services -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://*.clerk.dev https://accounts.google.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com;
+      connect-src 'self' https://*.clerk.com https://*.clerk.dev https://accounts.google.com https://apis.google.com https://www.google-analytics.com https://*.supabase.co;
+      frame-src 'self' https://*.clerk.com https://*.clerk.dev https://accounts.google.com;
+      img-src 'self' data: https: blob:;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+    " />
+    
     <!-- Primary Meta Tags -->
     <title>{title} | Open Design Docs</title>
     <meta name="title" content={`${title} | Open Design Docs`} />
