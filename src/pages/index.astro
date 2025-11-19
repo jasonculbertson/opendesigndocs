@@ -195,8 +195,9 @@ const featuredResources = [
           window.location.href = '/docs/levels/levels-titles';
         } else {
           // If not signed in, show auth overlay
+          // Use sign_in view as it handles both new and existing users better with OAuth
           dispatchAuthEvent({
-            view: 'sign_up',
+            view: 'sign_in',
             redirectTo: '/docs/levels/levels-titles',
             context: 'manual',
           });
@@ -224,8 +225,9 @@ const featuredResources = [
             window.location.href = targetUrl;
           } else {
             // If not signed in, show auth overlay
+            // Use sign_in view as it handles both new and existing users better with OAuth
             dispatchAuthEvent({
-              view: 'sign_up',
+              view: 'sign_in',
               redirectTo: targetUrl,
               context: 'manual',
             });
