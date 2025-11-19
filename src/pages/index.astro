@@ -148,8 +148,12 @@ const featuredResources = [
       <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="border-t border-gray-200 pt-8">
           <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="text-sm text-gray-500">
-              &copy; {new Date().getFullYear()} Open Design Docs. All rights reserved.
+            <div class="flex flex-col md:flex-row items-center gap-2 text-sm text-gray-500">
+              <span>&copy; {new Date().getFullYear()} Open Design Docs. All rights reserved.</span>
+              <span class="hidden md:inline mx-1 text-gray-300">|</span>
+              <span class="flex items-center mt-2 md:mt-0">
+                Made with <span class="text-red-500 mx-1">♥</span> by <a href="https://linkedin.com/in/jasonculbertson" target="_blank" rel="noopener noreferrer" class="ml-1 hover:text-gray-700 underline">Jason Culbertson</a>
+              </span>
             </div>
             <div class="flex space-x-6 mt-4 md:mt-0">
               <a href="/legal/privacy" class="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
