@@ -211,19 +211,21 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                     try {
                       if (initialView === 'sign_up') {
                         console.log('Starting Google sign-up flow...');
-                        // Use homepage for callback, will redirect to target after session established
+                        // CRITICAL: Use ONLY redirectUrl to go to homepage first
+                        // This ensures Clerk establishes the session before we navigate to target page
+                        // The sessionStorage redirect will handle the final navigation
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       } else {
                         console.log('Starting Google sign-in flow...');
-                        // Use homepage for callback, will redirect to target after session established
+                        // CRITICAL: Use ONLY redirectUrl to go to homepage first
+                        // This ensures Clerk establishes the session before we navigate to target page
+                        // The sessionStorage redirect will handle the final navigation
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
                           redirectUrl: `${window.location.origin}/`,
-                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       }
                     } catch (error) {
