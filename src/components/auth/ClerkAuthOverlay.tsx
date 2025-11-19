@@ -81,10 +81,11 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
       if (storedRedirect && storedRedirect !== window.location.pathname) {
         console.log('🔄 Found OAuth redirect in storage:', storedRedirect);
         sessionStorage.removeItem('clerk_oauth_redirect');
+        // Use window.location.href for full page reload to ensure session is established
         setTimeout(() => {
           console.log('🚀 Redirecting to:', storedRedirect);
-          window.location.replace(storedRedirect);
-        }, 500);
+          window.location.href = storedRedirect;
+        }, 100);
       } else if (storedRedirect === window.location.pathname) {
         // Already on target page, just clean up
         console.log('✅ Already on target page, cleaning up sessionStorage');
@@ -210,22 +211,22 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                     
                     try {
                       if (initialView === 'sign_up') {
-                        console.log('Starting Google sign-up flow...');
-                        // CRITICAL: Use ONLY redirectUrl to go to homepage first
-                        // This ensures Clerk establishes the session before we navigate to target page
-                        // The sessionStorage redirect will handle the final navigation
+                        console.log('Starting Google sign-up flow with redirect to:', redirectTo);
+                        // Use BOTH redirectUrl (callback handler) AND redirectUrlComplete (final destination)
+                        // This is how email auth works - direct to target page
                         await signUp?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrl: `${window.location.origin}${redirectTo}`,
+                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       } else {
-                        console.log('Starting Google sign-in flow...');
-                        // CRITICAL: Use ONLY redirectUrl to go to homepage first
-                        // This ensures Clerk establishes the session before we navigate to target page
-                        // The sessionStorage redirect will handle the final navigation
+                        console.log('Starting Google sign-in flow with redirect to:', redirectTo);
+                        // Use BOTH redirectUrl (callback handler) AND redirectUrlComplete (final destination)
+                        // This is how email auth works - direct to target page
                         await signIn?.authenticateWithRedirect({
                           strategy: 'oauth_google',
-                          redirectUrl: `${window.location.origin}/`,
+                          redirectUrl: `${window.location.origin}${redirectTo}`,
+                          redirectUrlComplete: `${window.location.origin}${redirectTo}`,
                         });
                       }
                     } catch (error) {
