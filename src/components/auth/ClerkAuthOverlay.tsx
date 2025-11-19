@@ -63,8 +63,20 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
   useEffect(() => {
     if (isClient && isSignedIn) {
       setIsOpen(false);
-      // Redirect if needed
-      if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
+      
+      // Check for OAuth redirect in sessionStorage
+      const storedRedirect = typeof window !== 'undefined' 
+        ? sessionStorage.getItem('clerk_oauth_redirect') 
+        : null;
+      
+      if (storedRedirect) {
+        console.log('🔄 Found OAuth redirect in storage:', storedRedirect);
+        sessionStorage.removeItem('clerk_oauth_redirect');
+        setTimeout(() => {
+          window.location.href = storedRedirect;
+        }, 200);
+      } else if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
+        // Regular redirect (for email auth)
         window.location.href = redirectTo;
       }
     }
@@ -175,6 +187,12 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
                 <button
                   onClick={async () => {
                     console.log('🚀 Google OAuth clicked:', { initialView, redirectTo });
+                    
+                    // Store redirect URL in sessionStorage so we can use it after OAuth completes
+                    if (typeof window !== 'undefined') {
+                      sessionStorage.setItem('clerk_oauth_redirect', redirectTo);
+                    }
+                    
                     try {
                       if (initialView === 'sign_up') {
                         console.log('Starting Google sign-up flow...');
