@@ -218,17 +218,27 @@ export default function HomeHeaderAuth() {
         if (typeof window !== 'undefined' && (window as any).Clerk) {
           const clerk = (window as any).Clerk;
           const user = clerk.user;
-          setAuthState({
+          const newAuthState = {
             isSignedIn: !!user,
             user: user,
             isLoaded: true
+          };
+          
+          // Only update if state actually changed to avoid re-renders
+          setAuthState(prevState => {
+            if (prevState.isSignedIn !== newAuthState.isSignedIn || 
+                prevState.user?.id !== newAuthState.user?.id) {
+              console.log('🔄 HomeHeaderAuth: Auth state changed', newAuthState);
+              return newAuthState;
+            }
+            return prevState;
           });
         } else {
-          // Fallback: assume not signed in
+          // Wait for Clerk to load
           setAuthState({
             isSignedIn: false,
             user: null,
-            isLoaded: true
+            isLoaded: false
           });
         }
       } catch (error) {
@@ -240,7 +250,11 @@ export default function HomeHeaderAuth() {
       }
     };
 
+    // Initial check
     checkAuthState();
+    
+    // Poll for auth state changes every 500ms
+    const pollInterval = setInterval(checkAuthState, 500);
 
     // Listen for auth state changes
     const handleAuthChange = () => {
@@ -250,10 +264,15 @@ export default function HomeHeaderAuth() {
     // Listen for page visibility changes (when user comes back from email verification)
     document.addEventListener('visibilitychange', handleAuthChange);
     window.addEventListener('focus', handleAuthChange);
+    
+    // Listen for navigation events
+    window.addEventListener('popstate', handleAuthChange);
 
     return () => {
+      clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleAuthChange);
       window.removeEventListener('focus', handleAuthChange);
+      window.removeEventListener('popstate', handleAuthChange);
     };
   }, []);
 
