@@ -78,13 +78,17 @@ function ClerkAuthOverlayInner({ allowClose = false }: ClerkAuthOverlayProps) {
         ? sessionStorage.getItem('clerk_oauth_redirect') 
         : null;
       
-      if (storedRedirect) {
+      if (storedRedirect && storedRedirect !== window.location.pathname) {
         console.log('🔄 Found OAuth redirect in storage:', storedRedirect);
         sessionStorage.removeItem('clerk_oauth_redirect');
         setTimeout(() => {
           console.log('🚀 Redirecting to:', storedRedirect);
           window.location.replace(storedRedirect);
         }, 500);
+      } else if (storedRedirect === window.location.pathname) {
+        // Already on target page, just clean up
+        console.log('✅ Already on target page, cleaning up sessionStorage');
+        sessionStorage.removeItem('clerk_oauth_redirect');
       } else if (redirectTo && typeof window !== 'undefined' && redirectTo !== window.location.pathname) {
         // Regular redirect (for email auth)
         console.log('🔄 Regular redirect to:', redirectTo);

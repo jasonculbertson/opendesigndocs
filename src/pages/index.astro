@@ -174,12 +174,22 @@ const featuredResources = [
     
     if (browseButton) {
       browseButton.addEventListener('click', function() {
-        // Use the same auth event system as Get Started button
-        dispatchAuthEvent({
-          view: 'sign_up',
-          redirectTo: '/docs/levels/levels-titles',
-          context: 'manual',
-        });
+        // Check if user is already signed in
+        const clerk = (window as any).Clerk;
+        const isSignedIn = clerk && clerk.user;
+        
+        if (isSignedIn) {
+          // If signed in, navigate directly
+          console.log('✅ User already signed in, navigating directly to /docs/levels/levels-titles');
+          window.location.href = '/docs/levels/levels-titles';
+        } else {
+          // If not signed in, show auth overlay
+          dispatchAuthEvent({
+            view: 'sign_up',
+            redirectTo: '/docs/levels/levels-titles',
+            context: 'manual',
+          });
+        }
       });
     }
     
@@ -189,11 +199,22 @@ const featuredResources = [
       card.addEventListener('click', function() {
         const targetUrl = this.getAttribute('data-resource-href');
         if (targetUrl) {
-          dispatchAuthEvent({
-            view: 'sign_up',
-            redirectTo: targetUrl,
-            context: 'manual',
-          });
+          // Check if user is already signed in
+          const clerk = (window as any).Clerk;
+          const isSignedIn = clerk && clerk.user;
+          
+          if (isSignedIn) {
+            // If signed in, navigate directly
+            console.log('✅ User already signed in, navigating directly to', targetUrl);
+            window.location.href = targetUrl;
+          } else {
+            // If not signed in, show auth overlay
+            dispatchAuthEvent({
+              view: 'sign_up',
+              redirectTo: targetUrl,
+              context: 'manual',
+            });
+          }
         }
       });
     });
