@@ -214,43 +214,34 @@ export default function HomeHeaderAuth() {
   React.useEffect(() => {
     const checkAuthState = async () => {
       try {
-        // Wait for Clerk to be ready
-        if (typeof window !== 'undefined') {
-          // Check if Clerk is loaded
+        // Try to access Clerk instance directly if available
+        if (typeof window !== 'undefined' && (window as any).Clerk) {
           const clerk = (window as any).Clerk;
+          const user = clerk.user;
+          const newAuthState = {
+            isSignedIn: !!user,
+            user: user,
+            isLoaded: true
+          };
           
-          if (clerk && clerk.loaded) {
-            const user = clerk.user;
-            const newAuthState = {
-              isSignedIn: !!user,
-              user: user,
-              isLoaded: true
-            };
-            
-            // Only update if state actually changed to avoid re-renders
-            setAuthState(prevState => {
-              if (prevState.isSignedIn !== newAuthState.isSignedIn || 
-                  prevState.user?.id !== newAuthState.user?.id ||
-                  !prevState.isLoaded) {
-                console.log('🔄 HomeHeaderAuth: Auth state changed', { 
-                  wasSignedIn: prevState.isSignedIn, 
-                  nowSignedIn: newAuthState.isSignedIn,
-                  userId: newAuthState.user?.id 
-                });
-                return newAuthState;
-              }
-              return prevState;
-            });
-          } else if (clerk) {
-            // Clerk exists but not loaded yet - wait
-            console.log('⏳ HomeHeaderAuth: Waiting for Clerk to load...');
-          } else {
-            // Clerk not available yet
-            console.log('⏳ HomeHeaderAuth: Clerk not available yet...');
-          }
+          // Only update if state actually changed to avoid re-renders
+          setAuthState(prevState => {
+            if (prevState.isSignedIn !== newAuthState.isSignedIn || 
+                prevState.user?.id !== newAuthState.user?.id) {
+              console.log('🔄 HomeHeaderAuth: Auth state changed', newAuthState);
+              return newAuthState;
+            }
+            return prevState;
+          });
+        } else {
+          // Wait for Clerk to load
+          setAuthState({
+            isSignedIn: false,
+            user: null,
+            isLoaded: false
+          });
         }
       } catch (error) {
-        console.error('❌ HomeHeaderAuth: Error checking auth state:', error);
         setAuthState({
           isSignedIn: false,
           user: null,
