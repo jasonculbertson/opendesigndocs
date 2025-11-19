@@ -27,7 +27,10 @@ const UserProfileButton = React.memo(function UserProfileButton() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Component state tracking (debug logging removed)
+  // Log auth state for debugging
+  useEffect(() => {
+    console.log('🔐 UserProfileButton state:', { isLoaded, isSignedIn, hasUser: !!user });
+  }, [isLoaded, isSignedIn, user]);
 
   // Close menu on outside click
   useEffect(() => {
