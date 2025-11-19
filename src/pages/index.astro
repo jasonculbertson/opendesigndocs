@@ -167,18 +167,19 @@ const featuredResources = [
 
 <!-- Browse Resources Button Auth Handler -->
 <script>
+  import { dispatchAuthEvent } from '../utils/authEvents';
+  
   document.addEventListener('DOMContentLoaded', function() {
     const browseButton = document.getElementById('browse-resources-button');
     
     if (browseButton) {
       browseButton.addEventListener('click', function() {
-        // Trigger auth overlay with sign_up view
-        window.dispatchEvent(new CustomEvent('openAuthOverlay', {
-          detail: {
-            view: 'sign_up',
-            redirectTo: '/docs/levels/levels-titles'
-          }
-        }));
+        // Use the same auth event system as Get Started button
+        dispatchAuthEvent({
+          view: 'sign_up',
+          redirectTo: '/docs/levels/levels-titles',
+          context: 'manual',
+        });
       });
     }
   });
