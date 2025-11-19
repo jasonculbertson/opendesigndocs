@@ -88,18 +88,29 @@ function ClerkAuthOverlayClient({ allowClose = false }: ClerkAuthOverlayProps) {
 
     // Handle missing requirements after OAuth signup (regardless of overlay state)
     if (signUp?.status === 'missing_requirements' && !isSignedIn) {
-      console.log('🚨 SignUp has missing requirements after OAuth');
-      console.log('📋 Missing fields:', signUp.missingFields);
-      console.log('📋 Unverified fields:', signUp.unverifiedFields);
+      // Only handle this if the overlay is already open OR if we have a pending OAuth redirect
+      // This prevents the dialog from popping up on random page refreshes due to stale state
+      const pendingOAuth = typeof window !== 'undefined' ? sessionStorage.getItem('oauth_redirect_url') : null;
 
-      // If overlay is closed, open it so we can show the error/dialog
-      if (!isOpen) {
-        console.log('🔄 Re-opening overlay to handle missing requirements');
-        setIsOpen(true);
+      if (isOpen || pendingOAuth) {
+        console.log('🚨 SignUp has missing requirements after OAuth');
+        console.log('📋 Missing fields:', signUp.missingFields);
+        console.log('📋 Unverified fields:', signUp.unverifiedFields);
+
+        // If overlay is closed, open it so we can show the error/dialog
+        if (!isOpen) {
+          console.log('🔄 Re-opening overlay to handle missing requirements (found pending OAuth)');
+          setIsOpen(true);
+        }
+
+        // This usually means the user already has an account OR needs to complete profile
+        handleOAuthMissingRequirements();
+
+        // Clear the pending OAuth flag so we don't keep triggering this on refresh
+        if (pendingOAuth) {
+          sessionStorage.removeItem('oauth_redirect_url');
+        }
       }
-
-      // This usually means the user already has an account OR needs to complete profile
-      handleOAuthMissingRequirements();
     }
 
     // Check for OAuth errors in signIn status  
