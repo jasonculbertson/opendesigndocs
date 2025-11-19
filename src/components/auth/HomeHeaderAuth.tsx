@@ -300,8 +300,24 @@ export default function HomeHeaderAuth() {
     }
   };
 
-  // Show loading state while checking auth
+  // Show loading state briefly, but fallback to sign-in buttons if taking too long
   if (!authState.isLoaded) {
+    // After 2 seconds, assume not signed in and show buttons
+    React.useEffect(() => {
+      const timeout = setTimeout(() => {
+        if (!authState.isLoaded) {
+          console.log('⏱️ HomeHeaderAuth: Timeout waiting for Clerk, showing sign-in buttons');
+          setAuthState({
+            isSignedIn: false,
+            user: null,
+            isLoaded: true
+          });
+        }
+      }, 2000);
+      
+      return () => clearTimeout(timeout);
+    }, [authState.isLoaded]);
+    
     return (
       <div className="flex items-center space-x-4">
         <div className="w-16 h-8 bg-gray-200 animate-pulse rounded"></div>
