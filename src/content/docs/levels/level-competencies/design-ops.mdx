@@ -9,79 +9,6 @@ tags: ["career-development", "design-ops", "competencies"]
 
 <style>
 {`
-  /* Desktop: 3-column card layout */
-  @media (min-width: 641px) {
-    .competencies-table table {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      border: none;
-    }
-    
-    .competencies-table thead {
-      display: none;
-    }
-    
-    .competencies-table tbody {
-      display: contents;
-    }
-    
-    .competencies-table tr {
-      display: flex;
-      flex-direction: column;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-    }
-    
-    .competencies-table tr:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
-    }
-    
-    .competencies-table td {
-      border: none;
-      padding: 0;
-      display: block;
-    }
-    
-    .competencies-table td:first-child {
-      font-weight: 700;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #1a1f36;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-    }
-    
-    .competencies-table td:first-child::before {
-      margin-right: 0.75rem;
-      font-size: 20px;
-    }
-    
-    .competencies-table tr:nth-child(1) td:first-child::before {
-      content: '🛠️';
-    }
-    
-    .competencies-table tr:nth-child(2) td:first-child::before {
-      content: '🤝';
-    }
-    
-    .competencies-table tr:nth-child(3) td:first-child::before {
-      content: '💡';
-    }
-    
-    .competencies-table td:last-child {
-      font-size: 0.9375rem;
-      line-height: 1.7;
-      color: #374151;
-    }
-  }
-  
   /* Mobile: Stack table rows vertically */
   @media (max-width: 640px) {
     .competencies-table table {
@@ -102,45 +29,32 @@ tags: ["career-development", "design-ops", "competencies"]
     }
     
     .competencies-table tr {
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       padding: 0;
       background: transparent;
+      border: none;
     }
     
     .competencies-table td:first-child {
-      font-weight: 700;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      font-weight: 600;
+      font-size: 1rem;
       color: #1a1f36;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       padding: 0;
-      display: flex;
-      align-items: center;
-    }
-    
-    .competencies-table td:first-child::before {
-      margin-right: 0.5rem;
-      font-size: 18px;
-    }
-    
-    .competencies-table tr:nth-child(1) td:first-child::before {
-      content: '🛠️';
-    }
-    
-    .competencies-table tr:nth-child(2) td:first-child::before {
-      content: '🤝';
-    }
-    
-    .competencies-table tr:nth-child(3) td:first-child::before {
-      content: '💡';
+      border: none;
     }
     
     .competencies-table td:last-child {
       font-size: 0.9375rem;
-      line-height: 1.7;
+      line-height: 1.6;
       color: #374151;
       padding: 0;
+      border: none;
+    }
+    
+    .competencies-table td {
+      border: none;
+      text-align: left;
     }
   }
 `}
