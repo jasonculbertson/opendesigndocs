@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { clerkClient } from "../../lib/clerk";
+import { sendReplyNotification } from '../../utils/notifications';
 
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -61,7 +62,7 @@ export const POST = async ({ request, locals }: APIContext) => {
   }
 
   const body = await request.json();
-  const { path, content } = body;
+  const { path, content, parent_id, articleTitle } = body;
 
   if (!path || !content) {
     return new Response(JSON.stringify({ error: 'Path and content are required' }), { 
@@ -98,7 +99,8 @@ export const POST = async ({ request, locals }: APIContext) => {
       path, 
       content,
       user_name: userName,
-      user_avatar_url: userAvatar
+      user_avatar_url: userAvatar,
+      parent_id: parent_id || null
     }])
     .select()
     .single();
@@ -108,6 +110,33 @@ export const POST = async ({ request, locals }: APIContext) => {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
+  }
+
+  // Handle Notifications (Fire and forget)
+  if (parent_id) {
+    (async () => {
+      try {
+        // Fetch parent comment to get the author
+        const { data: parentComment } = await supabase
+            .from('comments')
+            .select('clerk_user_id')
+            .eq('id', parent_id)
+            .single();
+        
+        if (parentComment && parentComment.clerk_user_id !== userId) {
+            const articleUrl = new URL(request.url).origin + path; // Construct full URL
+            await sendReplyNotification(
+                parentComment.clerk_user_id,
+                userName,
+                articleTitle || 'an article',
+                articleUrl,
+                content
+            );
+        }
+      } catch (err) {
+        console.error('Notification error:', err);
+      }
+    })();
   }
 
   return new Response(JSON.stringify({ data }), { 
