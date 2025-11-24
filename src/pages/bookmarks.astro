@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BookmarksList from '../components/BookmarksList';
+---
+
+<Layout title="My Bookmarks">
+  <main class="py-8">
+    <div class="max-w-[680px] mx-auto px-4">
+      <h1 class="text-[32px] font-semibold text-[#1a1f36] mb-6">My Bookmarks</h1>
+      <BookmarksList client:load />
+    </div>
+  </main>
+</Layout>
