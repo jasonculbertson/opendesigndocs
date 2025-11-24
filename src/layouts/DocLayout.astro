@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import BookmarkButton from '../components/BookmarkButton';
 import ShareButtons from '../components/ShareButtons';
 import CommentsSection from '../components/CommentsSection';
+import LikeButton from '../components/LikeButton';
 
 const { frontmatter } = Astro.props;
 ---
@@ -14,7 +15,8 @@ const { frontmatter } = Astro.props;
       <div class="mb-3">
         <div class="flex justify-between items-start gap-4">
           <h1 class="text-[32px] sm:text-[40px] leading-[40px] sm:leading-[48px] font-semibold text-[#1a1f36] tracking-[-0.4px]">{frontmatter.title}</h1>
-          <div class="pt-1.5 shrink-0">
+          <div class="pt-1.5 shrink-0 flex items-center gap-2">
+            <LikeButton client:load />
             <BookmarkButton client:load title={frontmatter.title} />
           </div>
         </div>
@@ -28,14 +30,18 @@ const { frontmatter } = Astro.props;
       </div>
 
       <div class="mt-12 pt-8 border-t border-gray-200">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div class="flex items-center gap-4">
              <span class="text-sm font-medium text-gray-500 uppercase tracking-wider">Share</span>
              <ShareButtons client:load title={frontmatter.title} />
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:block">Save for later</span>
-            <BookmarkButton client:load title={frontmatter.title} />
+          
+          <div class="flex items-center gap-6">
+            <LikeButton client:load />
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:block">Save</span>
+              <BookmarkButton client:load title={frontmatter.title} />
+            </div>
           </div>
         </div>
       </div>
