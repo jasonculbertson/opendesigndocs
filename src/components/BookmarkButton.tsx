@@ -82,7 +82,7 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
       className={`p-2 rounded-full transition-colors flex items-center justify-center ${
         isBookmarked 
           ? 'text-gray-900 hover:bg-gray-100' 
-          : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
       }`}
       aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}
       title={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}

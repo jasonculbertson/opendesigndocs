@@ -12,7 +12,7 @@ export default function SocialFeatures({ title }: SocialFeaturesProps) {
     <div className="mt-12 pt-8 border-t border-gray-200">
       <div className="flex items-center justify-between">
         <ShareButtons title={title} />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 ml-4">
           <LikeButton />
           <BookmarkButton title={title} />
         </div>
