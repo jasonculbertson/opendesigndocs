@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import { Bookmark, Loader2 } from 'lucide-react';
 
 interface BookmarkButtonProps {
@@ -7,43 +6,34 @@ interface BookmarkButtonProps {
 }
 
 export default function BookmarkButton({ title }: BookmarkButtonProps) {
-  const { isSignedIn, isLoaded } = useUser();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
   const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setCurrentPath(window.location.pathname);
+      const path = window.location.pathname;
+      setCurrentPath(path);
+      checkBookmarkStatus(path);
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoaded && isSignedIn && currentPath) {
-      checkBookmarkStatus();
-    }
-  }, [isLoaded, isSignedIn, currentPath]);
-
-  const checkBookmarkStatus = async () => {
+  const checkBookmarkStatus = async (path: string) => {
     try {
-      const res = await fetch(`/api/bookmarks?path=${encodeURIComponent(currentPath)}`);
+      const res = await fetch(`/api/bookmarks?path=${encodeURIComponent(path)}`);
       if (res.ok) {
         const { data } = await res.json();
         setIsBookmarked(data && data.length > 0);
       }
     } catch (error) {
       console.error('Error checking bookmark status:', error);
+    } finally {
+      setIsChecking(false);
     }
   };
 
   const toggleBookmark = async () => {
-    if (!isSignedIn) {
-      // You might want to trigger a sign-in modal here
-      // For now we'll just alert.
-      alert('Please sign in to bookmark pages.');
-      return;
-    }
-
     setIsLoading(true);
     try {
       if (isBookmarked) {
@@ -51,7 +41,9 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
         const res = await fetch(`/api/bookmarks?path=${encodeURIComponent(currentPath)}`, {
           method: 'DELETE',
         });
-        if (res.ok) {
+        if (res.status === 401) {
+          window.dispatchEvent(new CustomEvent('openAuthOverlay'));
+        } else if (res.ok) {
           setIsBookmarked(false);
         }
       } else {
@@ -66,10 +58,12 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
             title: title || document.title,
           }),
         });
-        if (res.ok) {
+        if (res.status === 401) {
+          window.dispatchEvent(new CustomEvent('openAuthOverlay'));
+        } else if (res.ok) {
           setIsBookmarked(true);
         } else if (res.status === 409) {
-          setIsBookmarked(true); // Treat as success if already bookmarked
+          setIsBookmarked(true);
         }
       }
     } catch (error) {
@@ -79,10 +73,7 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
     }
   };
 
-  // If not loaded yet, show nothing or a placeholder.
-  // If not signed in, we can either hide the button or show it in a state that prompts login.
-  // Let's show it but it will alert on click if not signed in.
-  if (!isLoaded) return null;
+  if (isChecking) return null;
 
   return (
     <button

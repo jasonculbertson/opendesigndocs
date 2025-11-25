@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useUser, useClerk } from '@clerk/clerk-react';
 import { Heart } from 'lucide-react';
 
 export default function LikeButton() {
-  const { isSignedIn, isLoaded } = useUser();
-  const clerk = useClerk();
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +14,7 @@ export default function LikeButton() {
       setPath(currentPath);
       fetchLikes(currentPath);
     }
-  }, [isSignedIn, isLoaded]); // Refetch when auth state changes to check 'hasLiked'
+  }, []);
 
   const fetchLikes = async (currentPath: string) => {
     try {
@@ -35,11 +32,6 @@ export default function LikeButton() {
   };
 
   const handleLike = async () => {
-    if (!isSignedIn) {
-      clerk.openSignIn();
-      return;
-    }
-
     if (isUpdating) return;
 
     // Optimistic update
@@ -57,13 +49,16 @@ export default function LikeButton() {
         body: JSON.stringify({ path }),
       });
 
-      if (!res.ok) {
-        // Revert on error
+      if (res.status === 401) {
+        // User not signed in - trigger sign in via custom event
+        window.dispatchEvent(new CustomEvent('openAuthOverlay'));
+        setLiked(previousLiked);
+        setCount(previousCount);
+      } else if (!res.ok) {
         setLiked(previousLiked);
         setCount(previousCount);
       } else {
         const data = await res.json();
-        // Ensure server state matches (optional, but good for consistency)
         setLiked(data.liked);
       }
     } catch (error) {
@@ -75,7 +70,7 @@ export default function LikeButton() {
     }
   };
 
-  if (!isLoaded) return <div className="w-8 h-8" />; // Placeholder
+  if (isLoading) return <div className="w-8 h-8" />;
 
   return (
     <button
