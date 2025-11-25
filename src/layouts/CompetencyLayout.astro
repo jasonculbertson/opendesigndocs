@@ -1,9 +1,6 @@
 ---
 import Layout from './Layout.astro';
-import BookmarkButton from '../components/BookmarkButton';
-import ShareButtons from '../components/ShareButtons';
-import CommentsSection from '../components/CommentsSection';
-import LikeButton from '../components/LikeButton';
+import SocialFeatures from '../components/SocialFeatures';
 
 const { frontmatter, breadcrumbs } = Astro.props;
 const path = Astro.url.pathname;
@@ -33,17 +30,7 @@ const path = Astro.url.pathname;
           <slot />
         </div>
 
-        <div class="mt-12 pt-8 border-t border-gray-200">
-          <div class="flex items-center justify-between">
-            <ShareButtons client:only="react" title={frontmatter.title} />
-            <div class="flex items-center gap-2">
-              <LikeButton client:only="react" />
-              <BookmarkButton client:only="react" title={frontmatter.title} />
-            </div>
-          </div>
-        </div>
-
-        <CommentsSection client:only="react" />
+        <SocialFeatures client:only="react" title={frontmatter.title} />
       </article>
     </main>
 </Layout>
