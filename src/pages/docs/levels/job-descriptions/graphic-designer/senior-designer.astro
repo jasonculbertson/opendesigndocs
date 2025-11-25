@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const breadcrumbs = [
   { text: 'Job Descriptions', href: '/docs/levels/job-descriptions' },
@@ -62,6 +63,7 @@ const breadcrumbs = [
 
         <p class="text-sm text-gray-600">[Company Name] is committed to providing a competitive compensation package. Our cash compensation amount for this role is targeted at $X-$X in X area. Final offer amounts are determined by multiple factors, including candidate expertise, the scope of role and level, and may vary from the amounts listed above.</p>
       </div>
+    <SocialFeatures client:load title="Sr. Designer" />
     </article>
   </main>
 </Layout>
