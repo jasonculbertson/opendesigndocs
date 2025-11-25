@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../components/SocialFeatures';
 
 const entry = await getEntry('docs', 'leadership/quarter-1/short-term-growth-exercise');
 
@@ -34,6 +35,8 @@ const breadcrumbs = [
         <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
           <Content />
         </div>
+
+          <SocialFeatures client:load title={entry.data.title} />
       </div>
     </div>
   </main>

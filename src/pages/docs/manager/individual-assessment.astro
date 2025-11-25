@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import SocialFeatures from '../../../components/SocialFeatures';
 import { getEntry } from 'astro:content';
 
 const entry = await getEntry('docs', 'manager/individual-assessment');
@@ -28,6 +29,8 @@ const breadcrumbs = [
         <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
           <Content />
         </div>
+
+          <SocialFeatures client:load title={entry.data.title} />
       </div>
     </div>
   </main>

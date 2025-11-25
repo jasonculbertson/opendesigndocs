@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import SocialFeatures from '../../../components/SocialFeatures';
 
 const entry = await getEntry('docs', 'product-team/project-kickoff-meeting');
 if (!entry) throw new Error('Project kickoff meeting entry not found');
@@ -32,9 +33,11 @@ const title = entry.data.title;
           
           <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700 prose-a:cursor-pointer">
             <Content />
-          </div>
         </div>
+
+          <SocialFeatures client:load title={entry.data.title} />
       </div>
-    </main>
+    </div>
+  </main>
   
 </Layout>

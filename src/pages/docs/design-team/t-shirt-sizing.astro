@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import SocialFeatures from '../../../components/SocialFeatures';
 
 const entry = await getEntry('docs', 'design-team/t-shirt-sizing');
 if (!entry) throw new Error('T-shirt sizing entry not found');
@@ -31,9 +32,11 @@ const breadcrumbs = [
           
           <div class="prose max-w-none prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-700">
             <Content />
-          </div>
         </div>
+
+          <SocialFeatures client:load title={entry.data.title} />
       </div>
-    </main>
+    </div>
+  </main>
   
 </Layout>
