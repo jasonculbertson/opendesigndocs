@@ -12,9 +12,12 @@ const XIcon = ({ className }: { className?: string }) => (
 const Tooltip = ({ children, label }: { children: React.ReactNode; label: string }) => (
   <div className="relative group">
     {children}
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-      {label}
-    </span>
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+      <div className="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-lg whitespace-nowrap">
+        {label}
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 bg-gray-900 rotate-45" />
+    </div>
   </div>
 );
 
