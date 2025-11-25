@@ -68,13 +68,22 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
         (el as HTMLElement).style.cssText = 'margin: 4px 0;';
       });
       clone.querySelectorAll('table').forEach(el => {
-        (el as HTMLElement).style.cssText = 'width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px;';
+        (el as HTMLElement).style.cssText = 'width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;';
+      });
+      clone.querySelectorAll('thead').forEach(el => {
+        (el as HTMLElement).style.cssText = 'background: #f3f4f6;';
+      });
+      clone.querySelectorAll('thead tr').forEach(el => {
+        (el as HTMLElement).style.cssText = 'background: #f3f4f6;';
       });
       clone.querySelectorAll('th').forEach(el => {
-        (el as HTMLElement).style.cssText = 'background: #f3f4f6; padding: 10px 12px; text-align: left; font-weight: 600; border: 1px solid #e5e7eb;';
+        (el as HTMLElement).style.cssText = 'background: #f3f4f6; padding: 10px 12px; text-align: left; font-weight: 600; border: 1px solid #e5e7eb; border-top: none;';
+      });
+      clone.querySelectorAll('thead tr:first-child th').forEach(el => {
+        (el as HTMLElement).style.cssText = 'background: #f3f4f6; padding: 10px 12px; text-align: left; font-weight: 600; border: 1px solid #e5e7eb; border-top: 1px solid #e5e7eb;';
       });
       clone.querySelectorAll('td').forEach(el => {
-        (el as HTMLElement).style.cssText = 'padding: 10px 12px; border: 1px solid #e5e7eb;';
+        (el as HTMLElement).style.cssText = 'padding: 10px 12px; border: 1px solid #e5e7eb; background: white;';
       });
       clone.querySelectorAll('a').forEach(el => {
         (el as HTMLElement).style.cssText = 'color: #4f46e5; text-decoration: none;';
@@ -84,6 +93,14 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
       });
       clone.querySelectorAll('blockquote').forEach(el => {
         (el as HTMLElement).style.cssText = 'border-left: 4px solid #e5e7eb; padding: 16px 16px 16px 20px; margin: 16px 0; color: #6b7280; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; min-height: 60px;';
+      });
+      // Fix table wrapper divs that might have extra spacing
+      clone.querySelectorAll('div:has(> table)').forEach(el => {
+        (el as HTMLElement).style.cssText = 'margin: 0; padding: 0; border: none; background: none;';
+      });
+      // Remove any pseudo-element gaps by resetting overflow containers
+      clone.querySelectorAll('.overflow-x-auto, .table-wrapper, [class*="table"]').forEach(el => {
+        (el as HTMLElement).style.cssText = 'margin: 0; padding: 0; border: none; background: none; overflow: visible;';
       });
       
       // Remove the first h1 since we added our own header
