@@ -46,7 +46,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
       <button
         onClick={copyToClipboard}
         className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
-        title="Copy link"
+        title={copied ? "Copied!" : "Copy link"}
       >
         {copied ? <Check className="w-5 h-5 text-green-500" /> : <LinkIcon className="w-5 h-5" />}
       </button>
