@@ -30,8 +30,8 @@ const path = Astro.url.pathname;
         </nav>
 
         <div class="flex justify-end items-center gap-2 mb-4">
-          <LikeButton client:load />
-          <BookmarkButton client:load title={frontmatter.title} />
+          <LikeButton client:only="react" />
+          <BookmarkButton client:only="react" title={frontmatter.title} />
         </div>
 
         <div class="prose">
@@ -42,20 +42,20 @@ const path = Astro.url.pathname;
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div class="flex items-center gap-4">
               <span class="text-sm font-medium text-gray-500 uppercase tracking-wider">Share</span>
-              <ShareButtons client:load title={frontmatter.title} />
+              <ShareButtons client:only="react" title={frontmatter.title} />
             </div>
             
             <div class="flex items-center gap-6">
-              <LikeButton client:load />
+              <LikeButton client:only="react" />
               <div class="flex items-center gap-2">
                 <span class="text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:block">Save</span>
-                <BookmarkButton client:load title={frontmatter.title} />
+                <BookmarkButton client:only="react" title={frontmatter.title} />
               </div>
             </div>
           </div>
         </div>
 
-        <CommentsSection client:load />
+        <CommentsSection client:only="react" />
       </article>
     </main>
 </Layout>
