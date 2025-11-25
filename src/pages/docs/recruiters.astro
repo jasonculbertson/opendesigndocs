@@ -1,6 +1,7 @@
 ---
 import WideLayout from '../../layouts/WideLayout.astro';
 import RecruiterSubmissionModal from '../../components/ui/RecruiterSubmissionModal.tsx';
+import SocialFeatures from '../../components/SocialFeatures';
 import { createClient } from '@supabase/supabase-js';
 
 const title = "Recruiter Directory";
@@ -141,6 +142,11 @@ let hasAccess = true;
         </div>
       ))}
       </div>
+    </div>
+
+    <!-- Social Features -->
+    <div class="max-w-[680px]">
+      <SocialFeatures client:load title={title} />
     </div>
 
   </div>
