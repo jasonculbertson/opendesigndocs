@@ -98,6 +98,14 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
           (p as HTMLElement).style.cssText = 'margin: 0; padding: 0; font-size: 14px; color: #374151; line-height: 1.7;';
         });
       });
+      // Style gradient-panel callout boxes
+      clone.querySelectorAll('.gradient-panel').forEach(el => {
+        (el as HTMLElement).style.cssText = 'background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px 24px; margin: 16px 0;';
+        // Remove margins from paragraphs inside for proper centering
+        el.querySelectorAll('p').forEach(p => {
+          (p as HTMLElement).style.cssText = 'margin: 0; padding: 0; font-size: 14px; color: #374151; line-height: 1.7;';
+        });
+      });
       // Fix table wrapper divs that might have extra spacing
       clone.querySelectorAll('div:has(> table)').forEach(el => {
         (el as HTMLElement).style.cssText = 'margin: 0; padding: 0; border: none; background: none;';
