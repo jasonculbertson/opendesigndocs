@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Share2, Link as LinkIcon, Check, Linkedin } from 'lucide-react';
+import { Link as LinkIcon, Check, Linkedin } from 'lucide-react';
 
 // Custom X (formerly Twitter) icon
 const XIcon = ({ className }: { className?: string }) => (
@@ -24,23 +24,6 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
-    }
-  };
-
-  const shareNative = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title,
-          url: currentUrl,
-        });
-      } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          console.error('Error sharing:', err);
-        }
-      }
-    } else {
-      copyToClipboard();
     }
   };
 
@@ -83,16 +66,6 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
       >
         <Linkedin className="w-5 h-5" />
       </button>
-      
-      {typeof navigator !== 'undefined' && navigator.share && (
-         <button
-            onClick={shareNative}
-            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors lg:hidden"
-            title="Share"
-        >
-            <Share2 className="w-5 h-5" />
-        </button>
-      )}
     </div>
   );
 }
