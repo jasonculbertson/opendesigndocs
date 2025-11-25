@@ -30,18 +30,11 @@ const { frontmatter } = Astro.props;
       </div>
 
       <div class="mt-12 pt-8 border-t border-gray-200">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div class="flex items-center gap-4">
-             <span class="text-sm font-medium text-gray-500 uppercase tracking-wider">Share</span>
-             <ShareButtons client:only="react" title={frontmatter.title} />
-          </div>
-          
-          <div class="flex items-center gap-6">
+        <div class="flex items-center justify-between">
+          <ShareButtons client:only="react" title={frontmatter.title} />
+          <div class="flex items-center gap-2">
             <LikeButton client:only="react" />
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:block">Save</span>
-              <BookmarkButton client:only="react" title={frontmatter.title} />
-            </div>
+            <BookmarkButton client:only="react" title={frontmatter.title} />
           </div>
         </div>
       </div>
