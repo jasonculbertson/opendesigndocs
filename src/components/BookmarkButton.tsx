@@ -81,7 +81,7 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
       disabled={isLoading}
       className={`p-2 rounded-full transition-colors flex items-center justify-center ${
         isBookmarked 
-          ? 'text-yellow-500 hover:bg-yellow-50' 
+          ? 'text-gray-900 hover:bg-gray-100' 
           : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
       }`}
       aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}
