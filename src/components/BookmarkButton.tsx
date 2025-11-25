@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Bookmark, Loader2 } from 'lucide-react';
 
+// Tooltip wrapper component
+const Tooltip = ({ children, label }: { children: React.ReactNode; label: string }) => (
+  <div className="relative group/tooltip">
+    {children}
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">
+      {label}
+    </span>
+  </div>
+);
+
 interface BookmarkButtonProps {
   title?: string;
 }
@@ -76,22 +86,23 @@ export default function BookmarkButton({ title }: BookmarkButtonProps) {
   if (isChecking) return null;
 
   return (
-    <button
-      onClick={toggleBookmark}
-      disabled={isLoading}
-      className={`p-2 rounded-full transition-colors flex items-center justify-center ${
-        isBookmarked 
-          ? 'text-gray-900 hover:bg-gray-100' 
-          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
-      }`}
-      aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}
-      title={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}
-    >
-      {isLoading ? (
-        <Loader2 className="w-5 h-5 animate-spin" />
-      ) : (
-        <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
-      )}
-    </button>
+    <Tooltip label={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}>
+      <button
+        onClick={toggleBookmark}
+        disabled={isLoading}
+        className={`p-2 rounded-full transition-colors flex items-center justify-center ${
+          isBookmarked 
+            ? 'text-gray-900 hover:bg-gray-100' 
+            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+        }`}
+        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this page'}
+      >
+        {isLoading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
+        )}
+      </button>
+    </Tooltip>
   );
 }

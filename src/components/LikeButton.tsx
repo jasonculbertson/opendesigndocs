@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 
+// Tooltip wrapper component
+const Tooltip = ({ children, label }: { children: React.ReactNode; label: string }) => (
+  <div className="relative group">
+    {children}
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+      {label}
+    </span>
+  </div>
+);
+
 export default function LikeButton() {
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState(0);
@@ -73,26 +83,27 @@ export default function LikeButton() {
   if (isLoading) return <div className="w-8 h-8" />;
 
   return (
-    <button
-      onClick={handleLike}
-      disabled={isUpdating}
-      className={`flex items-center gap-2 group transition-all duration-300 ${
-        liked ? 'text-pink-600' : 'text-gray-500 hover:text-pink-500'
-      }`}
-      title={liked ? 'Unlike' : 'Like'}
-    >
-      <div className={`p-2 rounded-full transition-colors ${
-        liked ? 'bg-pink-50' : 'group-hover:bg-pink-50'
-      }`}>
-        <Heart className={`w-5 h-5 transition-transform ${
-          liked ? 'fill-current scale-110' : 'scale-100 group-hover:scale-110'
-        }`} />
-      </div>
-      <span className={`font-medium text-sm tabular-nums transition-colors ${
-          liked ? 'text-pink-600' : 'text-gray-500 group-hover:text-pink-500'
-      }`}>
-        {count > 0 ? count : ''}
-      </span>
-    </button>
+    <Tooltip label={liked ? 'Unlike' : 'Like this page'}>
+      <button
+        onClick={handleLike}
+        disabled={isUpdating}
+        className={`flex items-center gap-2 group transition-all duration-300 ${
+          liked ? 'text-pink-600' : 'text-gray-500 hover:text-pink-500'
+        }`}
+      >
+        <div className={`p-2 rounded-full transition-colors ${
+          liked ? 'bg-pink-50' : 'group-hover:bg-pink-50'
+        }`}>
+          <Heart className={`w-5 h-5 transition-transform ${
+            liked ? 'fill-current scale-110' : 'scale-100 group-hover:scale-110'
+          }`} />
+        </div>
+        <span className={`font-medium text-sm tabular-nums transition-colors ${
+            liked ? 'text-pink-600' : 'text-gray-500 group-hover:text-pink-500'
+        }`}>
+          {count > 0 ? count : ''}
+        </span>
+      </button>
+    </Tooltip>
   );
 }

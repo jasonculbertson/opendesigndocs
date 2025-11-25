@@ -8,6 +8,16 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Tooltip wrapper component
+const Tooltip = ({ children, label }: { children: React.ReactNode; label: string }) => (
+  <div className="relative group">
+    {children}
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+      {label}
+    </span>
+  </div>
+);
+
 interface ShareButtonsProps {
   title: string;
   url?: string;
@@ -43,29 +53,32 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
 
   return (
     <div className="flex items-center gap-1">
-      <button
-        onClick={copyToClipboard}
-        className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
-        title={copied ? "Copied!" : "Copy link"}
-      >
-        {copied ? <Check className="w-5 h-5 text-green-500" /> : <LinkIcon className="w-5 h-5" />}
-      </button>
+      <Tooltip label={copied ? "Copied!" : "Copy link"}>
+        <button
+          onClick={copyToClipboard}
+          className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+        >
+          {copied ? <Check className="w-5 h-5 text-green-500" /> : <LinkIcon className="w-5 h-5" />}
+        </button>
+      </Tooltip>
       
-      <button
-        onClick={shareTwitter}
-        className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-        title="Share on X"
-      >
-        <XIcon className="w-5 h-5" />
-      </button>
+      <Tooltip label="Share on X">
+        <button
+          onClick={shareTwitter}
+          className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+        >
+          <XIcon className="w-5 h-5" />
+        </button>
+      </Tooltip>
 
-      <button
-        onClick={shareLinkedin}
-        className="p-2 rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-        title="Share on LinkedIn"
-      >
-        <Linkedin className="w-5 h-5" />
-      </button>
+      <Tooltip label="Share on LinkedIn">
+        <button
+          onClick={shareLinkedin}
+          className="p-2 rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+        >
+          <Linkedin className="w-5 h-5" />
+        </button>
+      </Tooltip>
     </div>
   );
 }
