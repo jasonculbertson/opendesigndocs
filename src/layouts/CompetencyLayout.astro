@@ -1,5 +1,9 @@
 ---
 import Layout from './Layout.astro';
+import BookmarkButton from '../components/BookmarkButton';
+import ShareButtons from '../components/ShareButtons';
+import CommentsSection from '../components/CommentsSection';
+import LikeButton from '../components/LikeButton';
 
 const { frontmatter, breadcrumbs } = Astro.props;
 const path = Astro.url.pathname;
@@ -24,9 +28,34 @@ const path = Astro.url.pathname;
             ))}
           </ol>
         </nav>
+
+        <div class="flex justify-end items-center gap-2 mb-4">
+          <LikeButton client:load />
+          <BookmarkButton client:load title={frontmatter.title} />
+        </div>
+
         <div class="prose">
           <slot />
         </div>
+
+        <div class="mt-12 pt-8 border-t border-gray-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-medium text-gray-500 uppercase tracking-wider">Share</span>
+              <ShareButtons client:load title={frontmatter.title} />
+            </div>
+            
+            <div class="flex items-center gap-6">
+              <LikeButton client:load />
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:block">Save</span>
+                <BookmarkButton client:load title={frontmatter.title} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <CommentsSection client:load />
       </article>
     </main>
 </Layout>
