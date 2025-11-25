@@ -30,7 +30,7 @@ const path = Astro.url.pathname;
           <slot />
         </div>
 
-        <SocialFeatures client:only="react" title={frontmatter.title} />
+        <SocialFeatures client:load title={frontmatter.title} />
       </article>
     </main>
 </Layout>

@@ -19,7 +19,7 @@ const { frontmatter } = Astro.props;
         <slot />
       </div>
 
-      <SocialFeatures client:only="react" title={frontmatter.title} />
+      <SocialFeatures client:load title={frontmatter.title} />
     </article>
   </main>
 </Layout>
