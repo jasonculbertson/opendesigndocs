@@ -29,11 +29,6 @@ const path = Astro.url.pathname;
           </ol>
         </nav>
 
-        <div class="flex justify-end items-center gap-2 mb-4">
-          <LikeButton client:only="react" />
-          <BookmarkButton client:only="react" title={frontmatter.title} />
-        </div>
-
         <div class="prose">
           <slot />
         </div>
