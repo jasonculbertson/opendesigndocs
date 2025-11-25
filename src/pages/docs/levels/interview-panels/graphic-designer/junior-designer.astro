@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const title = "Jr. Designer Interview Panel";
 const breadcrumbs = [
@@ -168,6 +169,7 @@ We're looking for intent behind design decisions, openness to critique, and crea
           </ul>
         </section>
       </div>
+      <SocialFeatures client:load title="Jr. Designer Interview Panel" />
     </article>
   </main>
 </Layout>

@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const title = "Jr. Copywriter Interview Panel";
 const breadcrumbs = [
@@ -168,6 +169,7 @@ Look for energy in the writing, understanding of the audience, and thoughtful co
           </ul>
         </section>
       </div>
+      <SocialFeatures client:load title="Jr. Copywriter Interview Panel" />
     </article>
   </main>
 </Layout>

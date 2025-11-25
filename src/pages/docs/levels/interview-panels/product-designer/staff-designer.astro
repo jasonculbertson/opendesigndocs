@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const title = "Staff Product Designer Interview Panel";
 const breadcrumbs = [
@@ -166,6 +167,7 @@ const breadcrumbs = [
           </ul>
         </section>
       </div>
+      <SocialFeatures client:load title="Staff Product Designer Interview Panel" />
     </article>
   </main>
 </Layout>

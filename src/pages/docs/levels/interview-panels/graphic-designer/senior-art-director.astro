@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const title = "Senior Art Director Interview Panel";
 const breadcrumbs = [
@@ -168,6 +169,7 @@ Look for vision, scalability, cross-team influence, and clear decision-making.</
           </ul>
         </section>
       </div>
+      <SocialFeatures client:load title="Senior Art Director Interview Panel" />
     </article>
   </main>
 </Layout>

@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../../../../../layouts/Layout.astro';
+import SocialFeatures from '../../../../../components/SocialFeatures';
 
 const title = "Designer Interview Panel";
 const breadcrumbs = [
@@ -168,6 +169,7 @@ Look for clarity in storytelling, polish in execution, and an ability to adapt d
           </ul>
         </section>
       </div>
+      <SocialFeatures client:load title="Designer Interview Panel" />
     </article>
   </main>
 </Layout>
