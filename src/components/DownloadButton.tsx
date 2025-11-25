@@ -38,12 +38,12 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
         line-height: 1.6;
       `;
       
-      // Add a header with the title and site name
+      // Add a header with the title and site name below
       const header = document.createElement('div');
       header.innerHTML = `
         <div style="margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb;">
-          <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">opendesigndocs.com</div>
-          <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0;">${title}</h1>
+          <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">${title}</h1>
+          <div style="font-size: 12px; color: #6b7280;">Open Design Docs • www.opendesigndocs.com</div>
         </div>
       `;
       wrapper.appendChild(header);
@@ -83,7 +83,7 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
         (el as HTMLElement).style.cssText = 'background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px;';
       });
       clone.querySelectorAll('blockquote').forEach(el => {
-        (el as HTMLElement).style.cssText = 'border-left: 4px solid #e5e7eb; padding-left: 16px; margin: 16px 0; color: #6b7280;';
+        (el as HTMLElement).style.cssText = 'border-left: 4px solid #e5e7eb; padding: 16px 16px 16px 20px; margin: 16px 0; color: #6b7280; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; min-height: 60px;';
       });
       
       // Remove the first h1 since we added our own header
