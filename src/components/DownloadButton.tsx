@@ -92,7 +92,11 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
         (el as HTMLElement).style.cssText = 'background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px;';
       });
       clone.querySelectorAll('blockquote').forEach(el => {
-        (el as HTMLElement).style.cssText = 'border-left: 4px solid #e5e7eb; padding: 16px 16px 16px 20px; margin: 16px 0; color: #6b7280; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; min-height: 60px;';
+        (el as HTMLElement).style.cssText = 'border-left: 4px solid #e5e7eb; padding: 20px 20px 20px 24px; margin: 16px 0; color: #6b7280; background: #f9fafb; border-radius: 8px;';
+        // Remove margins from paragraphs inside blockquotes for proper centering
+        el.querySelectorAll('p').forEach(p => {
+          (p as HTMLElement).style.cssText = 'margin: 0; padding: 0; font-size: 14px; color: #374151; line-height: 1.7;';
+        });
       });
       // Fix table wrapper divs that might have extra spacing
       clone.querySelectorAll('div:has(> table)').forEach(el => {
