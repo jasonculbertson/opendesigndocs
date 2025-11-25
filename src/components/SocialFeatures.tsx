@@ -3,7 +3,6 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import LikeButton from './LikeButton';
 import BookmarkButton from './BookmarkButton';
 import ShareButtons from './ShareButtons';
-import CommentsSection from './CommentsSection';
 
 const clerkPubKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -27,8 +26,6 @@ export default function SocialFeatures({ title }: SocialFeaturesProps) {
           </div>
         </div>
       </div>
-
-      <CommentsSection />
     </ClerkProvider>
   );
 }
