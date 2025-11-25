@@ -11,6 +11,14 @@ function SettingsIcon() {
   );
 }
 
+function BookmarkIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 12, flexShrink: 0}}>
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 12, flexShrink: 0}}>
@@ -230,6 +238,32 @@ const UserProfileButton = React.memo(function UserProfileButton() {
           >
             <SettingsIcon /> Settings
           </button>
+
+          <a
+            href="/bookmarks"
+            onClick={() => setOpen(false)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              width: 'calc(100% - 16px)',
+              fontSize: 15,
+              color: '#222',
+              padding: '10px 16px',
+              margin: '4px 8px',
+              borderRadius: 8,
+              background: 'none',
+              textDecoration: 'none',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#f3f4f6';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'none';
+            }}
+          >
+            <BookmarkIcon /> Bookmarks
+          </a>
           
           <button
             onClick={(e) => {
