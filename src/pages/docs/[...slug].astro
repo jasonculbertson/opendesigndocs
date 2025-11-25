@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import SocialFeatures from '../../components/SocialFeatures';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
@@ -30,6 +31,8 @@ const { Content } = await entry.render();
       <div class="prose prose-slate max-w-none">
         <Content />
       </div>
+
+      <SocialFeatures client:load title={entry.data.title} />
     </article>
   </main>
 </Layout>
