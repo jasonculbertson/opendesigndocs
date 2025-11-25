@@ -100,10 +100,10 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
       });
       // Style gradient-panel callout boxes
       clone.querySelectorAll('.gradient-panel').forEach(el => {
-        (el as HTMLElement).style.cssText = 'background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px 24px; margin: 16px 0;';
-        // Remove margins from paragraphs inside for proper centering
+        (el as HTMLElement).style.cssText = 'border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin: 16px 0; background: white;';
+        // Add padding-bottom to paragraphs inside to balance the spacing
         el.querySelectorAll('p').forEach(p => {
-          (p as HTMLElement).style.cssText = 'margin: 0; padding: 0; font-size: 14px; color: #374151; line-height: 1.7;';
+          (p as HTMLElement).style.cssText = 'margin: 0; padding: 0 0 8px 0; font-size: 14px; color: #374151; line-height: 1.7;';
         });
       });
       // Fix table wrapper divs that might have extra spacing
