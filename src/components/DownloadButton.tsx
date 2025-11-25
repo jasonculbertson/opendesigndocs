@@ -41,7 +41,7 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
       // Add a header with the title and site name below
       const header = document.createElement('div');
       header.innerHTML = `
-        <div style="margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb;">
+        <div style="margin-bottom: 32px;">
           <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">${title}</h1>
           <div style="font-size: 12px; color: #6b7280;">Open Design Docs • www.opendesigndocs.com</div>
         </div>
