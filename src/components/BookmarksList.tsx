@@ -67,7 +67,7 @@ export default function BookmarksList() {
       <div className="text-center py-12 border rounded-lg bg-gray-50">
         <p className="text-lg text-gray-600">You haven't bookmarked any pages yet.</p>
         <p className="text-sm text-gray-500 mt-2">Browse the documentation and click the bookmark icon to save pages here.</p>
-        <a href="/" className="inline-block mt-4 text-blue-600 hover:underline">Browse Content</a>
+        <a href="/docs/levels/levels-titles" className="inline-block mt-4 text-blue-600 hover:underline">Browse Content</a>
       </div>
     );
   }
