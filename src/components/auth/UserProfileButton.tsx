@@ -240,7 +240,7 @@ const UserProfileButton = React.memo(function UserProfileButton() {
           </button>
 
           <a
-            href="/bookmarks"
+            href="/docs/bookmarks"
             onClick={() => setOpen(false)}
             style={{
               display: 'flex',
