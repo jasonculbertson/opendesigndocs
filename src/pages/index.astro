@@ -1,6 +1,7 @@
 ---
 import HomeLayout from '../layouts/HomeLayout.astro';
 import HomeHeaderAuth from '../components/auth/HomeHeaderAuth';
+import HomepageModals from '../components/LegalModal';
 
 const title = "Open Design Docs";
 const redirectTo = Astro.url.searchParams.get('redirect');
@@ -156,9 +157,9 @@ const featuredResources = [
               </span>
             </div>
             <div class="flex space-x-6 mt-4 md:mt-0">
-              <a href="/about" class="text-sm text-gray-500 hover:text-gray-700">About</a>
-              <a href="/legal/privacy" class="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
-              <a href="/legal/terms" class="text-sm text-gray-500 hover:text-gray-700">Terms</a>
+              <button id="open-about-modal" class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">About</button>
+              <button id="open-privacy-modal" class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">Privacy</button>
+              <button id="open-terms-modal" class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">Terms</button>
               <a href="https://linkedin.com/in/jasonculbertson" class="text-sm text-gray-500 hover:text-gray-700">Contact</a>
             </div>
           </div>
@@ -167,6 +168,8 @@ const featuredResources = [
     </footer>
   </div>
   
+  <!-- Legal/About Modals -->
+  <HomepageModals client:load />
 
 </HomeLayout>
 
@@ -288,5 +291,20 @@ const featuredResources = [
     });
     
     console.log('📊 Tracked homepage view');
+  });
+</script>
+
+<!-- Modal Trigger Script -->
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    function openModal(modalType) {
+      window.dispatchEvent(new CustomEvent('openLegalModal', { 
+        detail: { modal: modalType }
+      }));
+    }
+
+    document.getElementById('open-about-modal')?.addEventListener('click', () => openModal('about'));
+    document.getElementById('open-privacy-modal')?.addEventListener('click', () => openModal('privacy'));
+    document.getElementById('open-terms-modal')?.addEventListener('click', () => openModal('terms'));
   });
 </script>
