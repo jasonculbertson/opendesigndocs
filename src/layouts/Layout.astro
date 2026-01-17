@@ -28,7 +28,7 @@ const path = Astro.url.pathname;
 const showSubstack = shouldShowSubstack(path);
 const siteUrl = 'https://opendesigndocs.com';
 const canonicalURL = new URL(path, siteUrl).toString();
-const showSidebar = path.startsWith('/docs');
+const showSidebar = path.startsWith('/docs') || path === '/about' || path.startsWith('/legal');
 
 // JSON-LD Structured Data
 const websiteSchema = {
