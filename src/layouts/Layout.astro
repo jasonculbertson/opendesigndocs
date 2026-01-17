@@ -29,6 +29,57 @@ const showSubstack = shouldShowSubstack(path);
 const siteUrl = 'https://opendesigndocs.com';
 const canonicalURL = new URL(path, siteUrl).toString();
 const showSidebar = path.startsWith('/docs');
+
+// JSON-LD Structured Data
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Open Design Docs",
+  "description": "Free, open-source design career resources for product designers and design managers",
+  "url": siteUrl,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": `${siteUrl}/docs/levels/levels-titles`,
+    "query-input": "required name=search_term_string"
+  }
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Open Design Docs",
+  "url": siteUrl,
+  "logo": `${siteUrl}/favicon.svg`,
+  "sameAs": [
+    "https://linkedin.com/in/jasonculbertson"
+  ],
+  "founder": {
+    "@type": "Person",
+    "name": "Jason Culbertson",
+    "url": "https://linkedin.com/in/jasonculbertson"
+  }
+};
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": path.includes('/docs/') ? "Article" : "WebPage",
+  "headline": title,
+  "description": description,
+  "url": canonicalURL,
+  "image": new URL(image, siteUrl).toString(),
+  "publisher": {
+    "@type": "Organization",
+    "name": "Open Design Docs",
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/favicon.svg`
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalURL
+  }
+};
 ---
 
 <!doctype html>
@@ -59,6 +110,12 @@ const showSidebar = path.startsWith('/docs');
     <meta property="twitter:image" content={new URL(image, siteUrl).toString()} />
 
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- JSON-LD Structured Data for LLMs and Search Engines -->
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+    
     <ViewTransitions />
     
     <!-- Google Analytics 4 -->

@@ -1,0 +1,96 @@
+# Open Design Docs
+
+> Free, open-source design career resources for product designers, UX designers, and design managers. Comprehensive frameworks for career development, team building, and design leadership.
+
+## About
+
+Open Design Docs provides practical, actionable resources to help design professionals grow their careers and design managers build effective teams. All content is free and open-source.
+
+Website: https://opendesigndocs.com
+Created by: Jason Culbertson (https://linkedin.com/in/jasonculbertson)
+
+## Main Sections
+
+### Levels & Titles
+- [Levels & Titles Overview](/docs/levels/levels-titles): Complete design career ladder framework from IC1 to IC6
+- [Performance Reviews](/docs/levels/reviews): Performance review frameworks and self-evaluation guides
+
+### Level Competencies
+Comprehensive skill frameworks defining expectations at each career level:
+- [Product Designer Competencies](/docs/levels/level-competencies/product-designer): L1-L6 product design skills
+- [Content Designer Competencies](/docs/levels/level-competencies/content-designer): L1-L6 content design skills  
+- [User Researcher Competencies](/docs/levels/level-competencies/user-researcher): L1-L6 research skills
+- [Design Ops Competencies](/docs/levels/level-competencies/design-ops): L1-L6 design operations skills
+- [Graphic Designer Competencies](/docs/levels/level-competencies/graphic-designer): L1-L6 visual design skills
+- [Copywriter Competencies](/docs/levels/level-competencies/copywriter): L1-L6 copywriting skills
+- [Manager Competencies](/docs/levels/level-competencies/manager): Design management competencies
+
+### Job Descriptions
+Ready-to-use job descriptions for all design levels:
+- [Product Designer JDs](/docs/levels/job-descriptions/product-designer): Designer 1 through Principal Designer
+- [Content Designer JDs](/docs/levels/job-descriptions/content-designer): Designer 1 through Principal Designer
+- [User Researcher JDs](/docs/levels/job-descriptions/user-researcher): Researcher 1 through Principal Researcher
+- [Design Ops JDs](/docs/levels/job-descriptions/design-ops): Design Ops 1 through Principal Design Ops
+- [Graphic Designer JDs](/docs/levels/job-descriptions/graphic-designer): Junior Designer through Sr. Art Director
+- [Copywriter JDs](/docs/levels/job-descriptions/copywriter): Junior Copywriter through Sr. Copy Director
+
+### Interview Panels
+Structured interview guides with questions and evaluation criteria:
+- [Product Designer Interviews](/docs/levels/interview-panels/product-designer): Complete interview panels by level
+- [Content Designer Interviews](/docs/levels/interview-panels/content-designer): Complete interview panels by level
+- [User Researcher Interviews](/docs/levels/interview-panels/user-researcher): Complete interview panels by level
+- [Design Ops Interviews](/docs/levels/interview-panels/design-ops-manager): Complete interview panels by level
+- [Graphic Designer Interviews](/docs/levels/interview-panels/graphic-designer): Complete interview panels by level
+- [Copywriter Interviews](/docs/levels/interview-panels/copywriter): Complete interview panels by level
+
+### Manager Resources
+Tools and frameworks for design managers:
+- [Leadership Blueprint](/docs/manager/leadership-blueprint): Essential frameworks for new design leaders
+- [30-60-90 Day Plan](/docs/manager/day-1/30-60-90-plan): Onboarding plan for new managers
+- [Getting to Know You](/docs/manager/week-1-2/getting-to-know-you): 1:1 conversation frameworks
+- [Self-Evaluation Guide](/docs/manager/quarter-1/self-evaluation): Performance self-assessment
+- [Individual Assessment](/docs/manager/quarter-2/individual-assessment): Team member evaluation
+- [Short-Term Growth](/docs/manager/quarter-1/short-term-growth-exercise): Career development planning
+- [Long-Term Goals](/docs/manager/quarter-2/long-term-goals): Strategic career planning
+- [Transition Plan](/docs/manager/departure/transition-plan): Manager departure planning
+
+### Design Team Resources
+- [Design Sprint Guide](/docs/design-team/design-sprint): How to run effective design sprints
+- [T-Shirt Sizing](/docs/design-team/t-shirt-sizing): Effort estimation framework
+
+### Product Team Resources
+- [One-Pagers](/docs/product-team/one-pagers): Product brief templates
+- [Product Spec](/docs/product-team/product-spec): Specification document templates
+- [Project Kickoff](/docs/product-team/project-kickoff-meeting): Meeting facilitation guide
+
+### Videos
+- [Case Study Reviews](/docs/videos/case-studies): Portfolio critique videos with senior designers
+- [Interview Series](/docs/videos/interviews): Conversations with design leaders
+
+### AI Tools
+- [Reviews AI](/docs/reviews-ai): AI-powered performance review assistant
+
+## Design Role Hierarchy
+
+The standard design career ladder used throughout this site:
+
+| Level | Title | Experience |
+|-------|-------|------------|
+| L1 | Designer 1 / Junior | 0-2 years |
+| L2 | Designer 2 | 2-4 years |
+| L3 | Senior Designer | 4-6 years |
+| L4 | Staff Designer | 6-8 years |
+| L5 | Lead Designer | 8-10 years |
+| L6 | Principal Designer | 10+ years |
+
+## Key Concepts
+
+- **IC (Individual Contributor)**: Designers who don't manage people but contribute through their craft
+- **Design Ladder**: Career progression framework from entry-level to principal
+- **Competency Matrix**: Skills and behaviors expected at each career level
+- **Interview Panels**: Structured interview processes with multiple evaluators
+- **Performance Reviews**: Regular assessment and feedback cycles
+
+## Contact
+
+For questions or contributions: https://linkedin.com/in/jasonculbertson

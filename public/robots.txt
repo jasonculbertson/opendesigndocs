@@ -1,4 +1,33 @@
+# Open Design Docs - Robots.txt
+# We welcome all crawlers including AI/LLM bots
+
 User-agent: *
 Allow: /
 
+# Explicitly allow common AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
 Sitemap: https://opendesigndocs.com/sitemap.xml
+
+# LLMs.txt - Structured content for AI assistants
+# See: https://opendesigndocs.com/llms.txt
