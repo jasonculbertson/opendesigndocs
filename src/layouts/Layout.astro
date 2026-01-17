@@ -80,6 +80,42 @@ const pageSchema = {
     "@id": canonicalURL
   }
 };
+
+// Generate BreadcrumbList schema from URL path
+const pathSegments = path.split('/').filter(Boolean);
+const breadcrumbItems = pathSegments.map((segment, index) => {
+  const segmentPath = '/' + pathSegments.slice(0, index + 1).join('/');
+  const segmentName = segment
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  
+  return {
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": segmentName,
+    "item": `${siteUrl}${segmentPath}`
+  };
+});
+
+// Add Home as the first item
+breadcrumbItems.unshift({
+  "@type": "ListItem",
+  "position": 0,
+  "name": "Home",
+  "item": siteUrl
+});
+
+// Re-number positions starting from 1
+breadcrumbItems.forEach((item, index) => {
+  item.position = index + 1;
+});
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbItems
+};
 ---
 
 <!doctype html>
@@ -115,6 +151,7 @@ const pageSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+    {path !== '/' && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
     
     <ViewTransitions />
     
