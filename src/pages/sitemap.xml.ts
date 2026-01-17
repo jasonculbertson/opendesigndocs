@@ -173,6 +173,9 @@ const pages = [
   // Legal
   '/legal/privacy',
   '/legal/terms',
+  
+  // About
+  '/about',
 ];
 
 export const GET: APIRoute = async () => {
