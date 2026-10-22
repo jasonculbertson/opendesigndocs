@@ -49,3 +49,52 @@ test('fresh tracking migrations never grant browser roles unrestricted table acc
     assert.match(sql,/REVOKE ALL ON TABLE public\.\w+ FROM PUBLIC, anon, authenticated/);
   }
 });
+
+// Execute the actual page frontmatter with the real shared guard. Layout rendering
+// is outside this authorization test; compile the complete Astro page separately.
+async function loadAnalyticsPageGate() {
+  const source = await readFile('src/pages/analytics.astro', 'utf8');
+  await transform(source);
+  const frontmatter = source.split('---')[1];
+  const imports = frontmatter.match(/^import .*;$/gm) || [];
+  const body = frontmatter.replace(/^import .*;$/gm, '');
+  const result = await build({
+    stdin: {
+      contents: `${imports.filter(line => !line.includes('Layout.astro')).join('\n')}\nexport function run(Astro) {${body}}`,
+      resolveDir: new URL('../src/pages/', import.meta.url).pathname,
+      loader: 'ts',
+    },
+    bundle: true, write: false, platform: 'node', format: 'esm',
+  });
+  return import('data:text/javascript;base64,' + Buffer.from(result.outputFiles[0].text).toString('base64'));
+}
+
+test('/analytics: verified administrator reaches dashboard rendering', async () => {
+  const { run } = await loadAnalyticsPageGate();
+  assert.equal(run({
+    locals: { auth: () => ({ userId: admin }) },
+    redirect: () => assert.fail('Verified administrator must not be redirected'),
+  }), undefined);
+});
+
+test('/analytics: signed-out, nonadmin, and invalid sessions redirect home', async () => {
+  const { run } = await loadAnalyticsPageGate();
+  for (const locals of [
+    {},
+    { auth: () => ({ userId: null }) },
+    { auth: () => ({ userId: 'ordinary-user' }) },
+    { auth: () => { throw new Error('Invalid session'); } },
+    { auth: { user: { id: admin, emailAddresses: [{ emailAddress: 'jculbertson@gmail.com' }] } } },
+  ]) {
+    const response = run({ locals, redirect: path => new Response(null, { status: 302, headers: { Location: path } }) });
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get('Location'), '/');
+  }
+});
+
+test('/analytics: client requests use session cookies without identity query parameters', async () => {
+  const source = await readFile('src/pages/analytics.astro', 'utf8');
+  assert.match(source, /fetch\('\/api\/analytics'\)/);
+  assert.match(source, /fetch\('\/api\/recruiter-analytics'\)/);
+  assert.doesNotMatch(source, /analyticsUserId|user_id|define:vars/);
+});
