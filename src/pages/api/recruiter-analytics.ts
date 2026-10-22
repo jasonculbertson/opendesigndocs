@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { isTrackingAdmin } from '../../utils/trackingAdmin';
 
 // Initialize Supabase client with service role for database operations
 const supabase = createClient(
@@ -7,22 +8,13 @@ const supabase = createClient(
   import.meta.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Authorized user IDs who can access analytics data (only your Clerk user IDs)
-const AUTHORIZED_USER_IDS = [
-  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
-];
 
-export const GET: APIRoute = async ({ request, url }) => {
+
+export const GET: APIRoute = async ({ request, url, locals }) => {
   try {
-    // Get user ID from query params
-    const userId = url.searchParams.get('user_id') || 'anonymous';
-    
-    // Check if user is authorized to view analytics
-    if (!AUTHORIZED_USER_IDS.includes(userId)) {
-      console.log('Unauthorized recruiter analytics access:', { userId });
-      return new Response(JSON.stringify({ 
-        error: `Unauthorized access to recruiter analytics data. User ID: ${userId}` 
+    if (!isTrackingAdmin(locals)) {
+      return new Response(JSON.stringify({
+        error: 'Unauthorized access to recruiter analytics data'
       }), {
         status: 403,
         headers: {
@@ -49,8 +41,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     if (error) {
       console.error('Error fetching recruiter analytics data:', error);
-      return new Response(JSON.stringify({ 
-        error: 'Failed to fetch recruiter analytics data' 
+      return new Response(JSON.stringify({
+        error: 'Failed to fetch recruiter analytics data'
       }), {
         status: 500,
         headers: {
@@ -70,8 +62,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     if (recruitersError) {
       console.error('Error fetching recruiters:', recruitersError);
-      return new Response(JSON.stringify({ 
-        error: 'Failed to fetch recruiter data' 
+      return new Response(JSON.stringify({
+        error: 'Failed to fetch recruiter data'
       }), {
         status: 500,
         headers: {
@@ -116,7 +108,7 @@ export const GET: APIRoute = async ({ request, url }) => {
         if (recruiterData) {
           recruiterData.profileViews++;
           recruiterData.totalEngagement++;
-          
+
           // Daily views
           const currentDayViews = recruiterData.dailyViews.get(date) || 0;
           recruiterData.dailyViews.set(date, currentDayViews + 1);
@@ -129,11 +121,11 @@ export const GET: APIRoute = async ({ request, url }) => {
         if (recruiterData) {
           recruiterData.contactClicks++;
           recruiterData.totalEngagement++;
-          
+
           // Contact type breakdown
           const currentContactCount = recruiterData.contactTypes.get(contactType) || 0;
           recruiterData.contactTypes.set(contactType, currentContactCount + 1);
-          
+
           // Global contact type analytics
           const globalContactCount = contactTypeAnalytics.get(contactType) || 0;
           contactTypeAnalytics.set(contactType, globalContactCount + 1);
@@ -144,13 +136,13 @@ export const GET: APIRoute = async ({ request, url }) => {
       if (recruiterId) {
         const dayKey = `${date}-${recruiterId}`;
         const currentDayTraffic = dailyTraffic.get(dayKey) || { date, recruiterId, views: 0, contacts: 0 };
-        
+
         if (event.event_name === 'profile_view') {
           currentDayTraffic.views++;
         } else if (event.event_name === 'contact_click') {
           currentDayTraffic.contacts++;
         }
-        
+
         dailyTraffic.set(dayKey, currentDayTraffic);
       }
     });
@@ -222,9 +214,9 @@ export const GET: APIRoute = async ({ request, url }) => {
     });
   } catch (error) {
     console.error('Error processing recruiter analytics:', error);
-    
-    return new Response(JSON.stringify({ 
-      error: 'Failed to process recruiter analytics data' 
+
+    return new Response(JSON.stringify({
+      error: 'Failed to process recruiter analytics data'
     }), {
       status: 500,
       headers: {
