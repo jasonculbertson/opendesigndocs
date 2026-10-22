@@ -1,45 +1,11 @@
 ---
 import WideLayout from '../../../layouts/WideLayout.astro';
 
-// Temporary fallback: Allow access with URL parameter while debugging server auth
-const url = new URL(Astro.request.url);
-const adminKey = url.searchParams.get('admin');
-const hasUrlAccess = adminKey === 'jason2024';
+import { isTrackingAdmin } from '../../../utils/trackingAdmin';
 
-// Check for proper admin access via Clerk authentication
-const ADMIN_EMAIL = 'jculbertson@gmail.com';
-const ADMIN_USER_IDS = [
-  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
-];
-
-// Get user from Clerk auth
-let isAdmin = false;
-let userEmail = null;
-
-if (Astro.locals.auth?.user) {
-  userEmail = Astro.locals.auth.user.primaryEmailAddress?.emailAddress;
-  const userId = Astro.locals.auth.user.id;
-  isAdmin = userEmail === ADMIN_EMAIL || ADMIN_USER_IDS.includes(userId);
+if (!isTrackingAdmin(Astro.locals)) {
+  return Astro.redirect('/docs/recruiters');
 }
-
-// Debug info for troubleshooting
-console.log('🔍 Email tracking page auth debug:', {
-  hasUrlAccess,
-  isAdmin,
-  userEmail,
-  authUser: Astro.locals.auth?.user ? 'exists' : 'missing',
-  adminKey
-});
-
-// TEMPORARY: Allow all access for debugging
-// TODO: Re-enable authentication once working
-// if (!isAdmin && !hasUrlAccess) {
-//   console.log('❌ Access denied - redirecting to recruiters page');
-//   return Astro.redirect('/docs/recruiters');
-// }
-
-console.log('✅ Access granted to email tracking dashboard');
 
 const title = "Email Tracking Dashboard";
 const description = "Monitor recruiter email engagement and onboarding progress";
@@ -171,7 +137,7 @@ const description = "Monitor recruiter email engagement and onboarding progress"
     // Fetch tracking data
     async function fetchTrackingData() {
       try {
-        const response = await fetch('/api/email-tracking-dashboard?admin=jason2024');
+        const response = await fetch('/api/email-tracking-dashboard');
         if (!response.ok) throw new Error('Failed to fetch data');
         
         trackingData = await response.json();

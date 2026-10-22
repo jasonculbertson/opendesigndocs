@@ -31,18 +31,15 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_analytics_events_updated_at 
-    BEFORE UPDATE ON analytics_events 
-    FOR EACH ROW 
+CREATE TRIGGER update_analytics_events_updated_at
+    BEFORE UPDATE ON analytics_events
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Add RLS (Row Level Security) policies if needed
 ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
 
--- Allow all operations for authenticated users (you can make this more restrictive)
-CREATE POLICY "Allow all operations for authenticated users" ON analytics_events
-    FOR ALL USING (true);
-
--- Grant permissions
-GRANT ALL ON analytics_events TO authenticated;
-GRANT ALL ON analytics_events TO anon; 
+-- Tracking data is server-only. Clerk authorization is enforced in API routes.
+-- service_role bypasses RLS; never grant browser roles direct table access.
+REVOKE ALL ON TABLE public.analytics_events FROM PUBLIC, anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.analytics_events TO service_role;

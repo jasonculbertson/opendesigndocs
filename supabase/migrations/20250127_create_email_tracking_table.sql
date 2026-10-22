@@ -21,12 +21,10 @@ CREATE INDEX IF NOT EXISTS idx_email_tracking_timestamp ON email_tracking(timest
 -- Add RLS (Row Level Security) if needed
 ALTER TABLE email_tracking ENABLE ROW LEVEL SECURITY;
 
--- Create policy for authenticated access (adjust as needed for your security model)
-CREATE POLICY "Allow authenticated read access" ON email_tracking
-  FOR SELECT USING (auth.role() = 'authenticated');
-
-CREATE POLICY "Allow service role full access" ON email_tracking
-  FOR ALL USING (auth.role() = 'service_role');
+-- Tracking data is server-only. Clerk authorization is enforced in API routes.
+-- service_role bypasses RLS; never grant browser roles direct table access.
+REVOKE ALL ON TABLE public.email_tracking FROM PUBLIC, anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.email_tracking TO service_role;
 
 -- Insert comment for documentation
 COMMENT ON TABLE email_tracking IS 'Tracks email engagement events for recruiter invitations and follow-ups';

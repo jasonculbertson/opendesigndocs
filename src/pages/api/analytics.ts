@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { isTrackingAdmin } from '../../utils/trackingAdmin';
 
 // Initialize Supabase client with service role for database operations
 const supabase = createClient(
@@ -13,21 +14,17 @@ console.log('Analytics API Environment Check:', {
   serviceRoleKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing'
 });
 
-// Authorized user IDs who can access analytics data (only your Clerk user IDs)
-const AUTHORIZED_USER_IDS = [
-  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
-];
+
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const event = await request.json();
-    
+
     // Get request metadata
     const userAgent = request.headers.get('user-agent');
     const referer = request.headers.get('referer');
-    const ipAddress = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
+    const ipAddress = request.headers.get('x-forwarded-for') ||
+                     request.headers.get('x-real-ip') ||
                      null;
 
     // Log the analytics event
@@ -58,9 +55,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (error) {
       console.error('Error storing analytics event:', error);
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: 'Failed to store analytics event' 
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Failed to store analytics event'
       }), {
         status: 500,
         headers: {
@@ -70,10 +67,10 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     console.log('✅ Analytics event stored successfully:', data);
-    
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: 'Event tracked successfully' 
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Event tracked successfully'
     }), {
       status: 200,
       headers: {
@@ -82,10 +79,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (error) {
     console.error('Error processing analytics event:', error);
-    
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: 'Failed to process analytics event' 
+
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Failed to process analytics event'
     }), {
       status: 500,
       headers: {
@@ -95,22 +92,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-export const GET: APIRoute = async ({ request, url }) => {
+export const GET: APIRoute = async ({ request, url, locals }) => {
   try {
-    // Get user ID from query params or headers (you'd implement your auth logic here)
-    const userId = url.searchParams.get('user_id') || 'anonymous';
-    
-    console.log('Analytics access attempt:', {
-      userId,
-      authorizedUsers: AUTHORIZED_USER_IDS,
-      isAuthorized: AUTHORIZED_USER_IDS.includes(userId)
-    });
-    
-    // Check if user is authorized to view analytics
-    if (!AUTHORIZED_USER_IDS.includes(userId)) {
-      console.log('Unauthorized analytics access:', { userId, authorizedUsers: AUTHORIZED_USER_IDS });
-      return new Response(JSON.stringify({ 
-        error: `Unauthorized access to analytics data. User ID: ${userId}` 
+    if (!isTrackingAdmin(locals)) {
+      return new Response(JSON.stringify({
+        error: 'Unauthorized access to analytics data'
       }), {
         status: 403,
         headers: {
@@ -134,8 +120,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     if (error) {
       console.error('Error fetching analytics data:', error);
-      return new Response(JSON.stringify({ 
-        error: 'Failed to fetch analytics data' 
+      return new Response(JSON.stringify({
+        error: 'Failed to fetch analytics data'
       }), {
         status: 500,
         headers: {
@@ -151,13 +137,13 @@ export const GET: APIRoute = async ({ request, url }) => {
     const totalEvents = events?.length || 0;
     const uniqueUsers = new Set(events?.map(e => e.user_id).filter(Boolean)).size;
     const uniqueSessions = new Set(events?.map(e => e.session_id).filter(Boolean)).size;
-    
+
     // Top events
     const eventCounts = events?.reduce((acc: Record<string, number>, event) => {
       acc[event.event_name] = (acc[event.event_name] || 0) + 1;
       return acc;
     }, {});
-    
+
     // Top pages
     const pageCounts = events?.reduce((acc: Record<string, number>, event) => {
       if (event.page_url) {
@@ -200,9 +186,9 @@ export const GET: APIRoute = async ({ request, url }) => {
     });
   } catch (error) {
     console.error('Error fetching analytics:', error);
-    
-    return new Response(JSON.stringify({ 
-      error: 'Failed to fetch analytics data' 
+
+    return new Response(JSON.stringify({
+      error: 'Failed to fetch analytics data'
     }), {
       status: 500,
       headers: {
@@ -210,4 +196,4 @@ export const GET: APIRoute = async ({ request, url }) => {
       }
     });
   }
-}; 
+};

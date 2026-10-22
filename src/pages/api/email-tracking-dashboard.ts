@@ -1,32 +1,13 @@
 import type { APIContext } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { isTrackingAdmin } from '../../utils/trackingAdmin';
 
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export async function GET({ request, locals }: APIContext) {
   try {
-    // Temporary fallback: Allow access with URL parameter while debugging server auth
-    const url = new URL(request.url);
-    const adminKey = url.searchParams.get('admin');
-    const hasUrlAccess = adminKey === 'jason2024';
-
-    // Check for proper admin access via Clerk authentication
-    const ADMIN_EMAIL = 'jculbertson@gmail.com';
-    const ADMIN_USER_IDS = [
-      'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production
-      'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development
-    ];
-
-    let isAdmin = false;
-    if (locals.auth?.user) {
-      const userEmail = locals.auth.user.primaryEmailAddress?.emailAddress;
-      const userId = locals.auth.user.id;
-      isAdmin = userEmail === ADMIN_EMAIL || ADMIN_USER_IDS.includes(userId);
-    }
-    
-    // Allow access if either authenticated properly OR using admin URL (temporary)
-    if (!isAdmin && !hasUrlAccess) {
+    if (!isTrackingAdmin(locals)) {
       return new Response(JSON.stringify({ error: 'Unauthorized - Admin access required' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' }
