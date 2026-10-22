@@ -1,35 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { isTrackingAdmin } from '../utils/trackingAdmin';
 
-// Check if user is authorized to view analytics
-const ADMIN_EMAIL = 'jculbertson@gmail.com';
-const ADMIN_USER_IDS = [
-  'user_2ycNsYsOHZUfRlxgP2ysOCztGkt', // Production UUID
-  'user_2yhwbXQyVgKDpgEisp93K3ObWSQ'  // Development/Testing UUID
-];
-
-let isAuthorized = false;
-let userInfo = null;
-
-if (Astro.locals.auth?.user) {
-  const user = Astro.locals.auth.user;
-  userInfo = {
-    id: user.id,
-    email: user.emailAddresses?.[0]?.emailAddress
-  };
-  
-  // Check if user is authorized
-  isAuthorized = userInfo.email === ADMIN_EMAIL || ADMIN_USER_IDS.includes(user.id);
-  
-  console.log('Analytics access check:', {
-    userId: user.id,
-    email: userInfo.email,
-    isAuthorized
-  });
-}
-
-// If not authorized, redirect to login or show access denied
-if (!isAuthorized) {
+if (!isTrackingAdmin(Astro.locals)) {
   return Astro.redirect('/');
 }
 ---
@@ -79,12 +52,6 @@ if (!isAuthorized) {
   </div>
 </Layout>
 
-<!-- Pass user ID to client-side script -->
-<script define:vars={{ userId: userInfo?.id }}>
-  // Make user ID available to analytics script
-  window.analyticsUserId = userId;
-</script>
-
 <script>
   // Tab switching functionality
   function switchTab(tabName) {
@@ -127,8 +94,7 @@ if (!isAuthorized) {
     if (!container) return;
     
     try {
-      const userId = window.analyticsUserId || 'anonymous';
-      const response = await fetch(`/api/analytics?user_id=${userId}`);
+      const response = await fetch('/api/analytics');
       const result = await response.json();
       
       if (!response.ok) {
@@ -226,8 +192,7 @@ if (!isAuthorized) {
     if (!container) return;
     
     try {
-      const userId = window.analyticsUserId || 'anonymous';
-      const response = await fetch(`/api/recruiter-analytics?user_id=${userId}`);
+      const response = await fetch('/api/recruiter-analytics');
       const result = await response.json();
       
       if (!response.ok) {
