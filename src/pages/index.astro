@@ -21,6 +21,13 @@ const featuredResources = [
     href: '/docs/levels/level-competencies',
     section: 'Levels',
     icon: 'Target'
+  },
+  {
+    title: 'Reviews',
+    description: 'Practical frameworks for meaningful performance reviews and team growth',
+    href: '/docs/levels/reviews',
+    section: 'Levels',
+    icon: 'FileText'
   }
 ];
 
@@ -77,14 +84,14 @@ const featuredResources = [
     <div class="pt-8 pb-8 sm:pt-8 sm:pb-12">
       <div class="max-w-screen-xl mx-auto px-6 sm:px-6 lg:px-8">
         <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Featured Resources</h2>
-        <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2">
+        <div class="grid grid-cols-1 auto-rows-fr gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredResources.map((resource, index) => (
             <button 
               data-resource-href={resource.href}
-              class="group block text-left w-full cursor-pointer"
+              class="group flex text-left w-full h-full cursor-pointer"
               id={`featured-resource-${index}`}
             >
-              <div class="relative bg-white rounded-2xl border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+              <div class="relative w-full h-full bg-white rounded-2xl border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
                 <div class="flex flex-col items-start gap-3 mb-3">
                   {resource.icon === 'FileText' && (
                     <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
