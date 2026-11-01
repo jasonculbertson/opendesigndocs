@@ -161,9 +161,6 @@ const pages = [
   '/docs/videos/interviews',
   '/docs/videos/case-studies',
   
-  // AI Tools
-  '/docs/reviews-ai',
-  
   // Recruiters
   '/docs/recruiters',
   

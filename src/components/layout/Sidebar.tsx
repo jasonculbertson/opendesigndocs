@@ -13,7 +13,6 @@ import {
   FileVideo,
   Search,
   User,
-  Bot,
   Book
 } from 'lucide-react';
 
@@ -83,11 +82,6 @@ const Sidebar = React.memo(function Sidebar({ currentPath = '/' }: Props) {
           name: 'Recruiter Directory',
           href: '/docs/recruiters',
           icon: Search
-        },
-        {
-          name: 'Reviews AI',
-          href: '/docs/reviews-ai',
-          icon: Bot
         }
       ]
     },

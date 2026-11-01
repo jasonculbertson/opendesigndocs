@@ -1,40 +1,13 @@
 # Open Design Docs
 
-A comprehensive resource for design leadership and management, featuring AI-powered performance review assistance.
+A comprehensive resource for design leadership and management.
 
 ## 🚀 Features
 
 - **Level Competencies**: Comprehensive frameworks for design roles
-- **ReviewsAI**: AI-powered assistant for annual performance reviews
 - **Job Descriptions**: Detailed role specifications
 - **Interview Panels**: Structured interview processes
 - **Leadership Resources**: Management and career development guides
-
-## 🤖 ReviewsAI Setup
-
-The ReviewsAI chatbot uses OpenAI GPT-4 to generate comprehensive performance reviews. To enable this feature:
-
-### 1. Get OpenAI API Key
-- Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-- Create a new API key
-- Copy the key for the next step
-
-### 2. Configure Environment Variables
-Create a `.env` file in the root directory:
-
-```bash
-# OpenAI API Configuration
-OPENAI_API_KEY=your_openai_api_key_here
-```
-
-### 3. Restart Development Server
-After adding the environment variable, restart your development server:
-
-```bash
-npm run dev
-```
-
-The ReviewsAI will now use GPT-4 to generate structured, competency-aligned performance reviews.
 
 ## 🚀 Project Structure
 

@@ -67,9 +67,6 @@ Tools and frameworks for design managers:
 - [Case Study Reviews](/docs/videos/case-studies): Portfolio critique videos with senior designers
 - [Interview Series](/docs/videos/interviews): Conversations with design leaders
 
-### AI Tools
-- [Reviews AI](/docs/reviews-ai): AI-powered performance review assistant
-
 ## Design Role Hierarchy
 
 The standard design career ladder used throughout this site:

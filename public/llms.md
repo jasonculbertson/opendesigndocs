@@ -157,14 +157,6 @@ Tools and frameworks for design managers:
 
 ---
 
-### 9. AI Tools
-
-**Reviews AI** - AI-powered performance review assistant that helps managers write better feedback.
-
-**URL:** [opendesigndocs.com/docs/reviews-ai](https://opendesigndocs.com/docs/reviews-ai)
-
----
-
 ## 🎯 Common Use Cases
 
 ### For Designers

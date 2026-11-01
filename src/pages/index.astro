@@ -21,13 +21,6 @@ const featuredResources = [
     href: '/docs/levels/level-competencies',
     section: 'Levels',
     icon: 'Target'
-  },
-  {
-    title: 'Reviews AI',
-    description: 'AI-powered performance reviews that save time and improve feedback quality',
-    href: '/docs/reviews-ai',
-    section: 'Tools',
-    icon: 'Bot'
   }
 ];
 
@@ -84,7 +77,7 @@ const featuredResources = [
     <div class="pt-8 pb-8 sm:pt-8 sm:pb-12">
       <div class="max-w-screen-xl mx-auto px-6 sm:px-6 lg:px-8">
         <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Featured Resources</h2>
-        <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2">
           {featuredResources.map((resource, index) => (
             <button 
               data-resource-href={resource.href}
@@ -117,16 +110,7 @@ const featuredResources = [
                       <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
                   )}
-                  {resource.icon === 'Bot' && (
-                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M12 8V4H8"></path>
-                      <rect width="16" height="12" x="4" y="8" rx="2"></rect>
-                      <path d="M2 14h2"></path>
-                      <path d="M20 14h2"></path>
-                      <path d="M15 13v2"></path>
-                      <path d="M9 13v2"></path>
-                    </svg>
-                  )}
+
                   {resource.icon === 'Search' && (
                     <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <circle cx="11" cy="11" r="8"></circle>
