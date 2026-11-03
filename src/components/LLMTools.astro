@@ -42,6 +42,14 @@ const { title } = Astro.props;
   .llm-dialog-header button { padding:8px; border-radius:6px; }
   textarea { width:100%; height:50vh; padding:12px; border:1px solid #d1d5db; border-radius:6px; font:13px/1.6 ui-monospace,monospace; resize:vertical; }
   dialog p { margin:12px 0 0; font-size:13px; color:#6b7280; }
+  @media (min-width:1024px) {
+    :global(.llm-heading-row) { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:28px; }
+    :global(.llm-heading-row > h1) { flex:1; min-width:0; margin:0 !important; }
+    :global(.llm-heading-row > .llm-tools) { flex-shrink:0; margin:0; }
+    .llm-split { white-space:nowrap; }
+    .llm-menu { left:auto; right:0; }
+    .llm-status { position:absolute; top:100%; right:0; width:220px; text-align:right; }
+  }
 </style>
 <script>
   import { documentMarkdown } from '../utils/documentMarkdown';
@@ -51,7 +59,12 @@ const { title } = Astro.props;
     if (!tools || !content || tools.dataset.ready) return;
     tools.dataset.ready = 'true';
     const heading = content.querySelector('h1') || document.querySelector('main h1');
-    if (heading) heading.after(tools); else content.before(tools);
+    if (heading) {
+      const row = document.createElement('div');
+      row.className = 'llm-heading-row';
+      heading.before(row);
+      row.append(heading, tools);
+    } else content.before(tools);
     tools.hidden = false;
     const controller = new AbortController();
     const { signal } = controller;
