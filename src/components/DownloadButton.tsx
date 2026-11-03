@@ -26,6 +26,7 @@ export default function DownloadButton({ title, contentSelector = '.prose' }: Do
 
       // Clone the content to avoid modifying the original
       const clone = content.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('[data-llm-tools]').forEach(el => el.remove());
       
       // Create a wrapper with proper styling for PDF
       const wrapper = document.createElement('div');
